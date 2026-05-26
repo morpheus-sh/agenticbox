@@ -1,0 +1,21 @@
+version: "3.8"
+services:
+  agent:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.agent
+    ports:
+      - "9000:9000"
+    volumes:
+      - agent-workspace:/workspace
+    networks:
+      - agent-net
+    environment:
+      - AGENT_WORKSPACE=/workspace
+
+networks:
+  agent-net:
+    driver: bridge
+
+volumes:
+  agent-workspace:

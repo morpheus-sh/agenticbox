@@ -1,0 +1,10 @@
+[package]
+name = "fs-guard"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+shared-types = { path = "../shared-types" }
+serde.workspace = true
+tracing.workspace = true
+thiserror.workspace = true

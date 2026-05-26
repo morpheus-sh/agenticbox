@@ -1,0 +1,18 @@
+[package]
+name = "session-manager"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+shared-types = { path = "../shared-types" }
+sandbox-core = { path = "../sandbox-core" }
+policy-engine = { path = "../policy-engine" }
+tokio.workspace = true
+uuid.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+tracing.workspace = true
+anyhow.workspace = true
+thiserror.workspace = true
+sqlx.workspace = true
+chrono.workspace = true

@@ -1,0 +1,27 @@
+[package]
+name = "daemon"
+version.workspace = true
+edition.workspace = true
+
+[[bin]]
+name = "daemon"
+path = "src/main.rs"
+
+[dependencies]
+sandbox-core = { path = "../../crates/sandbox-core" }
+session-manager = { path = "../../crates/session-manager" }
+shared-types = { path = "../../crates/shared-types" }
+model-router = { path = "../../crates/model-router" }
+tool-protocol = { path = "../../crates/tool-protocol" }
+policy-engine = { path = "../../crates/policy-engine" }
+network-control = { path = "../../crates/network-control" }
+fs-guard = { path = "../../crates/fs-guard" }
+tokio.workspace = true
+axum.workspace = true
+tower-http.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+tracing.workspace = true
+tracing-subscriber.workspace = true
+anyhow.workspace = true
+uuid.workspace = true

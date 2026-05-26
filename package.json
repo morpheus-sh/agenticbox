@@ -1,0 +1,15 @@
+{
+  "name": "local-ai-agent-runtime",
+  "private": true,
+  "version": "0.1.0",
+  "workspaces": ["apps/desktop", "packages/*"],
+  "scripts": {
+    "dev": "cargo run --bin daemon & pnpm --filter desktop dev",
+    "build": "cargo build --release && pnpm --filter desktop build",
+    "test": "cargo test && pnpm --filter desktop test"
+  },
+  "devDependencies": {
+    "typescript": "^5.4"
+  },
+  "packageManager": "pnpm@9.0.0"
+}

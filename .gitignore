@@ -1,0 +1,15 @@
+/target
+node_modules
+dist
+.DS_Store
+*.log
+.env
+.env.local
+apps/desktop/src-tauri/target
+apps/desktop/src-tauri/gen
+__pycache__
+*.pyc
+.pytest_cache
+.venv
+data/
+sessions/
