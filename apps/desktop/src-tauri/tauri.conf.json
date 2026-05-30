@@ -1,6 +1,6 @@
 {
-  "identifier": "com.localai.runtime",
-  "productName": "Local AI Agent Runtime",
+  "identifier": "com.agenticbox.runtime",
+  "productName": "AgenticBox",
   "version": "0.1.0",
   "build": {
     "beforeDevCommand": "pnpm dev",
@@ -12,7 +12,7 @@
     "withGlobalTauri": false,
     "windows": [
       {
-        "title": "Local AI Agent Runtime",
+        "title": "AgenticBox",
         "width": 1280,
         "height": 800,
         "resizable": true,

@@ -3,7 +3,7 @@ services:
   agent:
     build:
       context: ..
-      dockerfile: docker/Dockerfile.agent
+      dockerfile: sandbox/Dockerfile.agent
     ports:
       - "9000:9000"
     volumes:

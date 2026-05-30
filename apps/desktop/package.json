@@ -10,7 +10,7 @@
     "tauri": "tauri"
   },
   "dependencies": {
-    "@localai/shared-types": "workspace:*",
+    "@agenticbox/shared-types": "workspace:*",
     "@tauri-apps/api": "^2.0.0-beta",
     "@tauri-apps/plugin-shell": "^2.0.0-beta",
     "react": "^18.3.1",

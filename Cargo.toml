@@ -4,14 +4,16 @@ members = [
     "apps/daemon",
     "apps/desktop/src-tauri",
 ]
+# Default build only the daemon, not the full workspace (avoids heavy Tauri deps)
+default-members = ["apps/daemon", "crates/*"]
 resolver = "2"
 
 [workspace.package]
 version = "0.1.0"
 edition = "2021"
-authors = ["Local AI Agent Runtime Contributors"]
+authors = ["AgenticBox Contributors"]
 license = "MIT OR Apache-2.0"
-repository = "https://github.com/yourorg/local-ai-agent-runtime"
+repository = "https://github.com/yourorg/agenticbox"
 
 [workspace.dependencies]
 tokio = { version = "1.38", features = ["full"] }

@@ -8,7 +8,7 @@
 
 ## Crates
 
-- `sandbox-core`: Docker integration via bollard.
+- `sandbox-core`: Container runtime integration via bollard (Docker API compatible with Rancher Desktop).
 - `session-manager`: SQLite-backed session storage.
 - `model-router`: Unified model provider trait + OpenAI adapter.
 - `tool-protocol`: Tool trait and definitions.
@@ -18,4 +18,4 @@
 
 ## Data Flow
 
-Desktop UI -> Tauri -> Daemon REST/WebSocket -> Docker Sandbox -> Agent Runtime
+Desktop UI -> Tauri -> Daemon REST/WebSocket -> Container Runtime (Rancher Desktop / Docker) -> Agent Runtime

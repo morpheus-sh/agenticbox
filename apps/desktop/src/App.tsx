@@ -8,7 +8,7 @@ function App() {
 
   return (
     <div className="min-h-screen p-6">
-      <h1 className="text-3xl font-bold mb-4">Local AI Agent Runtime</h1>
+      <h1 className="text-3xl font-bold mb-4">AgenticBox</h1>
       <div className="flex gap-2 mb-6">
         <input
           className="border border-gray-700 bg-gray-800 rounded px-3 py-2"

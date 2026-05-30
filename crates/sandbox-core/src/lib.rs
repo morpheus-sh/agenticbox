@@ -6,7 +6,7 @@ use std::collections::HashMap;
 use tracing::{info, warn};
 use uuid::Uuid;
 
-pub use bollard::errors::Error as DockerError;
+pub use bollard::errors::Error as ContainerError;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SandboxConfig {
@@ -33,28 +33,28 @@ pub struct SandboxResources {
 
 pub struct SandboxHandle {
     pub id: String,
-    docker: Docker,
+    client: Docker,
 }
 
 impl SandboxHandle {
-    pub fn new(id: String, docker: Docker) -> Self {
-        Self { id, docker }
+    pub fn new(id: String, client: Docker) -> Self {
+        Self { id, client }
     }
 
     pub async fn start(&self) -> anyhow::Result<()> {
-        self.docker.start_container(&self.id, None::<StartContainerOptions<String>>).await?;
+        self.client.start_container(&self.id, None::<StartContainerOptions<String>>).await?;
         Ok(())
     }
 
     pub async fn stop(&self, timeout: Option<i64>) -> anyhow::Result<()> {
         let opts = timeout.map(|t| StopContainerOptions { t });
-        self.docker.stop_container(&self.id, opts).await?;
+        self.client.stop_container(&self.id, opts).await?;
         Ok(())
     }
 
     pub async fn remove(&self, force: bool) -> anyhow::Result<()> {
         let opts = RemoveContainerOptions { force, ..Default::default() };
-        self.docker.remove_container(&self.id, Some(opts)).await?;
+        self.client.remove_container(&self.id, Some(opts)).await?;
         Ok(())
     }
 
@@ -64,13 +64,13 @@ impl SandboxHandle {
 }
 
 pub struct SandboxManager {
-    docker: Docker,
+    client: Docker,
 }
 
 impl SandboxManager {
     pub fn new() -> anyhow::Result<Self> {
-        let docker = Docker::connect_with_local_defaults()?;
-        Ok(Self { docker })
+        let client = Docker::connect_with_local_defaults()?;
+        Ok(Self { client })
     }
 
     pub async fn create(&self, config: SandboxConfig) -> anyhow::Result<SandboxHandle> {
@@ -97,11 +97,11 @@ impl SandboxManager {
             ..Default::default()
         };
 
-        self.docker.create_container(
+        self.client.create_container(
             Some(CreateContainerOptions { name: id.clone(), ..Default::default() }),
             container_config,
         ).await?;
 
-        Ok(SandboxHandle::new(id, self.docker.clone()))
+        Ok(SandboxHandle::new(id, self.client.clone()))
     }
 }
