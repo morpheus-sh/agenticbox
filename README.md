@@ -34,7 +34,7 @@ agenticbox dev
 
 | Tool | Purpose | Install |
 |------|---------|---------|
-| Rust | Daemon & crates | `curl --proto '=https' --tlsv1.2 -sSf https://rustup.rs \| sh` |
+| Rust | Daemon & crates | `curl --proto '=https' --tlsv1.2 -sSf https://rustup.rs | sh` |
 | Node + pnpm | Desktop UI | [Node.js](https://nodejs.org) or via Hermes |
 | Python 3.11+ | Agent runtime | Usually pre-installed |
 | Rancher Desktop *(recommended)* | Container runtime | [rancherdesktop.io](https://rancherdesktop.io/) |
