@@ -3,6 +3,7 @@ members = [
     "crates/*",
     "apps/daemon",
     "apps/desktop/src-tauri",
+    "apps/cli",
 ]
 # Default build only the daemon, not the full workspace (avoids heavy Tauri deps)
 default-members = ["apps/daemon", "crates/*"]

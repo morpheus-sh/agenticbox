@@ -7,6 +7,7 @@
 [![Tauri](https://img.shields.io/badge/Tauri-v2-green.svg)](https://tauri.app)
 [![Python](https://img.shields.io/badge/Python-3.11%2B-blue.svg)](https://python.org)
 [![Phase](https://img.shields.io/badge/Phase-1%20Ready-brightgreen.svg)](#roadmap)
+[![CLI](https://img.shields.io/badge/CLI-agenticbox%20deploy-purple.svg)](#cli-usage)
 
 ---
 
@@ -187,6 +188,64 @@ curl http://127.0.0.1:9000/tools
 # Invoke via WebSocket
 ws://127.0.0.1:9000/ws
 ```
+
+---
+
+## CLI Usage
+
+The `agenticbox` CLI provides a friendly interface to the daemon API:
+
+```bash
+# Build the CLI
+cargo build --release --bin agenticbox -p agenticbox-cli
+
+# Or install locally
+cargo install --path apps/cli
+
+# Deploy an agent
+agenticbox deploy --name my-research-agent \
+  --provider openai \
+  --model gpt-4o \
+  --terminal true \
+  --fs readwrite \
+  --browser true \
+  --network allowlist \
+  --domains "api.openai.com,github.com" \
+  --watch
+
+# List sessions
+agenticbox list
+
+# Get session details
+agenticbox get <SESSION_ID>
+
+# Stream logs (Phase 2)
+agenticbox logs <SESSION_ID> -f
+
+# Stop a session
+agenticbox stop <SESSION_ID>
+
+# Health check
+agenticbox health
+```
+
+### CLI Options
+
+| Flag | Description | Default |
+|------|-------------|---------|
+| `--url` | Daemon base URL | `http://127.0.0.1:8080` |
+| `--name` | Agent name (required for deploy) | - |
+| `--provider` | Model provider | `openai` |
+| `--model` | Model name | `gpt-4o` |
+| `--api-key-env` | Env var name for API key | `OPENAI_API_KEY` |
+| `--terminal` | Enable terminal access | `true` |
+| `--fs` | Filesystem permission | `readwrite` |
+| `--browser` | Enable browser automation | `false` |
+| `--network` | Network policy | `allowlist` |
+| `--domains` | Allowed domains (comma-separated) | `api.openai.com,github.com` |
+| `--watch` / `-f` | Stream logs after deploy | `false` |
+
+> **Note:** The CLI reads the API key from the environment variable specified by `--api-key-env` and sends the value to the daemon. Make sure the variable is set before running `deploy`.
 
 ---
 
