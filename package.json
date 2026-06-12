@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "cargo run --bin daemon & pnpm --filter desktop dev",
     "build": "cargo build --release && pnpm --filter desktop build",
+    "build:cloudflare": "./scripts/build-cloudflare.sh",
     "test": "cargo test && pnpm --filter desktop test"
   },
   "devDependencies": {
