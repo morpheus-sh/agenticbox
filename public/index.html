@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AgenticBox — Vercel for AI Agents</title>
+  <meta name="description" content="Deploy autonomous agents without worrying about sandboxes, permissions, browser sessions, secret management, observability, or cost controls." />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0a0b;
+      --surface: #141416;
+      --border: #232327;
+      --text: #e4e4e7;
+      --muted: #8b8b95;
+      --accent: #6d5aff;
+      --accent-hover: #7c6bff;
+      --green: #10b981;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    .container { max-width: 960px; margin: 0 auto; padding: 0 24px; }
+
+    /* Header */
+    header {
+      border-bottom: 1px solid var(--border);
+      padding: 16px 0;
+      position: sticky; top: 0; background: rgba(10,10,11,0.85);
+      backdrop-filter: blur(12px); z-index: 10;
+    }
+    header .container { display: flex; align-items: center; justify-content: space-between; }
+    .logo { font-weight: 700; font-size: 1.1rem; letter-spacing: -0.02em; color: #fff; text-decoration: none; }
+    nav a { color: var(--muted); text-decoration: none; margin-left: 24px; font-size: 0.9rem; transition: color .2s; }
+    nav a:hover { color: var(--text); }
+
+    /* Hero */
+    .hero { padding: 100px 0 80px; text-align: center; }
+    .badge {
+      display: inline-block; background: rgba(109,90,255,0.12); color: var(--accent);
+      font-size: 0.8rem; padding: 4px 12px; border-radius: 999px; margin-bottom: 24px;
+    }
+    .hero h1 {
+      font-size: clamp(2.5rem, 6vw, 3.8rem); font-weight: 700; letter-spacing: -0.03em;
+      line-height: 1.1; margin-bottom: 24px; color: #fff;
+    }
+    .hero h1 span { color: var(--accent); }
+    .hero p { font-size: 1.15rem; color: var(--muted); max-width: 600px; margin: 0 auto 32px; }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px; padding: 12px 24px;
+      border-radius: 8px; font-size: 0.95rem; font-weight: 600; text-decoration: none;
+      transition: all .2s; cursor: pointer; border: none;
+    }
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-primary:hover { background: var(--accent-hover); transform: translateY(-1px); }
+    .btn-secondary { background: var(--surface); color: var(--text); border: 1px solid var(--border); }
+    .btn-secondary:hover { border-color: #404047; }
+
+    /* Features */
+    .features { padding: 80px 0; }
+    .section-title { text-align: center; font-size: 1.6rem; font-weight: 600; margin-bottom: 48px; color: #fff; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 24px; }
+    .card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 28px;
+      transition: border-color .2s;
+    }
+    .card:hover { border-color: #404047; }
+    .card h3 { font-size: 1rem; margin-bottom: 8px; color: #fff; }
+    .card p { font-size: 0.9rem; color: var(--muted); line-height: 1.5; }
+
+    /* Pricing */
+    .pricing { padding: 80px 0; border-top: 1px solid var(--border); }
+    .price-card { text-align: center; }
+    .price-card h3 { font-size: 1rem; color: #fff; margin-bottom: 4px; }
+    .price { font-size: 2.5rem; font-weight: 700; color: #fff; margin: 8px 0; }
+    .price span { font-size: 1rem; color: var(--muted); font-weight: 400; }
+    .price-card p { font-size: 0.9rem; color: var(--muted); margin-bottom: 20px; }
+
+    /* CTA */
+    .cta { padding: 80px 0; text-align: center; border-top: 1px solid var(--border); }
+    .cta h2 { font-size: 1.6rem; color: #fff; margin-bottom: 16px; }
+    .cta p { color: var(--muted); margin-bottom: 32px; max-width: 500px; margin-left: auto; margin-right: auto; }
+
+    /* Footer */
+    footer { border-top: 1px solid var(--border); padding: 40px 0; text-align: center; color: var(--muted); font-size: 0.85rem; }
+    footer a { color: var(--accent); text-decoration: none; }
+
+    /* Responsive */
+    @media (max-width: 640px) {
+      .hero { padding: 60px 0 50px; }
+      .grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <a href="/" class="logo">AgenticBox</a>
+    <nav>
+      <a href="#features">Features</a>
+      <a href="#pricing">Pricing</a>
+      <a href="https://github.com/agenticbox/agenticbox" target="_blank">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="container">
+    <span class="badge">Open Source — MIT OR Apache-2.0</span>
+    <h1>Vercel for<br /><span>AI Agents</span></h1>
+    <p>Deploy autonomous agents without worrying about sandboxes, permissions, browser sessions, secret management, observability, or cost controls.</p>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+      <a href="https://github.com/agenticbox/agenticbox" target="_blank" class="btn btn-primary">View on GitHub</a>
+      <a href="#features" class="btn btn-secondary">Learn More</a>
+    </div>
+  </div>
+</section>
+
+<section id="features" class="features">
+  <div class="container">
+    <h2 class="section-title">Everything agents need, nothing they don't</h2>
+    <div class="grid">
+      <div class="card">
+        <h3>Sandbox Lifecycle</h3>
+        <p>Container-based execution with full lifecycle management. Agents run in isolated environments that start and stop on demand.</p>
+      </div>
+      <div class="card">
+        <h3>Permission Controls</h3>
+        <p>Define what agents can read, write, and execute. Fine-grained filesystem guards and network policies keep agents safe.</p>
+      </div>
+      <div class="card">
+        <h3>Browser Automation</h3>
+        <p>Headless browser sessions for web interaction. Agents navigate, click, type, and extract data from any website.</p>
+      </div>
+      <div class="card">
+        <h3>Secret Management</h3>
+        <p>API keys, tokens, and credentials — injected securely at runtime without exposing them in your code or environment.</p>
+      </div>
+      <div class="card">
+        <h3>Observability</h3>
+        <p>Logs, metrics, and traces per agent. See what they're doing, how long it takes, and where costs are going.</p>
+      </div>
+      <div class="card">
+        <h3>Local-First</h3>
+        <p>Run on your own machine with no cloud lock-in. Deploy to production when you're ready — not before.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="pricing" class="pricing">
+  <div class="container">
+    <h2 class="section-title">Simple pricing, no surprises</h2>
+    <div class="grid">
+      <div class="card price-card">
+        <h3>Starter</h3>
+        <div class="price">$49<span>/mo</span></div>
+        <p>Solo developers building agent-powered products.</p>
+        <a href="#features" class="btn btn-secondary">Get Started</a>
+      </div>
+      <div class="card price-card">
+        <h3>Pro</h3>
+        <div class="price">$199<span>/mo</span></div>
+        <p>Teams deploying multiple agents to production.</p>
+        <a href="#features" class="btn btn-primary">Get Started</a>
+      </div>
+      <div class="card price-card">
+        <h3>Enterprise</h3>
+        <div class="price">$999<span>/mo</span></div>
+        <p>Custom SLAs and policy engines for large orgs.</p>
+        <a href="#features" class="btn btn-secondary">Contact Us</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cta">
+  <div class="container">
+    <h2>Ready to deploy your first agent?</h2>
+    <p>Join the open beta and start building autonomous agents that work.</p>
+    <a href="https://github.com/agenticbox/agenticbox" target="_blank" class="btn btn-primary">Get Started on GitHub</a>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <p>&copy; 2025 AgenticBox. Built with Rust, Tauri, and Python.</p>
+    <p style="margin-top:8px;">
+      <a href="https://github.com/agenticbox/agenticbox" target="_blank">GitHub</a> &middot;
+      <a href="mailto:hello@agenticbox.co">Email</a>
+    </p>
+  </div>
+</footer>
+
+</body>
+</html>
