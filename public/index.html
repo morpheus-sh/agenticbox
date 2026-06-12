@@ -5,6 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>AgenticBox — Vercel for AI Agents</title>
   <meta name="description" content="Deploy autonomous agents without worrying about sandboxes, permissions, browser sessions, secret management, observability, or cost controls." />
+
+  <!-- Open Graph / Twitter -->
+  <meta property="og:title" content="AgenticBox — Vercel for AI Agents" />
+  <meta property="og:description" content="Deploy autonomous agents without worrying about sandboxes, permissions, browser sessions, secret management, observability, or cost controls." />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -19,6 +26,8 @@
       --accent-hover: #7c6bff;
       --green: #10b981;
     }
+
+    html { scroll-behavior: smooth; }
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -66,6 +75,15 @@
     .btn-secondary { background: var(--surface); color: var(--text); border: 1px solid var(--border); }
     .btn-secondary:hover { border-color: #404047; }
 
+    /* Code block */
+    .code-block {
+      background: #0d0d0f; border: 1px solid var(--border); border-radius: 8px; padding: 20px 24px;
+      font-family: 'SF Mono', 'Fira Code', monospace; font-size: 0.9rem; color: #e4e4e7;
+      text-align: left; max-width: 640px; margin: 32px auto 0; overflow-x: auto;
+    }
+    .code-block .prompt { color: var(--green); user-select: none; }
+    .code-block .comment { color: #5a5a64; font-style: italic; }
+
     /* Features */
     .features { padding: 80px 0; }
     .section-title { text-align: center; font-size: 1.6rem; font-weight: 600; margin-bottom: 48px; color: #fff; }
@@ -80,7 +98,12 @@
 
     /* Pricing */
     .pricing { padding: 80px 0; border-top: 1px solid var(--border); }
-    .price-card { text-align: center; }
+    .price-card { text-align: center; position: relative; }
+    .price-card.featured::before {
+      content: 'Most Popular'; display: block; font-size: 0.75rem; color: var(--accent);
+      background: rgba(109,90,255,0.12); padding: 4px 12px; border-radius: 999px;
+      margin-bottom: 8px; font-weight: 600; width: fit-content; margin-left: auto; margin-right: auto;
+    }
     .price-card h3 { font-size: 1rem; color: #fff; margin-bottom: 4px; }
     .price { font-size: 2.5rem; font-weight: 700; color: #fff; margin: 8px 0; }
     .price span { font-size: 1rem; color: var(--muted); font-weight: 400; }
@@ -99,6 +122,7 @@
     @media (max-width: 640px) {
       .hero { padding: 60px 0 50px; }
       .grid { grid-template-columns: 1fr; }
+      nav a { margin-left: 12px; font-size: 0.8rem; }
     }
   </style>
 </head>
@@ -109,6 +133,7 @@
     <a href="/" class="logo">AgenticBox</a>
     <nav>
       <a href="#features">Features</a>
+      <a href="#demo">Demo</a>
       <a href="#pricing">Pricing</a>
       <a href="https://github.com/agenticbox/agenticbox" target="_blank">GitHub</a>
     </nav>
@@ -121,8 +146,22 @@
     <h1>Vercel for<br /><span>AI Agents</span></h1>
     <p>Deploy autonomous agents without worrying about sandboxes, permissions, browser sessions, secret management, observability, or cost controls.</p>
     <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
-      <a href="https://github.com/agenticbox/agenticbox" target="_blank" class="btn btn-primary">View on GitHub</a>
-      <a href="#features" class="btn btn-secondary">Learn More</a>
+      <a href="#demo" class="btn btn-primary">See It In Action</a>
+      <a href="https://github.com/agenticbox/agenticbox" target="_blank" class="btn btn-secondary">View on GitHub</a>
+    </div>
+
+    <!-- Demo / Install -->
+    <div id="demo" style="margin-top:48px;">
+      <p style="font-size:0.9rem;color:#5a5a64;margin-bottom:12px;">Get started in under a minute</p>
+      <div class="code-block">
+        <span class="comment"># 1-line install</span><br/>
+        <span class="prompt">$ </span>curl -sSL https://agenticbox.co/install.sh | sh<br/><br/>
+
+        <span class="comment"># run your first agent</span><br/>
+        <span class="prompt">$ </span>agenticbox deploy my-agent --sandbox<br/>
+        <span style="color:#5a5a64;">→ Agent deployed to sandbox (id: 8f3a2c)</span><br/>
+        <span style="color:#5a5a64;">→ Logs: https://dashboard.agenticbox.co/logs/8f3a2c</span>
+      </div>
     </div>
   </div>
 </section>
@@ -161,25 +200,25 @@
 
 <section id="pricing" class="pricing">
   <div class="container">
-    <h2 class="section-title">Simple pricing, no surprises</h2>
+    <h2 class="section-title">Start free, scale when you're ready</h2>
     <div class="grid">
       <div class="card price-card">
-        <h3>Starter</h3>
+        <h3>Free</h3>
+        <div class="price">$0<span>/mo</span></div>
+        <p>Self-hosted. Run agents on your own machine — no limits.</p>
+        <a href="#demo" class="btn btn-secondary">Get Started</a>
+      </div>
+      <div class="card price-card featured">
+        <h3>Pro</h3>
         <div class="price">$49<span>/mo</span></div>
         <p>Solo developers building agent-powered products.</p>
-        <a href="#features" class="btn btn-secondary">Get Started</a>
-      </div>
-      <div class="card price-card">
-        <h3>Pro</h3>
-        <div class="price">$199<span>/mo</span></div>
-        <p>Teams deploying multiple agents to production.</p>
-        <a href="#features" class="btn btn-primary">Get Started</a>
+        <a href="#demo" class="btn btn-primary">Start Free Trial</a>
       </div>
       <div class="card price-card">
         <h3>Enterprise</h3>
-        <div class="price">$999<span>/mo</span></div>
-        <p>Custom SLAs and policy engines for large orgs.</p>
-        <a href="#features" class="btn btn-secondary">Contact Us</a>
+        <div class="price">$199<span>/mo</span></div>
+        <p>Teams deploying multiple agents to production.</p>
+        <a href="#demo" class="btn btn-secondary">Start Free Trial</a>
       </div>
     </div>
   </div>
@@ -189,7 +228,7 @@
   <div class="container">
     <h2>Ready to deploy your first agent?</h2>
     <p>Join the open beta and start building autonomous agents that work.</p>
-    <a href="https://github.com/agenticbox/agenticbox" target="_blank" class="btn btn-primary">Get Started on GitHub</a>
+    <a href="#demo" class="btn btn-primary">Get Started</a>
   </div>
 </section>
 
