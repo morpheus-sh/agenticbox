@@ -1,113 +1,130 @@
-# Vercel for AI Agents — The Core Thesis
+# The Governance Layer for AI Agents — The Core Thesis
 
-## What Vercel Solved (and Why It Matters)
+## What "Governance Layer" Means (and Why It Matters)
 
-Before Vercel, deploying a web app meant:
+Before Kubernetes, running containers in production meant:
 
-- Setting up servers
-- Configuring load balancers
-- Managing SSL certificates
-- Handling caching and CDN
-- Scaling horizontally
-- Monitoring uptime
+- Setting up VMs
+- Managing orchestration manually
+- Configuring networking by hand
+- Handling secrets in config files
+- No standardization
 
-Vercel made this invisible. You pushed code, it worked. That's the pattern we're replicating for AI agents.
+Kubernetes became the **control plane** for containers. It didn't just run them — it *governed* them.
 
-## What Vercel Didn't Solve (and Why It Matters)
+AI agents today are where containers were in 2014:
 
-Vercel is great at serving static content and simple APIs. But AI agents need something different:
+- Powerful but ungovernable
+- Every team builds their own sandbox, permissions, secrets, observability
+- No standard control plane
+- Security and ops teams say "no"
 
-- **Sandboxing** — isolated execution environments
-- **Permissions** — what can the agent read, write, execute?
-- **Browser automation** — headless browsers for web interaction
-- **Secret management** — API keys, tokens, credentials
-- **Observability** — logs, metrics, traces per-agent
-- **Cost controls** — billing by usage, not just compute
+**AgenticBox is the governance layer for AI agents.**
 
-These are the problems Vercel doesn't address. They're the problems AI agents face every day.
+It provides the control plane: sandbox execution, permissions, secrets, observability, cost controls. Open source. Local-first. Run on your machine or ours.
+
+## What Vercel Solved (and What It Didn't)
+
+Vercel made *frontend deployment* invisible. Push code, it works.
+
+But Vercel is a **serving platform**, not an **execution platform**.
+
+AI agents don't just serve requests — they *act*. They:
+- Execute code
+- Browse the web
+- Read/write files
+- Call APIs
+- Spend money
+
+**Vercel doesn't govern actions. AgenticBox does.**
 
 ## The Core Insight
 
-"Vercel for AI agents" means:
+> **AgenticBox: The governance layer for AI agents.**
+>
+> Sandbox execution, permissions, secrets, observability, cost controls. Open source. Local-first. Run on your machine or ours.
 
-> Deploy autonomous agents without worrying about sandboxes, permissions, browser sessions, secret management, observability, or cost controls.
-
-It's not just a metaphor. It's a real product positioning because it maps to something developers already understand.
+It's not a metaphor. It's a category definition:
+- **Frameworks** (LangGraph, CrewAI) build agents
+- **Cloud** (AWS, GCP) provides compute
+- **AgenticBox** governs execution
 
 ## What This Means for the Product
 
-### Phase 1 (Now)
+### Phase 1 (Now) — Core Governance Primitives
 - Container sandbox lifecycle
-- Terminal tool + filesystem mounts
-- OpenAI-compatible API
-- Tauri desktop app
+- Terminal tool + filesystem mounts + guards
+- Execution permissions (terminal, FS, browser, network)
 - Session persistence
+- Tauri desktop console
+- OpenAI-compatible API
 
-**This is the "Vercel" part.** It's the core deployment experience.
+**This is the "governance layer" foundation.**
 
-### Phase 2 (Planned)
+### Phase 2 (Planned) — Extended Governance
 - Browser automation (Playwright)
-- Permission system UI
-- Secret management
-- Basic observability
+- Secret governance (keyring/Vault injection)
+- Basic observability & audit (log streaming, structured logs)
 
-**This is where we differentiate from generic containers.**
+**This is where we differentiate from raw containers.**
 
-### Phase 3 (Future)
+### Phase 3 (Future) — Enterprise Governance
 - Firecracker microVMs
-- Policy engine
-- Advanced cost controls
-- Multi-agent orchestration
+- Policy engine (OPA-style, audit logging)
+- Advanced cost governance
+- Multi-agent coordination
 
 **This is where we become essential infrastructure.**
 
 ## Why This Positioning Works
 
 1. **It's specific** — not "AI platform" or "agent framework"
-2. **It's memorable** — developers know Vercel, they get it instantly
-3. **It scales** — the metaphor holds from Phase 1 through Phase 3
-4. **It's defensible** — competitors can copy features but not the positioning
+2. **It's defensible** — competitors can copy features but not the category
+3. **It scales** — the governance frame holds from Phase 1 through Phase 3
+4. **It speaks to buyers** — security/platform teams buy *governance*, not "easy deploy"
 
 ## What It Doesn't Mean (and Why That Matters)
 
 - We're NOT a model provider (we work with OpenAI, Ollama, vLLM, any model)
-- We're NOT a framework (we don't dictate how agents are built)
-- We're NOT just containers (we add permissions, browser automation, observability)
+- We're NOT an agent framework (we don't dictate how agents are built)
+- We're NOT just containers (we add permissions, browser, secrets, observability)
 - We're NOT cloud-only (local-first is core to our identity)
 
 ## The Competitive Moat
 
-Vercel's moat isn't technology — it's **developer experience**. They made deployment so easy that developers stopped thinking about infrastructure.
+Kubernetes' moat isn't technology — it's **the control plane everyone standardized on**.
 
-AgenticBox's moat will be the same: making agent deployment so simple that developers stop worrying about sandboxes, permissions, and browser sessions.
+AgenticBox's moat will be the same: making agent governance so complete that security teams stop saying "no" and developers stop building their own.
 
-## Pricing Strategy (Aligned with Vercel)
+## Pricing Strategy (Aligned with Governance Value)
 
 | Tier | Price | Target |
 |------|-------|--------|
-| Starter | $49/mo | Solo devs, small projects |
-| Pro | $199/mo | Teams, production workloads |
-| Enterprise | $999/mo | Large orgs, custom SLAs |
+| Free (Self-Hosted) | $0/mo | Developers, local governance |
+| Pro (Cloud Beta) | $49/mo | Solo devs, managed governance |
+| Enterprise | $199/mo | Teams, production governance |
 
-This mirrors Vercel's own pricing structure. It feels natural to developers.
+This mirrors value: you pay for *managed governance*, not compute.
 
 ## The Long Game
 
-Vercel started as a deployment tool and became the default platform for web apps.
+Kubernetes started as a container orchestrator and became the default control plane for cloud-native.
 
-AgenticBox should start as a sandbox runtime and become the default platform for AI agents.
+AgenticBox should start as a sandbox runtime and become the default governance layer for AI agents.
 
 The path is clear:
-1. Solve the core problem (sandboxing + permissions)
-2. Add differentiation (browser automation, observability)
-3. Scale to the full stack (policy engine, multi-agent orchestration)
+1. Solve the core governance problem (sandboxing + permissions)
+2. Add differentiation (browser, secrets, observability)
+3. Scale to full governance (policy engine, multi-agent coordination)
 4. Become essential infrastructure
 
 ## Success Condition
 
 When developers say "I'm using AgenticBox" and it means:
-- My agents are deployed
+
+- My agents are governed
 - They're sandboxed
+- I control what they can do
 - I can see what they're doing
 - I know how much they cost
 - I don't have to think about any of that anymore

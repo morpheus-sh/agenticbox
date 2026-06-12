@@ -1,6 +1,6 @@
 # AgenticBox
 
-> **Vercel for AI Agents** — Deploy autonomous agents without worrying about sandboxes, permissions, browser sessions, secret management, observability, or cost controls.
+> **The governance layer for AI agents.** Sandbox execution, permissions, secrets, observability, cost controls. Open source. Local-first. Run on your machine or ours.
 
 [![License](https://img.shields.io/badge/License-MIT%20OR%20Apache--2.0-blue.svg)](LICENSE)
 [![Rust](https://img.shields.io/badge/Rust-1.75%2B-orange.svg)](https://rustup.rs)
@@ -13,20 +13,20 @@
 
 ## What Is This?
 
-**AgenticBox** is an open-source, local-first runtime for deploying AI agents to production. Think of it as the infrastructure layer that handles everything agents need to run safely — so you can focus on building agent logic, not managing containers, permissions, or browser sessions.
+**AgenticBox** is the governance layer for AI agents. It provides the infrastructure to run agents with total control — sandbox execution, granular permissions, secret management, observability, and cost governance. Open source, local-first, vendor-neutral.
 
 ### The Problem
 
-AI agents are powerful but fragile in production. They need:
+AI agents are powerful but ungovernable in production. They need:
 
-- **Sandboxing** — isolated execution environments
-- **Permissions** — what can the agent read, write, execute?
+- **Sandbox execution** — isolated environments with lifecycle control
+- **Permissions** — what can the agent read, write, execute, browse?
 - **Browser automation** — headless browsers for web interaction
-- **Secret management** — API keys, tokens, credentials
-- **Observability** — logs, metrics, traces per agent
-- **Cost controls** — billing by usage, not just compute
+- **Secret governance** — API keys, tokens, credentials injected at runtime
+- **Observability & audit** — logs, metrics, traces per agent
+- **Cost governance** — billing by usage, quotas, budget alerts
 
-Most teams build this from scratch or hack together Docker + custom scripts. AgenticBox makes it a solved problem.
+Most teams build this from scratch or hack together Docker + custom scripts. AgenticBox makes governance a solved problem.
 
 ### The Solution
 
@@ -37,7 +37,7 @@ Most teams build this from scratch or hack together Docker + custom scripts. Age
 │  ┌─────────────┐  ┌─────────────┐  ┌─────────────────────┐  │
 │  │   Tauri     │  │   Rust      │  │   Python            │  │
 │  │   Desktop   │◄─┤   Daemon    │◄─┤   Agent Runtime     │  │
-│  │   (UI)      │  │  (Axum +    │  │  (FastAPI + MCP)    │  │
+│  │   (Console) │  │  (Axum +    │  │  (FastAPI + MCP)    │  │
 │  └─────────────┘  │   Bollard)  │  │  Terminal, FS,      │  │
 │                   │   SQLite    │  │  Browser, HTTP      │  │
 │                   └─────────────┘  └─────────────────────┘  │
@@ -56,16 +56,15 @@ Most teams build this from scratch or hack together Docker + custom scripts. Age
 | Feature | Status | Details |
 |---------|--------|---------|
 | **Container Sandbox Lifecycle** | ✅ Shipped | Create/start/stop/remove Docker containers per agent |
-| **Terminal Tool** | ✅ Shipped | Execute shell commands with timeout & output capture |
-| **Filesystem Access + Guards** | ✅ Shipped | Read/write with path resolution preventing escapes |
-| **Permission System** | ✅ Shipped | Terminal, FS (RO/RW), Browser, Network (allowlist/localhost/offline) |
+| **Execution Permissions** | ✅ Shipped | Terminal, FS (RO/RW), Browser, Network (allowlist/localhost/offline) |
+| **Filesystem Governance** | ✅ Shipped | Read/write with path resolution preventing escapes |
 | **Session Persistence** | ✅ Shipped | SQLite-backed with model config, permissions, status |
-| **Tauri Desktop App** | ✅ Shipped | Native UI (no Electron) for managing agents |
+| **Native Desktop Console** | ✅ Shipped | Tauri UI (no Electron) for managing agents |
 | **OpenAI-Compatible API** | ✅ Shipped | Drop-in replacement for OpenAI endpoints |
 | **Browser Automation (Playwright)** | 🟡 In Dev | Headless browser sessions for web interaction |
-| **Secret Management** | 🔴 Planned | Secure injection via keyring/Vault |
-| **Observability** | 🔴 Planned | Logs, metrics, traces per agent |
-| **Cost Controls** | 🔴 Planned | Per-agent billing, quotas, budget alerts |
+| **Secret Governance** | 🔴 Planned | Secure injection via keyring/Vault |
+| **Observability & Audit** | 🔴 Planned | Logs, metrics, traces per agent |
+| **Cost Governance** | 🔴 Planned | Per-agent billing, quotas, budget alerts |
 | **Firecracker MicroVMs** | 🔴 Future | Lightweight microVMs for stronger isolation |
 
 See the full [Roadmap](#roadmap).
@@ -97,7 +96,7 @@ cd agenticbox
 
 This starts:
 - **Rust Daemon** → `http://127.0.0.1:8080` (REST + WebSocket)
-- **Tauri Desktop App** → Native window for UI
+- **Tauri Desktop Console** → Native window for governance UI
 
 ### Run Daemon Only (for API access)
 
@@ -120,7 +119,7 @@ python -m agent_runtime.main
 
 ## Architecture
 
-### Crates (Rust)
+### Crates (Rust) — Governance Primitives
 
 | Crate | Purpose |
 |-------|---------|
@@ -138,14 +137,14 @@ python -m agent_runtime.main
 | App | Tech | Purpose |
 |-----|------|---------|
 | `apps/daemon` | Rust + Axum | REST API, WebSocket, session/sandbox orchestration |
-| `apps/desktop` | Tauri v2 + React | Native desktop UI |
+| `apps/desktop` | Tauri v2 + React | Native desktop governance console |
 | `apps/agent-runtime` | Python + FastAPI | MCP server exposing tools (terminal, fs, browser, http) |
 
 ---
 
 ## API Reference
 
-### Create a Session
+### Create a Governed Session
 
 ```bash
 curl -X POST http://127.0.0.1:8080/sessions \
@@ -193,7 +192,7 @@ ws://127.0.0.1:9000/ws
 
 ## CLI Usage
 
-The `agenticbox` CLI provides a friendly interface to the daemon API:
+The `agenticbox` CLI provides a friendly interface to the governance daemon API:
 
 ```bash
 # Build the CLI
@@ -202,7 +201,7 @@ cargo build --release --bin agenticbox -p agenticbox-cli
 # Or install locally
 cargo install --path apps/cli
 
-# Deploy an agent
+# Deploy a governed agent
 agenticbox deploy --name my-research-agent \
   --provider openai \
   --model gpt-4o \
@@ -252,23 +251,22 @@ agenticbox health
 ## Roadmap
 
 ### Phase 1 — Ready ✅
-Core sandbox runtime: container lifecycle, terminal, filesystem, permissions, sessions, Tauri desktop, OpenAI-compatible API.
+Core sandbox runtime: container lifecycle, execution permissions, filesystem governance, sessions, Tauri console, OpenAI-compatible API.
 
 ### Phase 2 — In Development 🟡
 - **Browser Automation** — Playwright integration for navigate/click/type/extract
-- **Secret Management** — Keyring (local) / Vault (cloud) injection at runtime
-- **Basic Observability** — Log streaming via WebSocket, structured JSON logs
+- **Secret Governance** — Keyring (local) / Vault (cloud) injection at runtime
+- **Basic Observability & Audit** — Log streaming via WebSocket, structured JSON logs
 
 ### Phase 2.5 — Near Term 🟡
-- **CLI** — `agenticbox deploy <agent> --sandbox`
-- **Dashboard Polish** — Real-time log streaming, session history, cost estimates
+- **CLI & Dashboard Polish** — Real-time log streaming, session history, cost estimates
 - **Waitlist → Beta** — Onboarding flow for managed cloud
 
 ### Phase 3 — Future 🔴
 - **Firecracker MicroVMs** — Stronger isolation, faster cold starts
 - **Advanced Policy Engine** — OPA-style policies, audit logging
-- **Cost Controls** — Per-agent billing, quotas, budget alerts
-- **Multi-Agent Orchestration** — Coordinated workflows, agent-to-agent communication
+- **Cost Governance** — Per-agent billing, quotas, budget alerts
+- **Multi-Agent Coordination** — Coordinated workflows, agent-to-agent communication
 - **Managed Cloud** — Hosted AgenticBox with SSO, RBAC, VPC options
 
 ---
@@ -277,11 +275,11 @@ Core sandbox runtime: container lifecycle, terminal, filesystem, permissions, se
 
 | Dimension | Docker/K8s | Cloudflare Workers | OpenAI Assistants | **AgenticBox** |
 |-----------|------------|---------------------|-------------------|----------------|
-| **Sandboxing** | Manual | Built-in | Built-in | ✅ First-class |
+| **Sandbox Execution** | Manual | Built-in | Built-in | ✅ First-class |
 | **Permissions** | Manual | Limited | Limited | ✅ Granular |
 | **Browser** | DIY | ❌ | ❌ | ✅ Playwright |
 | **Secrets** | DIY | Built-in | Built-in | ✅ Keyring/Vault |
-| **Observability** | DIY | Built-in | Limited | ✅ Per-agent |
+| **Observability & Audit** | DIY | Built-in | Limited | ✅ Per-agent |
 | **Local-first** | ✅ | ❌ | ❌ | ✅ Native |
 | **Vendor-neutral** | ✅ | ❌ Cloudflare | ❌ OpenAI | ✅ Any model |
 | **License** | Apache-2.0 | Proprietary | Proprietary | **MIT OR Apache-2.0** |
@@ -293,7 +291,7 @@ Core sandbox runtime: container lifecycle, terminal, filesystem, permissions, se
 We welcome contributions! Priority areas:
 
 1. **Browser tool** — Playwright integration in `apps/agent-runtime/src/agent_runtime/tools/browser.py`
-2. **Secret management** — Keyring/Vault abstraction in a new `secrets` crate
+2. **Secret governance** — Keyring/Vault abstraction in a new `secrets` crate
 3. **Log streaming** — WebSocket log tailing from `sandbox-core`
 4. **CLI** — Thin wrapper over daemon API in `apps/cli` (new)
 5. **Tests** — Unit + integration tests for all crates
@@ -338,7 +336,7 @@ This dual license ensures maximum compatibility:
 ## Built With
 
 - **Rust** — Daemon, sandbox, permissions, sessions
-- **Tauri v2** — Native desktop (no Electron)
+- **Tauri v2** — Native desktop console (no Electron)
 - **Python + FastAPI** — Agent runtime, MCP server
 - **Playwright** — Browser automation (Phase 2)
 - **SQLite** — Local persistence
@@ -346,4 +344,4 @@ This dual license ensures maximum compatibility:
 
 ---
 
-> **AgenticBox** — Making agent deployment boring. That's the feature.
+> **AgenticBox** — Run agents. Control everything.

@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AgenticBox — Vercel for AI Agents</title>
-  <meta name="description" content="Deploy autonomous agents without worrying about sandboxes, permissions, browser sessions, secret management, observability, or cost controls. Open source, local-first, vendor-neutral." />
+  <title>AgenticBox — Governance Layer for AI Agents</title>
+  <meta name="description" content="The governance layer for AI agents. Sandbox execution, permissions, secrets, observability, cost controls. Open source. Local-first. Run on your machine or ours." />
 
   <!-- Open Graph / Twitter -->
-  <meta property="og:title" content="AgenticBox — Vercel for AI Agents" />
-  <meta property="og:description" content="Deploy autonomous agents without worrying about sandboxes, permissions, browser sessions, secret management, observability, or cost controls. Open source, local-first, vendor-neutral." />
+  <meta property="og:title" content="AgenticBox — Governance Layer for AI Agents" />
+  <meta property="og:description" content="The governance layer for AI agents. Sandbox execution, permissions, secrets, observability, cost controls. Open source. Local-first. Run on your machine or ours." />
   <meta property="og:type" content="website" />
   <meta name="twitter:card" content="summary_large_image" />
 
@@ -174,7 +174,7 @@
   <div class="container">
     <a href="/" class="logo">AgenticBox</a>
     <nav>
-      <a href="#features">Features</a>
+      <a href="#features">Governance</a>
       <a href="#roadmap">Roadmap</a>
       <a href="#pricing">Pricing</a>
       <a href="https://github.com/agenticbox/agenticbox" target="_blank">GitHub</a>
@@ -186,8 +186,8 @@
   <div class="container">
     <span class="badge">Open Source — MIT OR Apache-2.0</span>
     <span class="phase-badge ready" style="margin-left: 8px;">Phase 1 Ready</span>
-    <h1>Vercel for<br /><span>AI Agents</span></h1>
-    <p>Deploy autonomous agents without worrying about sandboxes, permissions, browser sessions, secret management, observability, or cost controls.</p>
+    <h1>Governance Layer<br /><span>for AI Agents</span></h1>
+    <p>Sandbox execution, permissions, secrets, observability, cost controls. Run agents with total control. Open source. Local-first. Run on your machine or ours.</p>
     <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
       <a href="https://github.com/agenticbox/agenticbox" target="_blank" class="btn btn-primary">View on GitHub</a>
       <a href="#demo" class="btn btn-secondary">Run Locally</a>
@@ -212,35 +212,28 @@
 
 <section id="features" class="features">
   <div class="container">
-    <h2 class="section-title">Features by Phase</h2>
+    <h2 class="section-title">Governance Capabilities by Phase</h2>
     <div class="grid">
       <div class="card">
         <h3>
-          Sandbox Lifecycle
+          Sandbox Execution
           <span class="feature-status shipped">Shipped</span>
         </h3>
         <p>Container-based execution with full lifecycle management. Agents run in isolated Docker containers that start and stop on demand.</p>
       </div>
       <div class="card">
         <h3>
-          Terminal Tool
+          Execution Permissions
           <span class="feature-status shipped">Shipped</span>
         </h3>
-        <p>Execute shell commands inside the sandbox with timeout controls and output capture.</p>
+        <p>Per-agent permissions: terminal, filesystem (RO/RW), browser, network (allowlist/localhost/offline). Define what agents can do.</p>
       </div>
       <div class="card">
         <h3>
-          Filesystem Access + Guards
+          Filesystem Governance
           <span class="feature-status shipped">Shipped</span>
         </h3>
         <p>Read/write files with path resolution guards preventing escapes. Configurable allowed roots.</p>
-      </div>
-      <div class="card">
-        <h3>
-          Permission System
-          <span class="feature-status shipped">Shipped</span>
-        </h3>
-        <p>Per-agent permissions: terminal, filesystem (RO/RW), browser, network (allowlist/localhost/offline).</p>
       </div>
       <div class="card">
         <h3>
@@ -251,10 +244,17 @@
       </div>
       <div class="card">
         <h3>
-          Tauri Desktop App
+          Terminal Access
           <span class="feature-status shipped">Shipped</span>
         </h3>
-        <p>Native desktop UI (no Electron) for managing agents, viewing sessions, and monitoring.</p>
+        <p>Execute shell commands inside the sandbox with timeout controls and output capture.</p>
+      </div>
+      <div class="card">
+        <h3>
+          Native Desktop Console
+          <span class="feature-status shipped">Shipped</span>
+        </h3>
+        <p>Tauri desktop UI (no Electron) for managing agents, viewing sessions, and monitoring.</p>
       </div>
       <div class="card">
         <h3>
@@ -265,21 +265,21 @@
       </div>
       <div class="card">
         <h3>
-          Secret Management
+          Secret Governance
           <span class="feature-status planned">Planned</span>
         </h3>
-        <p>API keys, tokens, and credentials — injected securely at runtime without exposure.</p>
+        <p>API keys, tokens, credentials — injected securely at runtime without exposure.</p>
       </div>
       <div class="card">
         <h3>
-          Observability (Logs/Metrics/Traces)
+          Observability &amp; Audit
           <span class="feature-status planned">Planned</span>
         </h3>
-        <p>Per-agent logs, metrics, and traces. See what agents do, how long it takes, and costs.</p>
+        <p>Per-agent logs, metrics, traces. See what agents do, how long it takes, and costs.</p>
       </div>
       <div class="card">
         <h3>
-          Cost Controls
+          Cost Governance
           <span class="feature-status planned">Planned</span>
         </h3>
         <p>Per-agent billing, usage quotas, and budget alerts for production deployments.</p>
@@ -293,7 +293,7 @@
       </div>
       <div class="card">
         <h3>
-          Policy Engine + Multi-Agent Orchestration
+          Policy Engine + Multi-Agent Coordination
           <span class="feature-status future">Future</span>
         </h3>
         <p>Advanced policy evaluation and coordinated multi-agent workflows.</p>
