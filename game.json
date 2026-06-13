@@ -1,0 +1,128 @@
+{
+  "founder": {
+    "level": 3,
+    "xp": 300,
+    "streak_days": 1,
+    "last_activity_date": "2026-06-13"
+  },
+  "metrics": {
+    "commits": 0,
+    "features_shipped": 1,
+    "customer_conversations": 1,
+    "content_published": 1,
+    "revenue_events": 0,
+    "bugs_fixed": 0
+  },
+  "quests": {
+    "active": [
+      {
+        "title": "Send page to 10 developers",
+        "xp": 150,
+        "difficulty": 3,
+        "category": "customer_validation",
+        "created": "2026-06-13"
+      }
+    ],
+    "completed": [
+      {
+        "title": "Publish landing page",
+        "xp": 100,
+        "difficulty": 2,
+        "category": "distribution",
+        "created": "2026-06-13"
+      }
+    ]
+  },
+  "achievements": [
+    "first_ship"
+  ],
+  "xp_thresholds": [
+    0,
+    100,
+    250,
+    500,
+    1000,
+    2000,
+    4000,
+    8000,
+    16000,
+    32000
+  ],
+  "xp_rewards": {
+    "feature_shipped": 50,
+    "customer_interview": 75,
+    "content_published": 25,
+    "commit": 5,
+    "bug_fixed": 10,
+    "revenue_event": 200,
+    "demo_recorded": 30,
+    "documentation_improved": 15,
+    "prospect_contacted": 20,
+    "onboarding_improved": 40
+  },
+  "achievement_definitions": [
+    {
+      "id": "first_ship",
+      "name": "First Blood",
+      "description": "Ship your first feature",
+      "condition": "features_shipped >= 1",
+      "xp_bonus": 50
+    },
+    {
+      "id": "week_streak",
+      "name": "Momentum",
+      "description": "7-day streak",
+      "condition": "streak_days >= 7",
+      "xp_bonus": 100
+    },
+    {
+      "id": "month_streak",
+      "name": "Compound Interest",
+      "description": "30-day streak",
+      "condition": "streak_days >= 30",
+      "xp_bonus": 500
+    },
+    {
+      "id": "century_streak",
+      "name": "Iron Will",
+      "description": "100-day streak",
+      "condition": "streak_days >= 100",
+      "xp_bonus": 2000
+    },
+    {
+      "id": "distribution_builder",
+      "name": "Signal Generator",
+      "description": "Publish 25 pieces of content",
+      "condition": "content_published >= 25",
+      "xp_bonus": 200
+    },
+    {
+      "id": "customer_obsessed",
+      "name": "Voice of the Market",
+      "description": "50 customer conversations",
+      "condition": "customer_conversations >= 50",
+      "xp_bonus": 500
+    },
+    {
+      "id": "revenue_first",
+      "name": "Product-Market Fit",
+      "description": "First revenue event",
+      "condition": "revenue_events >= 1",
+      "xp_bonus": 500
+    },
+    {
+      "id": "bug_slayer",
+      "name": "Bug Slayer",
+      "description": "Fix 100 bugs",
+      "condition": "bugs_fixed >= 100",
+      "xp_bonus": 200
+    },
+    {
+      "id": "commit_machine",
+      "name": "Commit Machine",
+      "description": "500 commits",
+      "condition": "commits >= 500",
+      "xp_bonus": 300
+    }
+  ]
+}
