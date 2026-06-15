@@ -3,7 +3,6 @@ use bollard::models::{HostConfig, MountTypeEnum};
 use bollard::Docker;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
-use tracing::{info, warn};
 use uuid::Uuid;
 
 pub use bollard::errors::Error as ContainerError;

@@ -1,4 +1,3 @@
-use tauri::Manager;
 use shared_types::Session;
 
 #[tauri::command]

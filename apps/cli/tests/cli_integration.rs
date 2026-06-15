@@ -190,7 +190,7 @@ fn test_init_creates_manifest() {
     match output {
         Ok(o) => {
             let stdout = String::from_utf8_lossy(&o.stdout);
-            let stderr = String::from_utf8_lossy(&o.stderr);
+            let _stderr = String::from_utf8_lossy(&o.stderr);
             // Either it succeeded and created the manifest, or it failed gracefully
             if o.status.success() {
                 assert!(stdout.contains("Created agent manifest") || stdout.contains("✓"));

@@ -48,7 +48,7 @@ impl Tool for TerminalTool {
     }
 
     async fn invoke(&self, args: Value) -> Result<Value> {
-        let cmd = args["command"].as_str().unwrap_or_default();
+        let _cmd = args["command"].as_str().unwrap_or_default();
         Ok(serde_json::json!({ "stdout": "", "stderr": "", "exit_code": 0 }))
     }
 }

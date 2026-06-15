@@ -1089,7 +1089,6 @@ fn cmd_run_adhoc(
     overrides: &RunOverrides,
     standalone: bool,
 ) -> Result<()> {
-    let style = console::Style::new();
 
     if command.is_empty() {
         anyhow::bail!("No command provided. Usage: agenticbox run -- <command> [args...]");
@@ -1258,7 +1257,7 @@ fn main() -> Result<()> {
             let base = get_daemon_url(&config, &cli.url).trim_end_matches('/').to_string();
             cmd_stop(&client, &base, id)?
         }
-        Commands::Rm { id } => {
+        Commands::Rm { id: _ } => {
             println!("{} Not yet implemented (needs daemon DELETE endpoint)", console::style("⚠").yellow());
         }
         Commands::Health => {
@@ -1283,7 +1282,6 @@ fn main() -> Result<()> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::io::Write;
 
     // ── AgentManifest parsing ──────────────────────────────
 
