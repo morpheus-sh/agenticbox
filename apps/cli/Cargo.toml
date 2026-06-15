@@ -16,9 +16,9 @@ chrono = { version = "0.4", features = ["serde"] }
 toml = "0.8"
 console = "0.15"
 dirs = "5.0"
-shared-types = { path = "../../../crates/shared-types" }
-fs-guard = { path = "../../../crates/fs-guard" }
-network-control = { path = "../../../crates/network-control" }
+shared-types = { path = "../../crates/shared-types" }
+fs-guard = { path = "../../crates/fs-guard" }
+network-control = { path = "../../crates/network-control" }
 
 [[bin]]
 name = "agenticbox"

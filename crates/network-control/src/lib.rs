@@ -40,3 +40,100 @@ pub enum NetworkError {
     #[error("Network blocked: {0}")]
     Blocked(String),
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    // ── Allowlist policy ───────────────────────────────────
+
+    #[test]
+    fn allowlist_permits_listed_domain() {
+        let g = NetworkGuard::new(NetworkPolicy::Allowlist(vec![
+            "api.openai.com".into(),
+            "github.com".into(),
+        ]));
+        assert!(g.check("https://api.openai.com/v1/models").is_ok());
+        assert!(g.check("https://github.com/repos/morpheus-sh/agenticbox").is_ok());
+    }
+
+    #[test]
+    fn allowlist_blocks_unlisted_domain() {
+        let g = NetworkGuard::new(NetworkPolicy::Allowlist(vec![
+            "api.openai.com".into(),
+        ]));
+        let result = g.check("https://evil.attacker.com/exfil");
+        assert!(result.is_err());
+        match result.unwrap_err() {
+            NetworkError::Blocked(msg) => assert!(msg.contains("evil.attacker.com")),
+        }
+    }
+
+    #[test]
+    fn allowlist_blocks_when_empty() {
+        let g = NetworkGuard::new(NetworkPolicy::Allowlist(vec![]));
+        assert!(g.check("https://api.openai.com").is_err());
+    }
+
+    #[test]
+    fn allowlist_subdomain_matching() {
+        let g = NetworkGuard::new(NetworkPolicy::Allowlist(vec![
+            "github.com".into(),
+        ]));
+        // The impl uses `contains`, so api.github.com contains "github.com"
+        assert!(g.check("https://api.github.com/user").is_ok());
+    }
+
+    // ── Full policy ────────────────────────────────────────
+
+    #[test]
+    fn full_policy_allows_everything() {
+        let g = NetworkGuard::new(NetworkPolicy::Full);
+        assert!(g.check("https://evil.attacker.com").is_ok());
+        assert!(g.check("https://api.openai.com").is_ok());
+        assert!(g.check("http://192.168.1.1:8080").is_ok());
+    }
+
+    // ── LocalhostOnly policy ───────────────────────────────
+
+    #[test]
+    fn localhost_permits_localhost() {
+        let g = NetworkGuard::new(NetworkPolicy::LocalhostOnly);
+        assert!(g.check("http://localhost:3000").is_ok());
+        assert!(g.check("http://127.0.0.1:8080").is_ok());
+    }
+
+    #[test]
+    fn localhost_blocks_external() {
+        let g = NetworkGuard::new(NetworkPolicy::LocalhostOnly);
+        assert!(g.check("https://api.openai.com").is_err());
+    }
+
+    // ── Offline policy ─────────────────────────────────────
+
+    #[test]
+    fn offline_blocks_all() {
+        let g = NetworkGuard::new(NetworkPolicy::Offline);
+        assert!(g.check("https://api.openai.com").is_err());
+        assert!(g.check("http://localhost").is_err());
+        assert!(g.check("http://127.0.0.1").is_err());
+    }
+
+    #[test]
+    fn offline_error_message() {
+        let g = NetworkGuard::new(NetworkPolicy::Offline);
+        let err = g.check("https://example.com").unwrap_err();
+        match err {
+            NetworkError::Blocked(msg) => assert!(msg.contains("Offline")),
+        }
+    }
+
+    // ── Default policy ─────────────────────────────────────
+
+    #[test]
+    fn default_policy_is_offline() {
+        // NetworkPolicy::default() is Offline
+        let g = NetworkGuard::new(NetworkPolicy::default());
+        assert!(g.check("https://anything.com").is_err());
+    }
+}
