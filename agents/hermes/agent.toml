@@ -1,0 +1,19 @@
+# Hermes Agent — general-purpose coding assistant
+# Copy to ~/.agenticbox/agents/hermes/ to use: `agenticbox run hermes`
+# Docs: https://github.com/morpheus-sh/agenticbox/blob/main/docs/agents.md
+
+name = "hermes"
+description = "Hermes Agent — general-purpose coding assistant"
+command = "hermes"
+
+[model]
+provider = "openai"
+model = "gpt-4o"
+api_key_env = "OPENAI_API_KEY"
+
+[permissions]
+terminal = true
+filesystem = "readwrite"
+browser = false
+network = "allowlist"
+domains = ["api.openai.com", "github.com", "pypi.org", "registry.npmjs.org"]

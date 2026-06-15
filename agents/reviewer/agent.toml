@@ -1,0 +1,19 @@
+# Code Reviewer Agent — automated PR review with tight permissions
+# Copy to ~/.agenticbox/agents/reviewer/ to use: `agenticbox run reviewer`
+# Docs: https://github.com/morpheus-sh/agenticbox/blob/main/docs/agents.md
+
+name = "reviewer"
+description = "Automated code reviewer — reads code, posts review comments"
+command = "python3 review.py"
+
+[model]
+provider = "openai"
+model = "gpt-4o"
+api_key_env = "OPENAI_API_KEY"
+
+[permissions]
+terminal = false
+filesystem = "readonly"
+browser = false
+network = "allowlist"
+domains = ["api.openai.com", "api.github.com", "github.com"]

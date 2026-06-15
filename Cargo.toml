@@ -5,8 +5,8 @@ members = [
     "apps/desktop/src-tauri",
     "apps/cli",
 ]
-# Default build only the daemon, not the full workspace (avoids heavy Tauri deps)
-default-members = ["apps/daemon", "crates/*"]
+# Default build daemon + CLI + crates (avoids heavy Tauri deps)
+default-members = ["apps/daemon", "apps/cli", "crates/*"]
 resolver = "2"
 
 [workspace.package]

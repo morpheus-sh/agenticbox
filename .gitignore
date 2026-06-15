@@ -16,3 +16,6 @@ __pycache__
 .venv
 data/
 sessions/
+
+# Proton Drive sync conflict files
+*# Name clash*
