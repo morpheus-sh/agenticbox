@@ -1,6 +1,6 @@
 # AgenticBox
 
-> **Okta + Docker + enterprise governance for AI agents.** Most agent startups assume agents need more power. We assume they need more constraints. Open source. Local-first.
+> **Give your AI agent a workplace, not root access.** Okta + Docker for AI agents. Open source. Local-first.
 
 [![License](https://img.shields.io/badge/License-MIT%20OR%20Apache--2.0-blue.svg)](LICENSE)
 [![Rust](https://img.shields.io/badge/Rust-1.75%2B-orange.svg)](https://rustup.rs)
@@ -11,9 +11,14 @@
 
 ## What Is This?
 
-Most agent startups assume agents need more power — more tools, more autonomy, more access. **AgenticBox assumes agents need more constraints.**
+Agents need workplaces. From that single idea, the rest follows naturally:
 
-We are Okta + Docker + enterprise governance for AI agents. Scoped permissions, isolated execution, full accountability — so agents can do real work without putting everything at risk.
+- **Permissions** — what the employee is allowed to do
+- **Identity** — who the employee is
+- **Accountability** — what the employee did
+- **Ownership boundaries** — what belongs to the employee vs. the organization
+
+Give your AI agent a workplace instead of root access. Okta + Docker for AI agents — scoped permissions, isolated execution, full accountability.
 
 ```
 ┌─────────────────────────────────────────────────────┐
