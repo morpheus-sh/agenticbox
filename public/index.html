@@ -282,7 +282,7 @@
     </a>
     <nav>
       <a href="#pillars">Pillars</a>
-      <a href="#architecture">Architecture</a>
+      <a href="#features">Runtime</a>
       <a href="#roadmap">Roadmap</a>
       <a href="https://github.com/morpheus-sh/agenticbox" target="_blank" rel="noopener">GitHub</a>
       <a href="#waitlist" class="primary">Get Started</a>
@@ -392,32 +392,6 @@
   </div>
 </section>
 
-<section id="architecture" class="section">
-  <div class="container">
-    <div class="section-header">
-      <span class="section-tag">// Open edge, closed core</span>
-      <h2 class="section-title">Transparency enables adoption.<br>Proprietary infrastructure enables <em>scale</em>.</h2>
-    </div>
-    <div class="arch-grid">
-      <div class="arch-col open">
-        <div class="arch-label">&#x25CB; OPEN EDGE</div>
-        <div class="arch-item"><span class="ico">&gt;</span><span class="label">CLI &mdash; open source</span></div>
-        <div class="arch-item"><span class="ico">&gt;</span><span class="label">Agent Specs &mdash; TOML manifests</span></div>
-        <div class="arch-item"><span class="ico">&gt;</span><span class="label">Templates &mdash; agent packages</span></div>
-        <div class="arch-item"><span class="ico">&gt;</span><span class="label">SDKs &mdash; developer tools</span></div>
-      </div>
-      <div class="arch-col closed">
-        <div class="arch-label">&#x25CF; CLOSED CORE</div>
-        <div class="arch-item"><span class="ico">&#x2588;</span><span class="label">Orchestration Engine</span></div>
-        <div class="arch-item"><span class="ico">&#x2588;</span><span class="label">Governance Enforcement</span></div>
-        <div class="arch-item"><span class="ico">&#x2588;</span><span class="label">Execution Runtime</span></div>
-        <div class="arch-item"><span class="ico">&#x2588;</span><span class="label">Identity Provisioning</span></div>
-      </div>
-    </div>
-    <p style="text-align: center; margin-top: 28px; font-size: 0.8rem; color: var(--text-muted); font-family: var(--font-mono);">If it helps you trust and adopt AgenticBox, it's open. If it's the engine that makes it run, it's ours.</p>
-  </div>
-</section>
-
 <section id="features" class="section">
   <div class="container">
     <div class="section-header">
@@ -453,30 +427,6 @@
         <div class="card-header"><h3>Agent Packages</h3><span class="feature-status shipped">Shipped</span></div>
         <p>Run agents like Docker containers: <code>agenticbox run hermes</code>. TOML manifests &mdash; shareable, forkable.</p>
       </article>
-      <article class="corner-card">
-        <div class="card-header"><h3>Browser Automation</h3><span class="feature-status in-dev">In Dev</span></div>
-        <p>Playwright integration for web interaction. Agents navigate, click, type, and extract data headlessly.</p>
-      </article>
-      <article class="corner-card">
-        <div class="card-header"><h3>Secret Governance</h3><span class="feature-status planned">Planned</span></div>
-        <p>API keys, tokens, credentials &mdash; injected securely at runtime via OS keyring or Vault without exposure.</p>
-      </article>
-      <article class="corner-card">
-        <div class="card-header"><h3>Observability &amp; Audit</h3><span class="feature-status planned">Planned</span></div>
-        <p>Per-agent logs, metrics, traces. See what agents do, how long it takes, and what it costs.</p>
-      </article>
-      <article class="corner-card">
-        <div class="card-header"><h3>Cost Governance</h3><span class="feature-status planned">Planned</span></div>
-        <p>Per-agent billing, usage quotas, and budget alerts for production deployments.</p>
-      </article>
-      <article class="corner-card">
-        <div class="card-header"><h3>Firecracker MicroVMs</h3><span class="feature-status future">Future</span></div>
-        <p>Lightweight microVMs for stronger isolation and faster cold starts than containers.</p>
-      </article>
-      <article class="corner-card">
-        <div class="card-header"><h3>Policy Engine + Multi-Agent</h3><span class="feature-status future">Future</span></div>
-        <p>Advanced policy evaluation and coordinated multi-agent workflows.</p>
-      </article>
     </div>
   </div>
 </section>
@@ -485,39 +435,23 @@
   <div class="container">
     <div class="section-header">
       <span class="section-tag">// Roadmap</span>
-      <h2 class="section-title">The <em>evolution</em></h2>
+      <h2 class="section-title">What's <em>next</em></h2>
     </div>
     <div style="max-width: 780px; margin: 0 auto;">
       <article class="roadmap-item">
         <div class="roadmap-marker ready" aria-label="Phase 1 complete"></div>
         <div class="roadmap-content">
-          <span class="roadmap-phase ready">Phase 1 &mdash; Ready</span>
-          <h4>Core Sandbox Runtime</h4>
-          <p>Container lifecycle, terminal, filesystem, permissions, sessions, Tauri desktop, OpenAI-compatible API. <strong>Shipped.</strong></p>
+          <span class="roadmap-phase ready">Now &mdash; Shipped</span>
+          <h4>The bounded workplace</h4>
+          <p>Permission guards (terminal, filesystem, network), agent packages with TOML manifests, built-in demo, desktop console, session management. <strong>Running today.</strong></p>
         </div>
       </article>
       <article class="roadmap-item">
-        <div class="roadmap-marker in-dev" aria-label="Phase 2 in development"></div>
+        <div class="roadmap-marker in-dev" aria-label="In development"></div>
         <div class="roadmap-content">
-          <span class="roadmap-phase in-dev">Phase 2 &mdash; In Development</span>
-          <h4>Browser Automation &amp; Secrets</h4>
-          <p>Playwright integration for web automation. Secure secret injection (keyring/Vault). Basic observability (log streaming). The agent gets richer capabilities.</p>
-        </div>
-      </article>
-      <article class="roadmap-item">
-        <div class="roadmap-marker in-dev" aria-label="Phase 2.5 near term"></div>
-        <div class="roadmap-content">
-          <span class="roadmap-phase in-dev">Phase 2.5 &mdash; Near Term</span>
-          <h4>Agent Identity &amp; CLI Polish</h4>
-          <p>Agent identity provisioning. <code>agenticbox deploy</code> CLI, real-time dashboard, waitlist &rarr; beta onboarding. The agent becomes a real employee with its own credentials.</p>
-        </div>
-      </article>
-      <article class="roadmap-item">
-        <div class="roadmap-marker planned" aria-label="Phase 3 future"></div>
-        <div class="roadmap-content">
-          <span class="roadmap-phase planned">Phase 3 &mdash; Future</span>
-          <h4>Autonomous Organizations</h4>
-          <p>Firecracker microVMs, advanced policy engine, cost controls, multi-agent orchestration, managed cloud. Teams of agents with roles and approval chains.</p>
+          <span class="roadmap-phase in-dev">Next</span>
+          <h4>Agent identity</h4>
+          <p>Agents get their own credentials and accounts. Browser automation. The bounded agent becomes an employee.</p>
         </div>
       </article>
     </div>
