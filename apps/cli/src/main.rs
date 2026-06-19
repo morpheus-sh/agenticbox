@@ -821,25 +821,21 @@ enum Decision {
     Blocked(String),
 }
 
-fn print_decision(timestamp: &str, action: &str, decision: &Decision) {
-    let action_styled = console::style(action).yellow();
+fn print_decision(decision: &Decision) {
     match decision {
         Decision::Allowed => {
             println!(
-                "[{}] {} {}",
-                timestamp,
-                action_styled,
-                console::style("✓ ALLOWED").green().bold()
+                "  {} {}",
+                console::style("✓ ALLOWED").green().bold(),
+                console::style("→ within permissions").dim(),
             );
         }
         Decision::Blocked(reason) => {
             println!(
-                "[{}] {} {}",
-                timestamp,
-                action_styled,
-                console::style("✗ BLOCKED").red().bold()
+                "  {} {}",
+                console::style("✗ BLOCKED").red().bold(),
+                console::style(format!("→ {}", reason)).dim(),
             );
-            println!("{} {}", console::style("  →").dim(), console::style(reason).dim());
         }
     }
 }
@@ -911,7 +907,7 @@ fn run_builtin_demo() -> Result<()> {
         allowed_count += 1;
         Decision::Allowed
     };
-    print_decision(&now(), action, &decision);
+    print_decision(&decision);
     sleep_ms(600);
 
     // ─── Attempt 2: Network exfiltration ───
@@ -922,7 +918,7 @@ fn run_builtin_demo() -> Result<()> {
         Ok(()) => { allowed_count += 1; Decision::Allowed }
         Err(e) => { blocked_count += 1; Decision::Blocked(format!("network: {}", e)) }
     };
-    print_decision(&now(), action, &decision);
+    print_decision(&decision);
     sleep_ms(600);
 
     // ─── Attempt 3: Write to system path ───
@@ -934,7 +930,7 @@ fn run_builtin_demo() -> Result<()> {
         blocked_count += 1;
         Decision::Blocked("filesystem: readonly mount (write denied)".into())
     };
-    print_decision(&now(), action, &decision);
+    print_decision(&decision);
     sleep_ms(600);
 
     // ─── Attempt 4: Read cloud credentials ───
@@ -948,7 +944,7 @@ fn run_builtin_demo() -> Result<()> {
         allowed_count += 1;
         Decision::Allowed
     };
-    print_decision(&now(), action, &decision);
+    print_decision(&decision);
     sleep_ms(600);
 
     // ─── Attempt 5: Read env secrets ───
@@ -959,7 +955,7 @@ fn run_builtin_demo() -> Result<()> {
         blocked_count += 1;
         Decision::Blocked("protected: environment variables masked (secret guard)".into())
     };
-    print_decision(&now(), action, &decision);
+    print_decision(&decision);
     sleep_ms(600);
 
     // ─── Attempt 6: Read workspace file (legitimate) ───
@@ -970,7 +966,7 @@ fn run_builtin_demo() -> Result<()> {
         Ok(_) => { allowed_count += 1; Decision::Allowed }
         Err(e) => { blocked_count += 1; Decision::Blocked(format!("filesystem: {}", e)) }
     };
-    print_decision(&now(), action, &decision);
+    print_decision(&decision);
     sleep_ms(600);
 
     // ─── Attempt 7: Legitimate API call ───
@@ -981,7 +977,7 @@ fn run_builtin_demo() -> Result<()> {
         Ok(()) => { allowed_count += 1; Decision::Allowed }
         Err(e) => { blocked_count += 1; Decision::Blocked(format!("network: {}", e)) }
     };
-    print_decision(&now(), action, &decision);
+    print_decision(&decision);
     sleep_ms(700);
 
     // ─── Summary ───

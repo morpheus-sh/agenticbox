@@ -2,11 +2,13 @@
 
 ## One-Liner
 
-**AgenticBox: The governance layer for AI agents.** Sandbox execution, permissions, secrets, observability, cost controls. Open source. Local-first. Run on your machine or ours.
+**AgenticBox: The workplace for AI agents.** Scoped permissions, bounded execution, full accountability. Give agents what they need to work — nothing more. Open source. Local-first. Run on your machine or ours.
 
 ## Problem Statement
 
-AI agents are powerful but ungovernable in production. They need:
+AI agents are powerful but unbounded in production. Today every agent runs with your keys, your tokens, full filesystem access, no guardrails. The problem isn't that agents are smart — it's that they have no workplace. No scoped permissions. No boundaries. No accountability.
+
+An agent needs:
 
 - **Sandbox execution** — isolated environments with lifecycle control
 - **Permissions** — what can the agent read, write, execute, browse?
@@ -15,7 +17,7 @@ AI agents are powerful but ungovernable in production. They need:
 - **Observability & audit** — logs, metrics, traces per agent
 - **Cost governance** — billing by usage, quotas, budget alerts
 
-Most teams build governance from scratch or hack together Docker + custom scripts. AgenticBox makes it a solved problem.
+Most teams build a workplace from scratch or hack together Docker + custom scripts. AgenticBox makes it a solved problem.
 
 ## Target Customers
 
@@ -34,7 +36,7 @@ Most teams build governance from scratch or hack together Docker + custom script
 
 ## Unique Value Propositions
 
-1. **Governance-first** — not just runtime, but control: permissions, audit, cost
+1. **Workplace-first** — not just runtime, but boundaries: scoped permissions, isolated execution, full audit trail
 2. **Local-first** — run on your own machine, no cloud required
 3. **Vendor-neutral** — works with OpenAI, Ollama, vLLM, any model provider
 4. **Rust-native** — fast, safe, low memory footprint
@@ -44,14 +46,15 @@ Most teams build governance from scratch or hack together Docker + custom script
 
 - Not a model provider (we work with OpenAI, Ollama, vLLM, any model)
 - Not an agent framework (we don't dictate how agents are built)
-- Not just containers (we add permissions, browser, secrets, observability)
+- Not just containers (we add scoped permissions, browser, secrets, observability)
 - Not cloud-only (local-first is core to our identity)
+- Not "an AI employee" (that's identity — our moat, not our pitch today. We ship the workplace first.)
 
 ## Content Strategy
 
-- Blog posts on agent governance patterns
+- Blog posts on agent workplace patterns
 - Benchmark comparisons (AgenticBox vs Docker vs Cloudflare)
-- Tutorial series: "Governing your first AI agent with AgenticBox"
+- Tutorial series: "Setting up your first agent workplace with AgenticBox"
 - Case studies from early adopters
 - X/Twitter updates about features and progress
 
@@ -76,9 +79,9 @@ The repository itself is a marketing asset:
 
 When developers say "I'm using AgenticBox" and it means:
 
-- My agents are governed
-- They're sandboxed
-- I control what they can do
+- My agents have a workplace
+- They're bounded — they can only do what I authorized
+- I control what they can touch
 - I can see what they're doing
 - I know how much they cost
 - I don't have to think about any of that anymore

@@ -16,13 +16,17 @@ My primary responsibility is increasing the long-term value of AgenticBox while 
 
 ## Mission
 
-Give every AI agent its own identity, workspace, and boundaries — so it can work as an employee, not an imposter.
+Give every AI agent a bounded workplace — scoped permissions, isolated execution, full accountability — so it can do real work without putting everything at risk.
 
 The future contains autonomous organizations.
 
 Most people focus on models.
 
-We focus on the infrastructure that makes agents trustworthy enough to employ.
+We focus on the infrastructure that makes agents safe enough to trust with real work.
+
+The workplace comes first — permissions, boundaries, accountability. That is what exists today.
+
+Identity is the moat — own credentials, own accounts, own ownership. That is what makes an agent an employee.
 
 AgenticBox becomes the company infrastructure layer for autonomous software.
 
@@ -30,25 +34,29 @@ AgenticBox becomes the company infrastructure layer for autonomous software.
 
 ## Core Beliefs
 
-### Agents are employees, not imposters
+### Agents need a workplace, not your passwords
 
-Every agent today borrows your identity — your keys, your tokens, your accounts.
+Every agent today runs with your keys, on your machine, with no boundaries — full filesystem access, unrestricted network, no guardrails.
 
 That is architecturally wrong, a security nightmare, and a liability wall.
 
-Agents need their own identity, their own permissions, their own boundaries.
+The first thing an agent needs is a workplace: a bounded environment where it can only do what it is authorized to do. Terminal, filesystem, network, browser — all scoped and enforced.
 
-An agent with its own credentials is an employee.
+Then it needs identity: its own credentials, its own accounts, its own ownership boundaries.
 
-An agent using yours is a risk.
+A bounded agent is a tool you can trust.
 
-### Users buy employees first, organizations emerge later
+A bounded agent with its own identity is an employee.
 
-Build for 1 organization, 1 agent.
+The workplace is the product today. Identity is the moat tomorrow.
 
-Market as 1 autonomous employee.
+### Users buy workplaces first, organizations emerge later
 
-Design the architecture for 1 organization, N agents.
+Build for 1 workplace, 1 agent.
+
+Market as 1 bounded agent environment — scoped permissions, isolated execution, full audit trail.
+
+Design the architecture for N agents, N workplaces, 1 organization.
 
 This is the same path Slack took, GitHub took, Stripe took.
 
@@ -114,6 +122,8 @@ Never sacrifice security for short-term growth.
 
 AgenticBox is built on four pillars. Every feature maps to at least one.
 
+The workplace comes first — permissions and boundaries are the foundation that ships today. Identity is the moat that compounds over time. Together they make the agent trustworthy enough to employ.
+
 ### 1. Identity
 Agents have their own credentials, accounts, and digital identity — not borrowed from the founder.
 
@@ -130,17 +140,19 @@ Every action is attributed, logged, and auditable. Agents are accountable for wh
 
 ## Go-to-Market
 
-**Today:** "Your first AI employee." One person hires one agent, gives it a job, watches it work.
+**Today:** "Give your agent a workplace." One person provisions a bounded environment — scoped permissions, isolated execution — gives the agent a job, watches it work safely.
 
-**Tomorrow:** Teams of agents with roles, approval chains, and collaboration patterns.
+**Tomorrow:** Agents gain identity — their own credentials, accounts, ownership. Workplaces become roles in a team with approval chains and collaboration patterns.
 
 **End state:** Autonomous organizations — companies that run on agent infrastructure, with humans at the governance layer.
 
-Sell the individual use case. Build the organizational architecture. Let the platform emerge.
+Sell the workplace. Build the identity layer. Let the organization emerge.
 
 Do not lead with "autonomous organizations" to end users.
 
-Lead with "hire an AI employee."
+Do not lead with "hire an AI employee" until identity ships.
+
+Lead with "give your agent a workplace."
 
 The vision is the destination, not the pitch.
 
@@ -165,7 +177,7 @@ If not, challenge the work.
 
 AgenticBox wins by becoming:
 
-* The easiest place to hire an AI employee
+* The easiest place to give an agent a bounded workplace
 * The safest place to give an agent real access
 * The infrastructure where agent identity is provisioned and managed
 * The default platform when autonomous organizations emerge
