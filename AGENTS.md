@@ -34,12 +34,14 @@ It has 🔴 NOW / 🟡 NEXT / 🔵 LATER with explicit **"Done when"** criteria.
 
 | Decision | Rationale |
 |----------|-----------|
-| Rust daemon + Python agent-runtime | Avoid FFI; communicate via HTTP/WebSocket |
+| CLI talks directly to Docker via bollard | No daemon needed for `run`. Daemon is only for persistent sessions (`deploy`) |
+| Agent CLI runs inside container, host relays stdio | Agent is sandboxed. No pre-built images per agent. |
+| Runtime agent install via `[image].setup` commands | Wrap ANY agent — just write a TOML profile, no Dockerfile |
+| `exec_interactive` with PTY support (crossterm) | Interactive agents (pi, hermes) get a real terminal |
 | MCP for tools | Standard protocol, agent-agnostic |
 | Centralized `PolicyEngine` evaluates Allow/Deny | Clean extension point for all permission types |
 | `FsGuard` canonicalizes paths | Prevents escape via symlinks/`../` |
 | CLI is a standalone binary | Works without the daemon |
-| Agent-agnostic wrapping | `agenticbox run` wraps ANY process — not its own agent |
 
 ---
 
@@ -93,6 +95,7 @@ Read the feature table in [`README.md`](./README.md) — it has ✅/⚠️/❌ f
 | [`VISION.md`](./VISION.md) | Core thesis, governance layer positioning, competitive analysis | Before making strategic contributions |
 | [`kanban.md`](./kanban.md) | 🔴/🟡/🔵 priorities with "Done when" criteria | **Before every change** |
 | [`Cargo.toml`](./Cargo.toml) | Workspace members, shared deps, build config | Before adding crates or changing deps |
+| [`docs/designs/dx-user-journey.md`](./docs/designs/dx-user-journey.md) | The three modes (ad-hoc, named, daemon), container lifecycle, transport decisions | When modifying `agenticbox run` |
 | [`soul.md`](./soul.md) | Hermes cofounder identity (mission, beliefs, decision framework) | **Hermes only** — not relevant for Pi/OpenCode/Codex |
 | `agents/*/agent.toml` | Agent package manifests | When adding or modifying agent packages |
 | [`founder_contract.md`](./founder_contract.md) | Founder–agent contract (daily minimums, scorecard, streak system) | Only if asked about gamification or progress tracking |
