@@ -1,0 +1,1 @@
+C:\Users\n\Proton\ Drive\nikdima\My\ files\projects\agenticbox\spikes\001-stdio-pipe\target\debug\spike-stdio-pipe.exe: C:\Users\n\Proton\ Drive\nikdima\My\ files\projects\agenticbox\spikes\001-stdio-pipe\src\main.rs
