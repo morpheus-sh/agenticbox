@@ -5,8 +5,8 @@
 .COMPANYNAME AgenticBox
 .COPYRIGHT (c) 2025 AgenticBox. MIT OR Apache-2.0.
 .TAGS agenticbox, installer, ai, agents
-.LICENSEURI https://github.com/agenticbox/agenticbox/blob/main/LICENSE-MIT
-.PROJECTURI https://github.com/agenticbox/agenticbox
+.LICENSEURI https://github.com/morpheus-sh/agenticbox/blob/main/LICENSE-MIT
+.PROJECTURI https://github.com/morpheus-sh/agenticbox
 #>
 
 <#PSScriptInfo
@@ -104,14 +104,14 @@ function Check-Docker {
 function Fetch-Release {
     param([string]$Arch)
     Write-Step "Fetching latest release..."
-    $api = "https://api.github.com/repos/agenticbox/agenticbox/releases/latest"
+    $api = "https://api.github.com/repos/morpheus-sh/agenticbox/releases/latest"
     try {
         $release = Invoke-RestMethod -Uri $api -Headers @{ "Accept" = "application/vnd.github.v3+json" }
         $tag = $release.tag_name
         Write-Ok "Latest release: $tag"
 
         $assetName = "agenticbox-${tag}-windows-${Arch}.tar.gz"
-        $url = "https://github.com/agenticbox/agenticbox/releases/download/${tag}/${assetName}"
+        $url = "https://github.com/morpheus-sh/agenticbox/releases/download/${tag}/${assetName}"
         $dest = "$env:USERPROFILE\.agenticbox\${assetName}"
 
         Write-Step "Downloading $assetName..."
@@ -140,7 +140,7 @@ function Build-FromSource {
     New-Item -ItemType Directory -Force -Path $tmp | Out-Null
 
     Write-Step "Cloning repository..."
-    git clone --depth 1 "https://github.com/agenticbox/agenticbox.git" $tmp
+    git clone --depth 1 "https://github.com/morpheus-sh/agenticbox.git" $tmp
 
     Write-Step "Building release binaries..."
     Set-Location $tmp
@@ -219,4 +219,4 @@ Write-Host "  3. ${CYAN}agenticbox daemon${RESET}       (start the daemon)"
 Write-Host "  4. ${CYAN}agenticbox deploy --name my-agent${RESET}  (run your first agent)"
 Write-Host ""
 Write-Host "${DIM}Docs: https://agenticbox.co/docs${RESET}"
-Write-Host "${DIM}GitHub: https://github.com/agenticbox/agenticbox${RESET}"
+Write-Host "${DIM}GitHub: https://github.com/morpheus-sh/agenticbox${RESET}"

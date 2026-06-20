@@ -17,7 +17,7 @@ DIM='\033[2m'
 RESET='\033[0m'
 
 # Config
-REPO="agenticbox/agenticbox"
+REPO="morpheus-sh/agenticbox"
 INSTALL_DIR="${HOME}/.agenticbox"
 BIN_DIR="${INSTALL_DIR}/bin"
 DAEMON_BIN="daemon"
@@ -204,7 +204,7 @@ main() {
   echo -e "  4. ${CYAN}agenticbox deploy --name my-agent${RESET}  (run your first agent)"
   echo
   echo -e "${DIM}Docs: https://agenticbox.co/docs${RESET}"
-  echo -e "${DIM}GitHub: https://github.com/agenticbox/agenticbox${RESET}"
+  echo -e "${DIM}GitHub: https://github.com/morpheus-sh/agenticbox${RESET}"
 }
 
 main "$@"
