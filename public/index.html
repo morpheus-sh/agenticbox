@@ -3,13 +3,77 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AgenticBox — Give Your Agent a Workplace, Not Root Access</title>
-  <meta name="description" content="Agents need workplaces. Permissions define what they can do. Identity defines who they are. Accountability tracks what they did. Okta + Docker for AI agents." />
-  <meta property="og:title" content="AgenticBox — Give Your Agent a Workplace, Not Root Access" />
-  <meta property="og:description" content="Agents need workplaces. Okta + Docker for AI agents." />
+  <!-- Primary Meta Tags -->
+  <title>AgenticBox — Deploy AI Agents into Production, Safely</title>
+  <meta name="title" content="AgenticBox — Deploy AI Agents into Production, Safely" />
+  <meta name="description" content="Deploy AI agents that do real business work — safely. Pick a vertical template, connect your tools, set permissions, ship to production. Scoped execution, full audit trail. Open source." />
+  <meta name="keywords" content="AI agent deployment, agent infrastructure, AI agent governance, agent sandbox, production AI agents, agent permissions, deploy AI agents safely, agent execution platform, Vercel for AI agents" />
+  <meta name="author" content="AgenticBox" />
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large" />
+  <link rel="canonical" href="https://agenticbox.co/" />
+
+  <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://agenticbox.co/" />
+  <meta property="og:title" content="AgenticBox — Deploy AI Agents into Production, Safely" />
+  <meta property="og:description" content="Deploy AI agents that do real business work — safely. Scoped permissions, bounded execution, full audit trail. Open source. Local-first." />
+  <meta property="og:site_name" content="AgenticBox" />
+  <meta property="og:image" content="https://agenticbox.co/og-image.png" />
+  <meta property="og:image:alt" content="AgenticBox — Deploy AI Agents into Production, Safely" />
+  <meta property="og:locale" content="en_US" />
+
+  <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:url" content="https://agenticbox.co/" />
+  <meta name="twitter:title" content="AgenticBox — Deploy AI Agents into Production, Safely" />
+  <meta name="twitter:description" content="Deploy AI agents that do real business work — safely. Scoped permissions, bounded execution, full audit trail. Open source." />
+  <meta name="twitter:image" content="https://agenticbox.co/og-image.png" />
+  <meta name="twitter:image:alt" content="AgenticBox — Deploy AI Agents into Production, Safely" />
+  <meta name="twitter:site" content="@agenticbox" />
+  <meta name="twitter:creator" content="@agenticbox" />
+
   <meta name="theme-color" content="#040706" />
+
+  <!-- Structured Data (JSON-LD) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "AgenticBox",
+    "description": "Deploy AI agents into production safely. Scoped permissions, bounded execution, full audit trail. Open source agent deployment platform with vertical templates for support, ops, and finance.",
+    "url": "https://agenticbox.co/",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "Cross-platform",
+    "softwareVersion": "0.1.0",
+    "license": "https://github.com/morpheus-sh/agenticbox/blob/main/LICENSE",
+    "codeRepository": "https://github.com/morpheus-sh/agenticbox",
+    "programmingLanguage": "Rust",
+    "offers": [
+      { "@type": "Offer", "price": "0", "priceCurrency": "USD", "description": "Self-hosted — free and open source (MIT OR Apache-2.0)" },
+      { "@type": "Offer", "price": "49", "priceCurrency": "USD", "description": "Starter — managed cloud beta" },
+      { "@type": "Offer", "price": "199", "priceCurrency": "USD", "description": "Pro — teams, production governance" },
+      { "@type": "Offer", "price": "999", "priceCurrency": "USD", "description": "Enterprise — custom SLAs, RBAC, on-prem" }
+    ],
+    "featureList": [
+      "Container-based sandbox execution (Docker + Podman)",
+      "Scoped permissions: terminal, filesystem, network, browser",
+      "Full audit trail and session accountability",
+      "Vertical agent templates (support, ops, finance)",
+      "Agent packages via TOML manifests",
+      "Local-first, vendor-neutral, Rust-native",
+      "Tauri desktop console"
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "AgenticBox",
+    "url": "https://agenticbox.co/",
+    "description": "Deploy AI agents into production — safely. Open source agent deployment infrastructure."
+  }
+  </script>
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -212,6 +276,38 @@
     footer a { color: var(--neon); text-decoration: none; margin: 0 10px; transition: color var(--transition); font-family: var(--font-mono); font-size: 0.76rem; }
     footer a:hover { color: var(--accent-strong); }
 
+    /* === HOW IT WORKS === */
+    .steps-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; max-width: 920px; margin: 0 auto; position: relative; }
+    .steps-grid::before { content: ''; position: absolute; top: 36px; left: 12%; right: 12%; height: 1px; background: linear-gradient(90deg, transparent, var(--border-bright), var(--border-bright), transparent); z-index: 0; }
+    .step-card { text-align: center; padding: 0 16px; position: relative; z-index: 1; }
+    .step-num { width: 44px; height: 44px; border-radius: 50%; background: var(--surface); border: 2px solid var(--border-bright); display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-size: 0.9rem; font-weight: 700; color: var(--neon); margin: 0 auto 16px; transition: all var(--transition); }
+    .step-card:hover .step-num { border-color: var(--accent); box-shadow: 0 0 0 4px var(--accent-deep); }
+    .step-card h4 { font-family: var(--font-ui); font-size: 0.92rem; font-weight: 600; color: var(--text); margin-bottom: 8px; }
+    .step-card p { font-size: 0.8rem; color: var(--text-dim); line-height: 1.55; }
+    .step-card code { font-family: var(--font-mono); font-size: 0.78em; color: var(--neon); background: var(--accent-deep); padding: 1px 5px; border-radius: 3px; }
+
+    /* === COMPARISON TABLE === */
+    .compare-wrap { max-width: 720px; margin: 0 auto; }
+    .compare-table { width: 100%; border-collapse: collapse; font-size: 0.86rem; }
+    .compare-table th, .compare-table td { padding: 14px 20px; text-align: left; border-bottom: 1px solid var(--border); }
+    .compare-table th { font-family: var(--font-mono); font-size: 0.64rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.14em; color: var(--text-muted); padding-bottom: 10px; border-bottom: 1px solid var(--border-bright); }
+    .compare-table th:first-child { width: 35%; }
+    .compare-table td { color: var(--text-dim); }
+    .compare-table tr:hover td { color: var(--text); background: var(--surface); }
+    .compare-table td:first-child { font-family: var(--font-mono); font-size: 0.78rem; color: var(--neon); }
+    .compare-table code { font-family: var(--font-mono); font-size: 0.8em; color: var(--neon); background: var(--accent-deep); padding: 1px 4px; border-radius: 3px; }
+
+    /* === VERTICALS === */
+    .vert-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr)); gap: 14px; }
+    .vert-card { background: linear-gradient(180deg, var(--surface), var(--bg-2)); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 24px; transition: all var(--transition); position: relative; }
+    .vert-card:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: 0 0 30px -10px var(--accent-glow); }
+    .vert-card .vert-icon { font-family: var(--font-mono); font-size: 1.1rem; color: var(--neon); margin-bottom: 10px; display: block; }
+    .vert-card h4 { font-family: var(--font-ui); font-size: 0.96rem; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+    .vert-card p { font-size: 0.82rem; color: var(--text-dim); line-height: 1.55; margin-bottom: 10px; }
+    .vert-card .vert-status { display: inline-block; font-family: var(--font-mono); font-size: 0.56rem; font-weight: 600; padding: 2px 8px; border-radius: 999px; text-transform: uppercase; letter-spacing: 0.06em; }
+    .vert-status.active { background: var(--accent-deep); color: var(--neon); border: 1px solid rgba(141,184,78,0.3); }
+    .vert-status.roadmap { background: rgba(74,215,255,0.12); color: var(--info); border: 1px solid rgba(74,215,255,0.25); }
+
     /* === SCROLLBAR === */
     ::-webkit-scrollbar { width: 8px; height: 8px; }
     ::-webkit-scrollbar-track { background: var(--bg); }
@@ -268,6 +364,10 @@
       .waitlist-form { flex-direction: column; }
       .waitlist-form input { min-width: unset; width: 100%; }
       .ghost-word { font-size: clamp(4rem, 24vw, 8rem); }
+      .steps-grid { grid-template-columns: repeat(2, 1fr); gap: 24px 0; }
+      .steps-grid::before { display: none; }
+      .compare-table { font-size: 0.76rem; }
+      .compare-table th, .compare-table td { padding: 10px 12px; }
     }
   </style>
 </head>
@@ -290,7 +390,8 @@
       AgenticBox
     </a>
     <nav>
-      <a href="#pillars">Pillars</a>
+      <a href="#how-it-works">How it works</a>
+      <a href="#verticals">Verticals</a>
       <a href="#features">Runtime</a>
       <a href="https://github.com/morpheus-sh/agenticbox" target="_blank" rel="noopener">GitHub</a>
       <a href="https://github.com/morpheus-sh/agenticbox" target="_blank" rel="noopener" class="primary">★ Star</a>
@@ -298,17 +399,17 @@
   </div>
 </header>
 
-<section class="hero">
+<section class="hero" id="top">
   <div class="hero-glow" aria-hidden="true"></div>
   <div class="ghost-word" aria-hidden="true">AGENTICBOX</div>
   <div class="container">
-    <span class="badge">Open Source Edge — MIT OR Apache-2.0</span>
+    <span class="badge">Open Source — MIT OR Apache-2.0</span>
     <h1>
-      <span class="line">Give your agent</span>
-      <span class="line">a workplace, not</span>
-      <span class="line accent-word">root access</span>
+      <span class="line">Deploy agents</span>
+      <span class="line">that do real work —</span>
+      <span class="line accent-word">safely</span>
     </h1>
-    <p class="lede">Agents need workplaces. Permissions define what they can do. Identity defines who they are. Accountability tracks what they did. AgenticBox is Okta + Docker for AI agents.</p>
+    <p class="lede">Every company wants AI agents that touch real systems, take real actions, move real money. AgenticBox makes it safe to deploy them into production — scoped permissions, bounded execution, full audit trail.</p>
 
     <div class="btn-group">
       <a href="https://github.com/morpheus-sh/agenticbox" class="btn btn-primary" target="_blank" rel="noopener">Star on GitHub</a>
@@ -339,7 +440,7 @@
       <div class="terminal-demo" id="terminalDemo">
         <div class="terminal-header">
           <div class="terminal-dots"><div class="terminal-dot"></div><div class="terminal-dot"></div><div class="terminal-dot"></div></div>
-          <div class="terminal-title">agenticbox run demo &mdash; bounded workplace session</div>
+          <div class="terminal-title">agenticbox run demo &mdash; scoped execution session</div>
         </div>
         <div id="asciinema-player"></div>
       </div>
@@ -351,27 +452,98 @@
   </div>
 </section>
 
+<section id="how-it-works" class="section">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag">// From agent built to agent deployed</span>
+      <h2 class="section-title">How it <em>works</em></h2>
+    </div>
+    <div class="steps-grid">
+      <div class="step-card">
+        <div class="step-num">1</div>
+        <h4>Pick a template</h4>
+        <p>Support, ops, finance, or build your own. Each template ships with sane defaults.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">2</div>
+        <h4>Connect tools</h4>
+        <p>Helpdesk, CRM, database, APIs. MCP connectors for the tools your agent needs.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">3</div>
+        <h4>Set limits</h4>
+        <p><code>refund &le; $50</code>. Plain-language limits enforced by the permission engine.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">4</div>
+        <h4>Deploy</h4>
+        <p>Agent runs in a bounded container with full audit trail. Production-safe by default.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="verticals" class="section">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag">// One engine, many verticals</span>
+      <h2 class="section-title">Vertical <em>templates</em></h2>
+    </div>
+    <div class="vert-grid">
+      <article class="vert-card">
+        <span class="vert-icon">[CX]</span>
+        <h4>Customer Support</h4>
+        <p>Scoped access to customer data. Bounded actions &mdash; refund yes, delete no. Full audit for compliance.</p>
+        <span class="vert-status active">Wedge vertical</span>
+      </article>
+      <article class="vert-card">
+        <span class="vert-icon">[OPS]</span>
+        <h4>Sales / Revenue Ops</h4>
+        <p>CRM updates, prospecting, pipeline management. Agent sends real emails, updates real records.</p>
+        <span class="vert-status roadmap">Roadmap</span>
+      </article>
+      <article class="vert-card">
+        <span class="vert-icon">[IT]</span>
+        <h4>Internal IT Ops</h4>
+        <p>Provisioning, password resets, ticket handling. Agent touches identity systems safely.</p>
+        <span class="vert-status roadmap">Roadmap</span>
+      </article>
+      <article class="vert-card">
+        <span class="vert-icon">[FIN]</span>
+        <h4>Finance Ops</h4>
+        <p>Reconciliation, reporting, anomaly flagging. Agent touches financial systems with audit trails.</p>
+        <span class="vert-status roadmap">Roadmap</span>
+      </article>
+    </div>
+  </div>
+</section>
+
 <section id="pillars" class="section">
   <div class="container">
     <div class="section-header">
-      <span class="section-tag">// From one idea, the rest follows</span>
-      <h2 class="section-title">Agents need <em>workplaces</em></h2>
+      <span class="section-tag">// Why you can trust it</span>
+      <h2 class="section-title">The governance <em>layer</em></h2>
     </div>
     <div class="grid">
       <article class="corner-card">
         <span class="card-icon">[01]</span>
         <h3>Permissions</h3>
-        <p>What the coworker is allowed to do. Terminal, filesystem, network, browser &mdash; scoped and enforced.</p>
+        <p>What the agent is allowed to do. Terminal, filesystem, network, browser &mdash; scoped and enforced. This is what makes it safe to let an agent refund a customer or modify a production record.</p>
       </article>
       <article class="corner-card">
         <span class="card-icon">[02]</span>
         <h3>Accountability</h3>
-        <p>What the coworker did. Every action attributed, logged, auditable. Full audit trail.</p>
+        <p>Every action attributed, logged, auditable. Full audit trail. This is what makes it compliant to let an agent operate in regulated environments.</p>
       </article>
       <article class="corner-card">
         <span class="card-icon">[03]</span>
         <h3>Ownership Boundaries</h3>
-        <p>What belongs to the coworker vs. the organization. Resources, outputs, budgets, assets.</p>
+        <p>Clear boundaries: resources, outputs, budgets, assets. What belongs to the agent vs. the organization.</p>
+      </article>
+      <article class="corner-card">
+        <span class="card-icon">[04]</span>
+        <h3>Identity <span style="font-size: 0.7rem; color: var(--text-muted);">(emerging)</span></h3>
+        <p>Agents get their own credentials, accounts, digital identity &mdash; provisioned and revocable. The moat that compounds silently as agents accumulate trust.</p>
       </article>
     </div>
   </div>
@@ -416,6 +588,51 @@
   </div>
 </section>
 
+<section id="comparison" class="section">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag">// The same playbook, a different layer</span>
+      <h2 class="section-title">The <em>Vercel</em> for agent deployment</h2>
+    </div>
+    <div class="compare-wrap">
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>Vercel</th>
+            <th>AgenticBox</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>git push</code> &rarr; live site</td>
+            <td><code>agenticbox deploy</code> &rarr; agent in production</td>
+          </tr>
+          <tr>
+            <td>Edge network + serverless</td>
+            <td>Bounded container runtime (Docker + Podman)</td>
+          </tr>
+          <tr>
+            <td>DDoS protection, rate limits, auth</td>
+            <td>Permissions, scopes, audit trails</td>
+          </tr>
+          <tr>
+            <td>Next.js templates per use case</td>
+            <td>Vertical agent templates (support, ops, finance)</td>
+          </tr>
+          <tr>
+            <td>Developers ship web apps</td>
+            <td>Companies ship agent workforces</td>
+          </tr>
+        </tbody>
+      </table>
+      <p style="text-align: center; margin-top: 28px; font-size: 0.84rem; color: var(--text-muted); font-style: italic; max-width: 560px; margin-left: auto; margin-right: auto;">
+        Vercel didn't build web apps. They made deployment so smooth that developers stopped managing servers.<br>
+        AgenticBox makes agent deployment so safe that companies stop building custom guardrails.
+      </p>
+    </div>
+  </div>
+</section>
+
 <section class="cta" id="get-started">
   <div class="cta-glow" aria-hidden="true"></div>
   <div class="container">
@@ -439,7 +656,7 @@
 <footer>
   <div class="container">
     <div class="footer-wordmark" aria-hidden="true">AGENTICBOX</div>
-    <p>&copy; 2025 AgenticBox. Okta + Docker for AI agents.</p>
+    <p>&copy; 2025 AgenticBox. Deploy AI agents into production, safely.</p>
     <p style="margin-top:12px;">
       <a href="https://github.com/morpheus-sh/agenticbox" target="_blank" rel="noopener">GitHub</a> &middot;
       <a href="mailto:hello@agenticbox.co">Email</a> &middot;

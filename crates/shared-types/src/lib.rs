@@ -209,9 +209,9 @@ mod tests {
         };
         let json = serde_json::to_string(&ps).unwrap();
         let deserialized: PermissionSet = serde_json::from_str(&json).unwrap();
-        assert_eq!(deserialized.terminal, true);
+        assert!(deserialized.terminal);
         assert!(matches!(deserialized.filesystem, FsPermission::ReadWrite));
-        assert_eq!(deserialized.browser, false);
+        assert!(!deserialized.browser);
         match deserialized.network {
             NetworkPolicy::Allowlist(d) => assert_eq!(d, vec!["api.openai.com"]),
             other => panic!("expected Allowlist, got {:?}", other),

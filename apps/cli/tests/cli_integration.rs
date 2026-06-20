@@ -33,14 +33,12 @@ fn binary() -> PathBuf {
     }
 
     // Fallback: try target/debug from workspace root
-    let fallback = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+    PathBuf::from(env!("CARGO_MANIFEST_DIR"))
         .join("..")
         .join("..")
         .join("target")
         .join("debug")
-        .join(bin_name);
-
-    fallback
+        .join(bin_name)
 }
 
 #[test]

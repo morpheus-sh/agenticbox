@@ -172,12 +172,12 @@ async fn session_preserves_permissions() {
         .unwrap();
     let retrieved = mgr.get(session.id).await.unwrap().unwrap();
 
-    assert_eq!(retrieved.permissions.terminal, false);
+    assert!(!retrieved.permissions.terminal);
     assert!(matches!(
         retrieved.permissions.filesystem,
         FsPermission::ReadOnly
     ));
-    assert_eq!(retrieved.permissions.browser, true);
+    assert!(retrieved.permissions.browser);
     match &retrieved.permissions.network {
         NetworkPolicy::Allowlist(domains) => {
             assert_eq!(domains.len(), 2);
