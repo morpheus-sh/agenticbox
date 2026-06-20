@@ -342,17 +342,17 @@ impl SandboxManager {
     /// for standard Docker Desktop / named-pipe connections.
     #[cfg(unix)]
     fn connect(socket: &str) -> anyhow::Result<Docker> {
-        // DOCKER_HOST-style URLs (unix://, tcp://, npipe://) or plain socket paths.
-        if socket.starts_with("unix://")
+        // DOCKER_HOST-style URLs or "default" — let bollard resolve the endpoint.
+        if socket == "default"
+            || socket.starts_with("unix://")
             || socket.starts_with("tcp://")
             || socket.starts_with("http://")
             || socket.starts_with("https://")
             || socket.starts_with("npipe://")
         {
             Ok(Docker::connect_with_local_defaults()?)
-        } else if socket == "default" {
-            Ok(Docker::connect_with_local_defaults()?)
         } else {
+            // Bare socket path (e.g. /var/run/docker.sock).
             Ok(Docker::connect_with_unix(
                 socket,
                 120,
