@@ -240,8 +240,8 @@
     .terminal-demo:hover .demo-replay { opacity: 1; }
     .demo-replay:hover { background: var(--accent); color: #020403; border-color: var(--accent); }
     /* asciinema player inside terminal frame */
-    .terminal-demo asciinema-player { display: block; width: 100%; --term-background: #020403; }
-    .terminal-demo .asciinema-player { background: #020403 !important; padding: 16px 20px !important; }
+    .terminal-demo #asciinema-player { display: block; width: 100%; --term-background: #020403; }
+    .terminal-demo #asciinema-player .asciinema-player { background: #020403 !important; padding: 16px 20px !important; }
 
     /* === RESPONSIVE === */
     @media (max-width: 768px) {
@@ -318,7 +318,7 @@
           <div class="terminal-dots"><div class="terminal-dot"></div><div class="terminal-dot"></div><div class="terminal-dot"></div></div>
           <div class="terminal-title">agenticbox run demo &mdash; bounded workplace session</div>
         </div>
-        <asciinema-player src="/demo.cast" autoplay="true" loop="true" theme="dark" font-size="13px" speed="1.2" poster="npt:0.5" idle-time-limit="1"></asciinema-player>
+        <div id="asciinema-player"></div>
       </div>
     </div>
 
@@ -423,6 +423,17 @@
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/asciinema-player@3/dist/bundle/asciinema-player.css">
 <script src="https://cdn.jsdelivr.net/npm/asciinema-player@3/dist/bundle/asciinema-player.min.js"></script>
+<script>
+  AsciinemaPlayer.create('/demo.cast', document.getElementById('asciinema-player'), {
+    autoplay: true,
+    loop: true,
+    theme: 'dark',
+    fontSize: '13px',
+    speed: 1.2,
+    poster: 'npt:0.5',
+    idleTimeLimit: 1
+  });
+</script>
 <script>
   document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function(e) {
