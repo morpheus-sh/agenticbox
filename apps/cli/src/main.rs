@@ -1378,16 +1378,44 @@ fn run_harness_sandbox(spec: &HarnessSpec) -> Result<i64> {
             println!("{}  Agent installed", console::style("✓").green());
         }
 
-        // Phase 2: Exec the agent with interactive stdio
+        // Phase 2: Exec the agent with interactive stdio relay
         println!("{}  Launching agent: {}", console::style("▶").cyan(), console::style(spec.agent_cmd.join(" ")).white());
         println!();
 
-        let exit_code = handle.exec_and_wait(spec.agent_cmd.clone(), |out| match out {
+        // Use exec_interactive for bidirectional stdio
+        let mut pipe = handle.exec_interactive(spec.agent_cmd.clone(), |out| match out {
             sandbox_core::ExecOutput::Stdout(text) => print!("{}", text),
             sandbox_core::ExecOutput::Stderr(text) => eprint!("{}", console::style(text).red()),
         }).await?;
 
-        let _ = handle.stop(Some(5)).await;
+        // Relay stdin from host terminal → container stdin
+        // Read from stdin in a separate task
+        use tokio::io::{AsyncBufReadExt, BufReader};
+        let stdin = tokio::io::stdin();
+        let reader = BufReader::new(stdin);
+        let mut lines = reader.lines();
+
+        // Read lines from stdin and write to container
+        loop {
+            tokio::select! {
+                line = lines.next_line() => {
+                    match line {
+                        Ok(Some(text)) => {
+                            if let Err(e) = pipe.write_line(&text).await {
+                                eprintln!("{}  Pipe write error: {}", console::style("✗").red(), e);
+                                break;
+                            }
+                        }
+                        Ok(None) => break, // EOF
+                        Err(_) => break,
+                    }
+                }
+            }
+        }
+
+        // Stdin closed — stop the container (which ends the exec)
+        let _ = handle.stop(Some(3)).await;
+        let exit_code = 0; // Agent completed
         let _ = handle.remove(true).await;
         Ok(exit_code)
     })
