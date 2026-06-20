@@ -20,9 +20,11 @@ dependencies = [
  "fs-guard",
  "network-control",
  "reqwest 0.12.28",
+ "sandbox-core",
  "serde",
  "serde_json",
  "shared-types",
+ "tokio",
  "toml 0.8.2",
  "uuid",
 ]

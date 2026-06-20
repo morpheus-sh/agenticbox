@@ -619,6 +619,8 @@ struct AgentManifest {
     model: AgentModel,
     #[serde(default)]
     permissions: AgentPermissions,
+    #[serde(default)]
+    image: AgentImage,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -665,6 +667,20 @@ impl Default for AgentPermissions {
             domains: default_domains(),
         }
     }
+}
+
+#[derive(Serialize, Deserialize, Debug, Default)]
+struct AgentImage {
+    /// Base Docker image (e.g. "python:3.12-slim", "node:22-slim")
+    #[serde(default = "default_image")]
+    base: String,
+    /// Shell commands to run inside the container during image build
+    #[serde(default)]
+    setup: Vec<String>,
+}
+
+fn default_image() -> String {
+    "python:3.12-slim".into()
 }
 
 fn default_provider() -> String { "openai".into() }
@@ -1092,37 +1108,52 @@ fn cmd_run_named_agent(
         return run_standalone_agent(&manifest.name, &permissions_str);
     }
 
-    // Deploy to daemon
-    let provider = if !manifest.model.provider.is_empty() {
-        manifest.model.provider.clone()
-    } else {
-        config.default_provider.clone().unwrap_or_else(|| "openai".into())
-    };
-    let model = if !manifest.model.model.is_empty() {
-        manifest.model.model.clone()
-    } else {
-        config.default_model.clone().unwrap_or_else(|| "gpt-4o".into())
-    };
+    // Real Docker harness: container + install agent + exec with stdio relay
     let api_key_env = if !manifest.model.api_key_env.is_empty() {
         manifest.model.api_key_env.clone()
     } else {
         "OPENAI_API_KEY".into()
     };
 
-    println!("{} Deploying '{}' to sandbox...", console::Style::new().cyan().apply_to("▶"), manifest.name);
-    cmd_deploy(
-        client, base,
-        manifest.name.clone(),
-        provider,
-        model,
-        api_key_env,
-        terminal,
-        fs,
-        browser,
-        network,
-        domains.join(","),
-        true, // watch
-    )
+    let mut env = HashMap::new();
+    if let Ok(key) = std::env::var(&api_key_env) {
+        env.insert(api_key_env.clone(), key);
+    } else {
+        println!(
+            "{}  {} not set — agent may not be able to call the model",
+            console::style("⚠").yellow(),
+            api_key_env
+        );
+    }
+
+    let agent_cmd: Vec<String> = manifest
+        .command
+        .as_ref()
+        .map(|c| c.split_whitespace().map(|s| s.to_string()).collect())
+        .unwrap_or_else(|| vec!["echo".into(), format!("No command for agent '{}'", manifest.name)]);
+
+    let network_mode = match network.as_str() {
+        "offline" | "none" => "offline",
+        _ => "bridge",
+    };
+
+    let spec = HarnessSpec {
+        image: manifest.image.base.clone(),
+        install_cmd: if manifest.image.setup.is_empty() { None } else { Some(manifest.image.setup.join(" && ")) },
+        agent_cmd,
+        fs_mode: fs,
+        network_mode: network_mode.to_string(),
+        env,
+    };
+
+    let exit_code = run_harness_sandbox(&spec)?;
+    println!();
+    if exit_code == 0 {
+        println!("{}  Agent exited cleanly", console::style("✓").green().bold());
+    } else {
+        println!("{}  Agent exited (code {})", console::style("✗").red().bold(), exit_code);
+    }
+    std::process::exit(exit_code as i32);
 }
 
 // ─── Layer 3: Ad-hoc Command ─────────────────────────────────
@@ -1164,25 +1195,202 @@ fn cmd_run_adhoc(
     println!("  {} {}", console::Style::new().dim().apply_to("Permissions:"), console::Style::new().dim().apply_to(&permissions_str));
     println!();
 
-    if standalone {
-        return run_standalone_agent(&cmd_str, &permissions_str);
-    }
+    // Real Docker sandbox — always (standalone flag kept for backwards compat but ignored)
+    let network_mode = match network.as_str() {
+        "offline" | "none" => "offline",
+        _ => "bridge",
+    };
 
-    // Deploy ad-hoc to daemon
-    println!("{} Deploying to sandbox...", console::Style::new().cyan().apply_to("▶"));
-    cmd_deploy(
-        client, base,
-        "adhoc".into(),
-        "openai".into(),
-        "gpt-4o".into(),
-        "OPENAI_API_KEY".into(),
-        terminal,
-        fs,
-        browser,
-        network,
-        domains.join(","),
-        true,
-    )
+    let spec = SandboxSpec {
+        image: "python:3.12-slim".to_string(),
+        command: command.to_vec(),
+        fs_mode: fs,
+        network_mode: network_mode.to_string(),
+        env: HashMap::new(),
+    };
+
+    let exit_code = run_real_sandbox(&spec)?;
+    println!();
+    if exit_code == 0 {
+        println!("{} Container exited (code 0)", console::style("✓").green().bold());
+    } else {
+        println!("{} Container exited (code {})", console::style("✗").red().bold(), exit_code);
+    }
+    std::process::exit(exit_code as i32);
+}
+
+// ─── Real Docker sandbox (the real thing) ─────────────────────
+
+struct SandboxSpec {
+    image: String,
+    command: Vec<String>,
+    fs_mode: String,      // readonly | readwrite | none
+    network_mode: String, // offline | bridge
+    env: HashMap<String, String>,
+}
+
+fn run_real_sandbox(spec: &SandboxSpec) -> Result<i64> {
+    let rt = tokio::runtime::Builder::new_current_thread()
+        .enable_all()
+        .build()?;
+
+    rt.block_on(async {
+        let mgr = sandbox_core::SandboxManager::new()
+            .map_err(|e| anyhow::anyhow!("Cannot connect to Docker: {}\n  Is Docker Desktop running?", e))?;
+
+        // Check / pull image
+        if !mgr.image_exists(&spec.image).await {
+            println!(
+                "{}  Pulling image {}...",
+                console::style("↓").cyan(),
+                console::style(&spec.image).cyan()
+            );
+            mgr.pull_image(&spec.image, |status| {
+                eprint!("\r  {} {}", console::style("•").dim(), status);
+            })
+            .await?;
+            eprintln!();
+        }
+
+        // Build mount: current directory → /workspace
+        let cwd = std::env::current_dir()?;
+        let mounts = if spec.fs_mode == "none" {
+            vec![]
+        } else {
+            vec![sandbox_core::SandboxMount {
+                source: cwd.to_string_lossy().to_string(),
+                target: "/workspace".into(),
+                read_only: spec.fs_mode == "readonly",
+            }]
+        };
+
+        let network_docker = if spec.network_mode == "offline" { "none" } else { "bridge" };
+
+        let config = sandbox_core::SandboxConfig {
+            image: spec.image.clone(),
+            cmd: spec.command.clone(),
+            env: spec.env.clone(),
+            mounts,
+            resources: sandbox_core::SandboxResources::default(),
+            network_mode: network_docker.into(),
+            working_dir: Some("/workspace".into()),
+        };
+
+        // Create + start
+        let handle = mgr.create(config).await?;
+        let sandbox_id = handle.id.clone();
+        let fs_label = if spec.fs_mode == "readonly" { "ro" } else { "rw" };
+
+        println!(
+            "{}  Container {} (fs={}, net={})",
+            console::style("✓").green(),
+            console::style(&sandbox_id).cyan(),
+            fs_label,
+            spec.network_mode
+        );
+        println!();
+
+        handle.start().await?;
+
+        // Stream logs until container exits, then get exit code
+        handle.stream_logs(|line| {
+            match line {
+                sandbox_core::LogLine::Stdout(text) => println!("{}", text),
+                sandbox_core::LogLine::Stderr(text) => eprintln!("{}", console::style(text).red()),
+            }
+        }).await?;
+
+        let exit_code = handle.wait().await.unwrap_or(0);
+
+        // Cleanup
+        let _ = handle.remove(true).await;
+
+        Ok(exit_code)
+    })
+}
+
+/// Harness spec for running a named agent inside a container.
+struct HarnessSpec {
+    image: String,
+    install_cmd: Option<String>,
+    agent_cmd: Vec<String>,
+    fs_mode: String,
+    network_mode: String,
+    env: HashMap<String, String>,
+}
+
+fn run_harness_sandbox(spec: &HarnessSpec) -> Result<i64> {
+    let rt = tokio::runtime::Builder::new_current_thread()
+        .enable_all()
+        .build()?;
+
+    rt.block_on(async {
+        let mgr = sandbox_core::SandboxManager::new()
+            .map_err(|e| anyhow::anyhow!("Cannot connect to Docker: {}\n  Is Docker Desktop running?", e))?;
+
+        if !mgr.image_exists(&spec.image).await {
+            println!("{}  Pulling image {}...", console::style("↓").cyan(), console::style(&spec.image).cyan());
+            mgr.pull_image(&spec.image, |status| { eprint!("\r  {} {}", console::style("•").dim(), status); }).await?;
+            eprintln!();
+        }
+
+        let cwd = std::env::current_dir()?;
+        let mounts = if spec.fs_mode == "none" { vec![] } else {
+            vec![sandbox_core::SandboxMount {
+                source: cwd.to_string_lossy().to_string(),
+                target: "/workspace".into(),
+                read_only: spec.fs_mode == "readonly",
+            }]
+        };
+
+        let network_docker = if spec.network_mode == "offline" { "none" } else { "bridge" };
+
+        let config = sandbox_core::SandboxConfig {
+            image: spec.image.clone(),
+            cmd: vec!["sleep".into(), "infinity".into()],
+            env: spec.env.clone(),
+            mounts,
+            resources: sandbox_core::SandboxResources::default(),
+            network_mode: network_docker.into(),
+            working_dir: Some("/workspace".into()),
+        };
+
+        let handle = mgr.create(config).await?;
+        let sandbox_id = handle.id.clone();
+        let fs_label = if spec.fs_mode == "readonly" { "ro" } else { "rw" };
+
+        println!("{}  Container {} (fs={}, net={})", console::style("✓").green(), console::style(&sandbox_id).cyan(), fs_label, spec.network_mode);
+        handle.start().await?;
+
+        // Phase 1: Install the agent
+        if let Some(install) = &spec.install_cmd {
+            println!("{}  Installing agent: {}", console::style("↓").cyan(), console::style(install).dim());
+            let install_parts: Vec<String> = install.split_whitespace().map(|s| s.to_string()).collect();
+            let exit = handle.exec_and_wait(install_parts, |out| match out {
+                sandbox_core::ExecOutput::Stdout(text) => print!("{}", text),
+                sandbox_core::ExecOutput::Stderr(text) => eprint!("{}", text),
+            }).await?;
+            if exit != 0 {
+                println!("{}  Install failed (exit {})", console::style("✗").red().bold(), exit);
+                let _ = handle.remove(true).await;
+                return Ok(exit);
+            }
+            println!("{}  Agent installed", console::style("✓").green());
+        }
+
+        // Phase 2: Exec the agent with interactive stdio
+        println!("{}  Launching agent: {}", console::style("▶").cyan(), console::style(spec.agent_cmd.join(" ")).white());
+        println!();
+
+        let exit_code = handle.exec_and_wait(spec.agent_cmd.clone(), |out| match out {
+            sandbox_core::ExecOutput::Stdout(text) => print!("{}", text),
+            sandbox_core::ExecOutput::Stderr(text) => eprint!("{}", console::style(text).red()),
+        }).await?;
+
+        let _ = handle.stop(Some(5)).await;
+        let _ = handle.remove(true).await;
+        Ok(exit_code)
+    })
 }
 
 // ─── Standalone mode (no daemon — simulated sandbox) ─────────
