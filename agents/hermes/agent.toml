@@ -1,19 +1,24 @@
-# Hermes Agent — general-purpose coding assistant
+# Hermes Agent — autonomous coding & tool use agent by Nous Research
 # Copy to ~/.agenticbox/agents/hermes/ to use: `agenticbox run hermes`
 # Docs: https://github.com/morpheus-sh/agenticbox/blob/main/docs/agents.md
 
 name = "hermes"
-description = "Hermes Agent — general-purpose coding assistant"
+description = "Hermes Agent — autonomous coding & tool use (Nous Research)"
+
 command = "hermes"
 
 [model]
-provider = "openai"
-model = "gpt-4o"
-api_key_env = "OPENAI_API_KEY"
+provider = "openrouter"
+model = "anthropic/claude-sonnet-4"
+api_key_env = "OPENROUTER_API_KEY"
 
 [permissions]
 terminal = true
 filesystem = "readwrite"
 browser = false
 network = "allowlist"
-domains = ["api.openai.com", "github.com", "pypi.org", "registry.npmjs.org"]
+domains = ["hermes-agent.nousresearch.com", "openrouter.ai", "api.github.com", "github.com", "registry.npmjs.org", "pypi.org"]
+
+[image]
+base = "node:22-slim"
+setup = ["apt-get update && apt-get install -y curl", "curl -fsSL https://hermes-agent.nousresearch.com/install.sh | bash"]

@@ -1,10 +1,11 @@
-# Pi Agent — Raspberry Pi / IoT edge agent
+# Pi Agent — edge/IoT coding agent from pi.dev
 # Copy to ~/.agenticbox/agents/pi/ to use: `agenticbox run pi`
 # Docs: https://github.com/morpheus-sh/agenticbox/blob/main/docs/agents.md
 
 name = "pi"
 description = "Pi Agent — edge computing, IoT device management"
-command = "python3 /workspace/run.py"
+
+command = "pi"
 
 [model]
 provider = "anthropic"
@@ -13,10 +14,11 @@ api_key_env = "ANTHROPIC_API_KEY"
 
 [permissions]
 terminal = true
-filesystem = "readonly"
+filesystem = "readwrite"
 browser = false
-network = "localhost"
-domains = []
+network = "allowlist"
+domains = ["pi.dev", "registry.npmjs.org", "api.anthropic.com"]
 
 [image]
-base = "python:3.12-slim"
+base = "node:22-slim"
+setup = ["apt-get update && apt-get install -y curl", "curl -fsSL https://pi.dev/install.sh | sh"]

@@ -1365,8 +1365,8 @@ fn run_harness_sandbox(spec: &HarnessSpec) -> Result<i64> {
         // Phase 1: Install the agent
         if let Some(install) = &spec.install_cmd {
             println!("{}  Installing agent: {}", console::style("↓").cyan(), console::style(install).dim());
-            let install_parts: Vec<String> = install.split_whitespace().map(|s| s.to_string()).collect();
-            let exit = handle.exec_and_wait(install_parts, |out| match out {
+            // Run each setup step via sh -c to handle pipes, &&, flags etc.
+            let exit = handle.exec_and_wait(vec!["sh".into(), "-c".into(), install.clone()], |out| match out {
                 sandbox_core::ExecOutput::Stdout(text) => print!("{}", text),
                 sandbox_core::ExecOutput::Stderr(text) => eprint!("{}", text),
             }).await?;
@@ -1413,9 +1413,12 @@ fn run_harness_sandbox(spec: &HarnessSpec) -> Result<i64> {
             }
         }
 
-        // Stdin closed — stop the container (which ends the exec)
+        // Stdin closed — drop pipe (sends EOF to agent's stdin)
+        // Give agent time to finish, then stop container
+        drop(pipe);
+        tokio::time::sleep(std::time::Duration::from_secs(10)).await;
         let _ = handle.stop(Some(3)).await;
-        let exit_code = 0; // Agent completed
+        let exit_code = 0;
         let _ = handle.remove(true).await;
         Ok(exit_code)
     })
