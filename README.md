@@ -12,10 +12,10 @@
 
 Agents need workplaces. From that single idea, the rest follows naturally:
 
-- **Permissions** — what the employee is allowed to do
-- **Identity** — who the employee is
-- **Accountability** — what the employee did
-- **Ownership boundaries** — what belongs to the employee vs. the organization
+- **Permissions** — what the coworker is allowed to do
+- **Identity** — who the coworker is
+- **Accountability** — what the coworker did
+- **Ownership boundaries** — what belongs to the coworker vs. the organization
 
 Give your AI agent a workplace instead of root access. Okta + Docker for AI agents — scoped permissions, isolated execution, full accountability.
 
@@ -272,7 +272,7 @@ Real Docker execution — `agenticbox run` spawns containers, installs agents at
 ACP permission interception — parse JSON-RPC traffic between host and agent, enforce allow/deny on tool calls based on the permission profile.
 
 ### Later 🔵
-Agent identity — agents get their own credentials and accounts. Browser automation. The bounded agent becomes an employee.
+Agent identity — agents get their own credentials and accounts. Browser automation. The bounded agent becomes an coworker.
 
 ---
 
