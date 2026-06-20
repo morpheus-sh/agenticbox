@@ -21,6 +21,7 @@ fs-guard = { path = "../../crates/fs-guard" }
 network-control = { path = "../../crates/network-control" }
 sandbox-core = { path = "../../crates/sandbox-core" }
 tokio = { version = "1.38", features = ["full"] }
+crossterm = "0.27"
 
 [[bin]]
 name = "agenticbox"

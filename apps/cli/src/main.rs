@@ -1382,43 +1382,104 @@ fn run_harness_sandbox(spec: &HarnessSpec) -> Result<i64> {
         println!("{}  Launching agent: {}", console::style("▶").cyan(), console::style(spec.agent_cmd.join(" ")).white());
         println!();
 
-        // Use exec_interactive for bidirectional stdio
-        let mut pipe = handle.exec_interactive(spec.agent_cmd.clone(), |out| match out {
-            sandbox_core::ExecOutput::Stdout(text) => print!("{}", text),
-            sandbox_core::ExecOutput::Stderr(text) => eprint!("{}", console::style(text).red()),
+        let is_tty = std::io::IsTerminal::is_terminal(&std::io::stdin());
+
+        // In TTY mode: enter raw mode so keystrokes pass through directly
+        if is_tty {
+            let _ = crossterm::terminal::enable_raw_mode();
+        }
+
+        let tty_flag = is_tty;
+        let mut pipe = handle.exec_interactive(spec.agent_cmd.clone(), tty_flag, |out| match out {
+            sandbox_core::ExecOutput::Stdout(text) => {
+                use std::io::Write;
+                let mut stdout = std::io::stdout();
+                let _ = stdout.write_all(text.as_bytes());
+                let _ = stdout.flush();
+            }
+            sandbox_core::ExecOutput::Stderr(text) => {
+                use std::io::Write;
+                let mut stderr = std::io::stderr();
+                let _ = stderr.write_all(text.as_bytes());
+                let _ = stderr.flush();
+            }
         }).await?;
 
-        // Relay stdin from host terminal → container stdin
-        // Read from stdin in a separate task
-        use tokio::io::{AsyncBufReadExt, BufReader};
-        let stdin = tokio::io::stdin();
-        let reader = BufReader::new(stdin);
-        let mut lines = reader.lines();
+        // Relay stdin → container, break on agent exit
+        let exit_code;
+        if is_tty {
+            // Raw byte relay for interactive TTY
+            use tokio::io::AsyncReadExt;
+            let mut stdin = tokio::io::stdin();
+            let mut buf = [0u8; 4096];
+            let mut agent_code: Option<i64> = None;
 
-        // Read lines from stdin and write to container
-        loop {
-            tokio::select! {
-                line = lines.next_line() => {
-                    match line {
-                        Ok(Some(text)) => {
-                            if let Err(e) = pipe.write_line(&text).await {
-                                eprintln!("{}  Pipe write error: {}", console::style("✗").red(), e);
-                                break;
+            loop {
+                tokio::select! {
+                    n = stdin.read(&mut buf) => {
+                        match n {
+                            Ok(0) => break,           // stdin EOF
+                            Ok(n) => {
+                                if pipe.write(&buf[..n]).await.is_err() {
+                                    break;
+                                }
                             }
+                            Err(_) => break,
                         }
-                        Ok(None) => break, // EOF
-                        Err(_) => break,
+                    }
+                    code = &mut pipe.exit => {
+                        agent_code = Some(code.unwrap_or(0));
+                        break;
                     }
                 }
             }
+
+            // If stdin closed but agent still running, wait for it (up to 10s)
+            exit_code = match agent_code {
+                Some(c) => c,
+                None => {
+                    match tokio::time::timeout(
+                        std::time::Duration::from_secs(10),
+                        &mut pipe.exit,
+                    ).await {
+                        Ok(Ok(c)) => c,
+                        _ => 0,
+                    }
+                }
+            };
+        } else {
+            // Line-based relay for non-interactive (piped stdin)
+            use tokio::io::{AsyncBufReadExt, BufReader};
+            let stdin = tokio::io::stdin();
+            let reader = BufReader::new(stdin);
+            let mut lines = reader.lines();
+
+            exit_code = loop {
+                tokio::select! {
+                    line = lines.next_line() => {
+                        match line {
+                            Ok(Some(text)) => {
+                                if pipe.write_line(&text).await.is_err() {
+                                    break 0;
+                                }
+                            }
+                            Ok(None) => break 0,   // EOF
+                            Err(_) => break 0,
+                        }
+                    }
+                    code = &mut pipe.exit => {
+                        break code.unwrap_or(0);
+                    }
+                }
+            };
         }
 
-        // Stdin closed — drop pipe (sends EOF to agent's stdin)
-        // Give agent time to finish, then stop container
+        // Restore terminal + clean up container
+        if is_tty {
+            let _ = crossterm::terminal::disable_raw_mode();
+        }
         drop(pipe);
-        tokio::time::sleep(std::time::Duration::from_secs(10)).await;
         let _ = handle.stop(Some(3)).await;
-        let exit_code = 0;
         let _ = handle.remove(true).await;
         Ok(exit_code)
     })

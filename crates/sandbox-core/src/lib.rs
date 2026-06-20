@@ -134,6 +134,7 @@ impl SandboxHandle {
     pub async fn exec_interactive(
         &self,
         cmd: Vec<String>,
+        tty: bool,
         on_output: impl Fn(ExecOutput) + Send + 'static,
     ) -> anyhow::Result<ExecPipe> {
         let exec = self
@@ -143,17 +144,21 @@ impl SandboxHandle {
                 CreateExecOptions {
                     cmd: Some(cmd),
                     attach_stdout: Some(true),
-                    attach_stderr: Some(true),
+                    attach_stderr: Some(!tty),
                     attach_stdin: Some(true),
-                    tty: Some(false),
+                    tty: Some(tty),
                     ..Default::default()
                 },
             )
             .await?;
 
+        let exec_id = exec.id.clone();
+        let client = self.client.clone();
+
         match self.client.start_exec(&exec.id, None).await? {
             StartExecResults::Attached { output, input } => {
                 let input = Box::pin(input);
+                let (exit_tx, exit_rx) = tokio::sync::oneshot::channel();
 
                 tokio::spawn(async move {
                     let mut output = output;
@@ -170,9 +175,18 @@ impl SandboxHandle {
                             _ => {}
                         }
                     }
+                    // Output stream ended — fetch exit code
+                    let code = match client.inspect_exec(&exec_id).await {
+                        Ok(insp) => insp.exit_code.unwrap_or(0),
+                        Err(_) => -1,
+                    };
+                    let _ = exit_tx.send(code);
                 });
 
-                Ok(ExecPipe { input })
+                Ok(ExecPipe {
+                    input,
+                    exit: exit_rx,
+                })
             }
             StartExecResults::Detached => {
                 Err(anyhow::anyhow!("Exec started detached — expected attached"))
@@ -247,8 +261,10 @@ pub enum ExecOutput {
 }
 
 /// A writable pipe to the stdin of an exec'd process inside the container.
+/// The `exit` receiver resolves with the process exit code when it terminates.
 pub struct ExecPipe {
     input: std::pin::Pin<Box<dyn tokio::io::AsyncWrite + Send>>,
+    pub exit: tokio::sync::oneshot::Receiver<i64>,
 }
 
 impl ExecPipe {
