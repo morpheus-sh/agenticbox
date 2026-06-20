@@ -17,6 +17,12 @@ pub enum PolicyDecision {
 
 pub struct PolicyEngine;
 
+impl Default for PolicyEngine {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl PolicyEngine {
     pub fn new() -> Self {
         Self
@@ -32,18 +38,14 @@ impl PolicyEngine {
                     PolicyDecision::Deny("Terminal access not granted".into())
                 }
             }
-            "fs:read" => {
-                match req.permissions.filesystem {
-                    FsPermission::ReadOnly | FsPermission::ReadWrite => PolicyDecision::Allow,
-                    _ => PolicyDecision::Deny("Filesystem read not granted".into()),
-                }
-            }
-            "fs:write" => {
-                match req.permissions.filesystem {
-                    FsPermission::ReadWrite => PolicyDecision::Allow,
-                    _ => PolicyDecision::Deny("Filesystem write not granted".into()),
-                }
-            }
+            "fs:read" => match req.permissions.filesystem {
+                FsPermission::ReadOnly | FsPermission::ReadWrite => PolicyDecision::Allow,
+                _ => PolicyDecision::Deny("Filesystem read not granted".into()),
+            },
+            "fs:write" => match req.permissions.filesystem {
+                FsPermission::ReadWrite => PolicyDecision::Allow,
+                _ => PolicyDecision::Deny("Filesystem write not granted".into()),
+            },
             "browser:use" => {
                 if req.permissions.browser {
                     PolicyDecision::Allow
@@ -51,26 +53,24 @@ impl PolicyEngine {
                     PolicyDecision::Deny("Browser access not granted".into())
                 }
             }
-            "network:outbound" => {
-                match &req.permissions.network {
-                    NetworkPolicy::Full => PolicyDecision::Allow,
-                    NetworkPolicy::Allowlist(domains) => {
-                        if domains.iter().any(|d| req.resource.contains(d)) {
-                            PolicyDecision::Allow
-                        } else {
-                            PolicyDecision::Deny("Domain not in allowlist".into())
-                        }
+            "network:outbound" => match &req.permissions.network {
+                NetworkPolicy::Full => PolicyDecision::Allow,
+                NetworkPolicy::Allowlist(domains) => {
+                    if domains.iter().any(|d| req.resource.contains(d)) {
+                        PolicyDecision::Allow
+                    } else {
+                        PolicyDecision::Deny("Domain not in allowlist".into())
                     }
-                    NetworkPolicy::LocalhostOnly => {
-                        if req.resource.contains("localhost") || req.resource.contains("127.0.0.1") {
-                            PolicyDecision::Allow
-                        } else {
-                            PolicyDecision::Deny("Only localhost allowed".into())
-                        }
-                    }
-                    NetworkPolicy::Offline => PolicyDecision::Deny("Network is offline".into()),
                 }
-            }
+                NetworkPolicy::LocalhostOnly => {
+                    if req.resource.contains("localhost") || req.resource.contains("127.0.0.1") {
+                        PolicyDecision::Allow
+                    } else {
+                        PolicyDecision::Deny("Only localhost allowed".into())
+                    }
+                }
+                NetworkPolicy::Offline => PolicyDecision::Deny("Network is offline".into()),
+            },
             _ => PolicyDecision::Deny("Unknown action".into()),
         }
     }

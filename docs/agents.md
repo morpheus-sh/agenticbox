@@ -44,14 +44,15 @@ Each agent lives in `~/.agenticbox/agents/<name>/`. The manifest file must be na
 name = "my-agent"
 description = "What this agent does"
 
-# Command to execute when the agent starts
+# Command to execute when the agent starts (inside the container)
 command = "python3 main.py"
 
 # Model configuration
 [model]
-provider = "openai"              # openai | anthropic | local
+provider = "openai"              # openai | anthropic | openrouter | local
 model = "gpt-4o"
 api_key_env = "OPENAI_API_KEY"   # env var name (not the key itself)
+# base_url = "http://host.docker.internal:11434/v1"  # optional override
 
 # Permission policy — what the agent CAN do
 [permissions]
@@ -60,7 +61,17 @@ filesystem = "readonly"          # readonly | readwrite | none
 browser = false                  # headless browser automation
 network = "allowlist"            # allowlist | localhost | offline | full
 domains = ["api.openai.com"]     # used when network = "allowlist"
+
+# Container image + runtime install (required for named agents)
+[image]
+base = "python:3.12-slim"        # any Docker image
+setup = [                        # commands run inside container before agent starts
+    "pip install my-agent",
+    "apt-get update && apt-get install -y curl"
+]
 ```
+
+Each `setup` command runs as `sh -c "<command>"` — pipes, flags, and `&&` chains all work.
 
 ## Permission Fields
 
@@ -88,9 +99,6 @@ agenticbox run hermes --domains "api.github.com,raw.githubusercontent.com"
 
 # Run without terminal access
 agenticbox run hermes --terminal false
-
-# Run standalone (no daemon — simulated sandbox)
-agenticbox run hermes --standalone
 ```
 
 ## Creating Agents
@@ -117,12 +125,17 @@ command = "python3 main.py"
 [model]
 provider = "openai"
 model = "gpt-4o"
+api_key_env = "OPENAI_API_KEY"
 
 [permissions]
 terminal = true
 filesystem = "readonly"
 network = "allowlist"
 domains = ["api.openai.com"]
+
+[image]
+base = "python:3.12-slim"
+setup = ["pip install my-agent"]
 EOF
 ```
 
@@ -151,11 +164,11 @@ agenticbox run hermes-custom
 
 AgenticBox ships with example manifests in the `agents/` directory:
 
-| Agent | Description | Permissions |
-|-------|-------------|-------------|
-| `hermes` | General-purpose coding assistant | terminal, readwrite, allowlist |
-| `pi` | Edge / IoT computing agent | terminal, readonly, localhost |
-| `reviewer` | Automated code reviewer | no terminal, readonly, allowlist |
+| Agent | Description | Image | Setup |
+|-------|-------------|-------|-------|
+| `hermes` | Autonomous coding & tool use (Nous Research) | `node:22-slim` | `curl -fsSL https://hermes-agent.nousresearch.com/install.sh \| bash` |
+| `pi` | Edge/IoT coding agent (pi.dev) | `node:22-slim` | `curl -fsSL https://pi.dev/install.sh \| sh` |
+| `reviewer` | Automated code reviewer | `python:3.12-slim` | `pip install reviewer` |
 
 Copy them to your agents directory:
 

@@ -21,12 +21,19 @@ impl SessionManager {
                 permissions TEXT NOT NULL,
                 status TEXT NOT NULL
             )
-            "#
-        ).execute(&pool).await?;
+            "#,
+        )
+        .execute(&pool)
+        .await?;
         Ok(Self { db: pool })
     }
 
-    pub async fn create(&self, name: String, model_config: ModelConfig, permissions: PermissionSet) -> Result<Session> {
+    pub async fn create(
+        &self,
+        name: String,
+        model_config: ModelConfig,
+        permissions: PermissionSet,
+    ) -> Result<Session> {
         let id = Uuid::new_v4();
         let now = chrono::Utc::now();
         let session = Session {
@@ -57,15 +64,18 @@ impl SessionManager {
     }
 
     pub async fn list(&self) -> Result<Vec<Session>> {
-        let rows = sqlx::query_as::<_, SessionRow>("SELECT * FROM sessions ORDER BY created_at DESC")
-            .fetch_all(&self.db).await?;
+        let rows =
+            sqlx::query_as::<_, SessionRow>("SELECT * FROM sessions ORDER BY created_at DESC")
+                .fetch_all(&self.db)
+                .await?;
         Ok(rows.into_iter().map(Into::into).collect())
     }
 
     pub async fn get(&self, id: SessionId) -> Result<Option<Session>> {
         let row = sqlx::query_as::<_, SessionRow>("SELECT * FROM sessions WHERE id = ?")
             .bind(id.to_string())
-            .fetch_optional(&self.db).await?;
+            .fetch_optional(&self.db)
+            .await?;
         Ok(row.map(Into::into))
     }
 
@@ -75,7 +85,8 @@ impl SessionManager {
             .bind(status_str)
             .bind(chrono::Utc::now())
             .bind(id.to_string())
-            .execute(&self.db).await?;
+            .execute(&self.db)
+            .await?;
         Ok(())
     }
 }

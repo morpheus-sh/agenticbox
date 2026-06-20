@@ -20,14 +20,20 @@ impl NetworkGuard {
                 if destination.contains("localhost") || destination.contains("127.0.0.1") {
                     Ok(())
                 } else {
-                    Err(NetworkError::Blocked(format!("{} not localhost", destination)))
+                    Err(NetworkError::Blocked(format!(
+                        "{} not localhost",
+                        destination
+                    )))
                 }
             }
             NetworkPolicy::Allowlist(domains) => {
                 if domains.iter().any(|d| destination.contains(d)) {
                     Ok(())
                 } else {
-                    Err(NetworkError::Blocked(format!("{} not in allowlist", destination)))
+                    Err(NetworkError::Blocked(format!(
+                        "{} not in allowlist",
+                        destination
+                    )))
                 }
             }
             NetworkPolicy::Offline => Err(NetworkError::Blocked("Offline mode".into())),
@@ -54,14 +60,14 @@ mod tests {
             "github.com".into(),
         ]));
         assert!(g.check("https://api.openai.com/v1/models").is_ok());
-        assert!(g.check("https://github.com/repos/morpheus-sh/agenticbox").is_ok());
+        assert!(g
+            .check("https://github.com/repos/morpheus-sh/agenticbox")
+            .is_ok());
     }
 
     #[test]
     fn allowlist_blocks_unlisted_domain() {
-        let g = NetworkGuard::new(NetworkPolicy::Allowlist(vec![
-            "api.openai.com".into(),
-        ]));
+        let g = NetworkGuard::new(NetworkPolicy::Allowlist(vec!["api.openai.com".into()]));
         let result = g.check("https://evil.attacker.com/exfil");
         assert!(result.is_err());
         match result.unwrap_err() {
@@ -77,9 +83,7 @@ mod tests {
 
     #[test]
     fn allowlist_subdomain_matching() {
-        let g = NetworkGuard::new(NetworkPolicy::Allowlist(vec![
-            "github.com".into(),
-        ]));
+        let g = NetworkGuard::new(NetworkPolicy::Allowlist(vec!["github.com".into()]));
         // The impl uses `contains`, so api.github.com contains "github.com"
         assert!(g.check("https://api.github.com/user").is_ok());
     }
