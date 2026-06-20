@@ -24,7 +24,9 @@ fn test_model() -> ModelConfig {
 #[tokio::test]
 async fn create_and_retrieve_session() {
     let db_url = "sqlite::memory:";
-    let mgr = SessionManager::new(db_url).await.expect("failed to init session manager");
+    let mgr = SessionManager::new(db_url)
+        .await
+        .expect("failed to init session manager");
 
     let session = mgr
         .create("test-agent".into(), test_model(), test_perms())
@@ -47,9 +49,18 @@ async fn create_multiple_and_list() {
     let db_url = "sqlite::memory:";
     let mgr = SessionManager::new(db_url).await.unwrap();
 
-    let s1 = mgr.create("agent-1".into(), test_model(), test_perms()).await.unwrap();
-    let s2 = mgr.create("agent-2".into(), test_model(), test_perms()).await.unwrap();
-    let s3 = mgr.create("agent-3".into(), test_model(), test_perms()).await.unwrap();
+    let s1 = mgr
+        .create("agent-1".into(), test_model(), test_perms())
+        .await
+        .unwrap();
+    let s2 = mgr
+        .create("agent-2".into(), test_model(), test_perms())
+        .await
+        .unwrap();
+    let s3 = mgr
+        .create("agent-3".into(), test_model(), test_perms())
+        .await
+        .unwrap();
 
     let sessions = mgr.list().await.expect("list failed");
     assert_eq!(sessions.len(), 3);
@@ -83,25 +94,34 @@ async fn update_session_status() {
     let db_url = "sqlite::memory:";
     let mgr = SessionManager::new(db_url).await.unwrap();
 
-    let session = mgr.create("status-test".into(), test_model(), test_perms()).await.unwrap();
+    let session = mgr
+        .create("status-test".into(), test_model(), test_perms())
+        .await
+        .unwrap();
 
     // Initially Creating
     assert!(matches!(session.status, SessionStatus::Creating));
 
     // Transition to Running
-    mgr.update_status(session.id, SessionStatus::Running).await.expect("update failed");
+    mgr.update_status(session.id, SessionStatus::Running)
+        .await
+        .expect("update failed");
 
     let updated = mgr.get(session.id).await.unwrap().unwrap();
     assert!(matches!(updated.status, SessionStatus::Running));
 
     // Transition to Paused
-    mgr.update_status(session.id, SessionStatus::Paused).await.unwrap();
+    mgr.update_status(session.id, SessionStatus::Paused)
+        .await
+        .unwrap();
 
     let updated = mgr.get(session.id).await.unwrap().unwrap();
     assert!(matches!(updated.status, SessionStatus::Paused));
 
     // Transition to Destroyed
-    mgr.update_status(session.id, SessionStatus::Destroyed).await.unwrap();
+    mgr.update_status(session.id, SessionStatus::Destroyed)
+        .await
+        .unwrap();
 
     let updated = mgr.get(session.id).await.unwrap().unwrap();
     assert!(matches!(updated.status, SessionStatus::Destroyed));
@@ -119,13 +139,19 @@ async fn session_preserves_model_config() {
         base_url: Some("https://api.anthropic.com".into()),
     };
 
-    let session = mgr.create("config-test".into(), model, test_perms()).await.unwrap();
+    let session = mgr
+        .create("config-test".into(), model, test_perms())
+        .await
+        .unwrap();
     let retrieved = mgr.get(session.id).await.unwrap().unwrap();
 
     assert_eq!(retrieved.model_config.provider, "anthropic");
     assert_eq!(retrieved.model_config.model, "claude-sonnet-4-20250514");
     assert_eq!(retrieved.model_config.api_key, Some("sk-test-123".into()));
-    assert_eq!(retrieved.model_config.base_url, Some("https://api.anthropic.com".into()));
+    assert_eq!(
+        retrieved.model_config.base_url,
+        Some("https://api.anthropic.com".into())
+    );
 }
 
 #[tokio::test]
@@ -140,11 +166,17 @@ async fn session_preserves_permissions() {
         network: NetworkPolicy::Allowlist(vec!["github.com".into(), "api.openai.com".into()]),
     };
 
-    let session = mgr.create("perms-test".into(), test_model(), perms).await.unwrap();
+    let session = mgr
+        .create("perms-test".into(), test_model(), perms)
+        .await
+        .unwrap();
     let retrieved = mgr.get(session.id).await.unwrap().unwrap();
 
     assert_eq!(retrieved.permissions.terminal, false);
-    assert!(matches!(retrieved.permissions.filesystem, FsPermission::ReadOnly));
+    assert!(matches!(
+        retrieved.permissions.filesystem,
+        FsPermission::ReadOnly
+    ));
     assert_eq!(retrieved.permissions.browser, true);
     match &retrieved.permissions.network {
         NetworkPolicy::Allowlist(domains) => {

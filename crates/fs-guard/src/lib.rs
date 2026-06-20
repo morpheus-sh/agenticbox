@@ -48,30 +48,54 @@ mod tests {
     // relative-path branch. Use real absolute paths for each platform.
 
     #[cfg(windows)]
-    fn workspace() -> PathBuf { PathBuf::from("C:\\workspace") }
+    fn workspace() -> PathBuf {
+        PathBuf::from("C:\\workspace")
+    }
     #[cfg(windows)]
-    fn tmp_agent() -> PathBuf { PathBuf::from("C:\\tmp\\agent") }
+    fn tmp_agent() -> PathBuf {
+        PathBuf::from("C:\\tmp\\agent")
+    }
     #[cfg(windows)]
-    fn blocked_path() -> &'static str { "C:\\Windows\\System32\\config\\SAM" }
+    fn blocked_path() -> &'static str {
+        "C:\\Windows\\System32\\config\\SAM"
+    }
     #[cfg(windows)]
-    fn ssh_key() -> &'static str { "C:\\Users\\hacker\\.ssh\\id_rsa" }
+    fn ssh_key() -> &'static str {
+        "C:\\Users\\hacker\\.ssh\\id_rsa"
+    }
     #[cfg(windows)]
-    fn aws_cred() -> &'static str { "C:\\Users\\hacker\\.aws\\credentials" }
+    fn aws_cred() -> &'static str {
+        "C:\\Users\\hacker\\.aws\\credentials"
+    }
     #[cfg(windows)]
-    fn outside_root() -> &'static str { "C:\\Users\\hacker\\stuff" }
+    fn outside_root() -> &'static str {
+        "C:\\Users\\hacker\\stuff"
+    }
 
     #[cfg(not(windows))]
-    fn workspace() -> PathBuf { PathBuf::from("/workspace") }
+    fn workspace() -> PathBuf {
+        PathBuf::from("/workspace")
+    }
     #[cfg(not(windows))]
-    fn tmp_agent() -> PathBuf { PathBuf::from("/tmp/agent") }
+    fn tmp_agent() -> PathBuf {
+        PathBuf::from("/tmp/agent")
+    }
     #[cfg(not(windows))]
-    fn blocked_path() -> &'static str { "/etc/passwd" }
+    fn blocked_path() -> &'static str {
+        "/etc/passwd"
+    }
     #[cfg(not(windows))]
-    fn ssh_key() -> &'static str { "/root/.ssh/id_rsa" }
+    fn ssh_key() -> &'static str {
+        "/root/.ssh/id_rsa"
+    }
     #[cfg(not(windows))]
-    fn aws_cred() -> &'static str { "/root/.aws/credentials" }
+    fn aws_cred() -> &'static str {
+        "/root/.aws/credentials"
+    }
     #[cfg(not(windows))]
-    fn outside_root() -> &'static str { "/home/hacker/stuff" }
+    fn outside_root() -> &'static str {
+        "/home/hacker/stuff"
+    }
 
     fn guard() -> FsGuard {
         FsGuard::new(vec![workspace(), tmp_agent()])
@@ -136,7 +160,10 @@ mod tests {
         let traversal = format!("{}/../etc/passwd", ws.display());
         let result = g.resolve(&traversal);
         // Known limitation: prefix matching allows traversal
-        assert!(result.is_ok(), "path traversal is a known limitation of prefix matching");
+        assert!(
+            result.is_ok(),
+            "path traversal is a known limitation of prefix matching"
+        );
     }
 
     #[test]

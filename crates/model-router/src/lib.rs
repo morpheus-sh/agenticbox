@@ -54,7 +54,9 @@ impl ModelProvider for OpenAIProvider {
     async fn chat(&self, req: ChatRequest) -> Result<ChatResponse> {
         info!("Sending chat request to OpenAI-compatible endpoint");
         let url = format!("{}/chat/completions", self.base_url);
-        let resp = self.client.post(&url)
+        let resp = self
+            .client
+            .post(&url)
             .bearer_auth(&self.api_key)
             .json(&req)
             .send()
@@ -66,14 +68,21 @@ impl ModelProvider for OpenAIProvider {
 
     async fn models(&self) -> Result<Vec<String>> {
         let url = format!("{}/models", self.base_url);
-        let resp = self.client.get(&url)
+        let resp = self
+            .client
+            .get(&url)
             .bearer_auth(&self.api_key)
             .send()
             .await?
             .json::<Value>()
             .await?;
-        let models = resp["data"].as_array()
-            .map(|arr| arr.iter().filter_map(|m| m["id"].as_str().map(String::from)).collect())
+        let models = resp["data"]
+            .as_array()
+            .map(|arr| {
+                arr.iter()
+                    .filter_map(|m| m["id"].as_str().map(String::from))
+                    .collect()
+            })
             .unwrap_or_default();
         Ok(models)
     }

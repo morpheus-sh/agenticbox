@@ -15,9 +15,9 @@ use shared_types::{CreateSessionRequest, SessionStatus};
 #[derive(Clone)]
 struct AppState {
     session_manager: Arc<SessionManager>,
+    #[allow(dead_code)]
     sandbox_manager: Arc<SandboxManager>,
 }
-
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
     tracing_subscriber::fmt()
@@ -27,8 +27,8 @@ async fn main() -> anyhow::Result<()> {
     std::fs::create_dir_all("data")?;
     let cwd = std::env::current_dir()?;
     let db_path = cwd.join("data/sessions.db");
-    let db_url = std::env::var("DATABASE_URL")
-        .unwrap_or_else(|_| format!("sqlite:{}", db_path.display()));
+    let db_url =
+        std::env::var("DATABASE_URL").unwrap_or_else(|_| format!("sqlite:{}", db_path.display()));
     let session_manager = Arc::new(SessionManager::new(&db_url).await?);
     let sandbox_manager = Arc::new(SandboxManager::new()?);
 
@@ -108,11 +108,8 @@ async fn update_session_status(
     Ok(())
 }
 
-async fn ws_handler(
-    ws: WebSocketUpgrade,
-    State(_state): State<AppState>,
-) -> Response {
-    ws.on_upgrade(move |socket| handle_socket(socket))
+async fn ws_handler(ws: WebSocketUpgrade, State(_state): State<AppState>) -> Response {
+    ws.on_upgrade(handle_socket)
 }
 
 async fn handle_socket(mut socket: axum::extract::ws::WebSocket) {

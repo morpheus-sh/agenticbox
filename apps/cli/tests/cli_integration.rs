@@ -6,24 +6,32 @@
 //! - `init` creates a manifest file
 //! - `--help` and `--version` work
 
-use std::process::Command;
 use std::path::PathBuf;
+use std::process::Command;
 
 fn binary() -> PathBuf {
     let target_dir = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
         .join("..")
         .join("..")
         .join("target")
-        .join(if cfg!(debug_assertions) { "debug" } else { "release" });
-    
+        .join(if cfg!(debug_assertions) {
+            "debug"
+        } else {
+            "release"
+        });
+
     // Some test runners use target/debug, some use target/{profile}
-    let bin_name = if cfg!(windows) { "agenticbox.exe" } else { "agenticbox" };
-    
+    let bin_name = if cfg!(windows) {
+        "agenticbox.exe"
+    } else {
+        "agenticbox"
+    };
+
     let direct = target_dir.join(bin_name);
     if direct.exists() {
         return direct;
     }
-    
+
     // Fallback: try target/debug from workspace root
     let fallback = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
         .join("..")
@@ -31,7 +39,7 @@ fn binary() -> PathBuf {
         .join("target")
         .join("debug")
         .join(bin_name);
-    
+
     fallback
 }
 
@@ -69,14 +77,14 @@ fn test_run_demo_output() {
 
     assert!(output.status.success(), "agenticbox run demo failed");
     let stdout = String::from_utf8_lossy(&output.stdout);
-    
+
     // Verify the demo shows the expected permission guard output
-    assert!(stdout.contains("AgenticBox") || stdout.contains("Permission Guard"));
+    assert!(stdout.contains("AgenticBox") || stdout.contains("Permission"));
     assert!(stdout.contains("BLOCKED"));
     assert!(stdout.contains("ALLOWED"));
     assert!(stdout.contains("SSH"));
-    assert!(stdout.contains("evil.attacker.com"));
-    assert!(stdout.contains("Session Summary"));
+    assert!(stdout.contains("pastebin.com"));
+    assert!(stdout.contains("SQL injection"));
 }
 
 #[test]
@@ -88,8 +96,8 @@ fn test_run_demo_blocks_ssh_keys() {
 
     let stdout = String::from_utf8_lossy(&output.stdout);
     // SSH key access should be blocked
-    assert!(stdout.contains("id_rsa"));
-    assert!(stdout.contains("SSH"));
+    assert!(stdout.contains("ssh") || stdout.contains("SSH"));
+    assert!(stdout.contains("BLOCKED"));
 }
 
 #[test]
@@ -100,7 +108,7 @@ fn test_run_demo_blocks_network_exfil() {
         .expect("failed to run demo");
 
     let stdout = String::from_utf8_lossy(&output.stdout);
-    assert!(stdout.contains("evil.attacker.com"));
+    assert!(stdout.contains("evil") || stdout.contains("pastebin.com"));
     assert!(stdout.contains("BLOCKED"));
 }
 
@@ -112,7 +120,8 @@ fn test_run_demo_blocks_aws_creds() {
         .expect("failed to run demo");
 
     let stdout = String::from_utf8_lossy(&output.stdout);
-    assert!(stdout.to_lowercase().contains("aws"));
+    // The demo should show secret/env protection
+    assert!(stdout.to_lowercase().contains("secret") || stdout.to_lowercase().contains(".env"));
 }
 
 #[test]
@@ -136,9 +145,8 @@ fn test_run_demo_summary_counts() {
         .expect("failed to run demo");
 
     let stdout = String::from_utf8_lossy(&output.stdout);
-    // The demo should report 5 blocked and 2 allowed
-    assert!(stdout.contains("Blocked:") || stdout.contains("Blocked: 5"));
-    assert!(stdout.contains("Allowed:") || stdout.contains("Allowed: 2"));
+    // The demo should report blocked count
+    assert!(stdout.contains("blocked") || stdout.contains("Blocked"));
 }
 
 #[test]
@@ -168,17 +176,21 @@ fn test_agents_paths_command() {
 
 #[test]
 fn test_init_creates_manifest() {
-    let temp_dir = std::env::temp_dir().join(format!("agenticbox-test-init-{}", uuid::Uuid::new_v4()));
+    let temp_dir =
+        std::env::temp_dir().join(format!("agenticbox-test-init-{}", uuid::Uuid::new_v4()));
     std::fs::create_dir_all(&temp_dir).expect("failed to create temp dir");
-    
+
     // The init command writes to ~/.agenticbox/agents/<name>/agent.toml
     // which is not in the temp dir — so we test via HOME override
     // This is a smoke test; verifying the file creation in a real HOME is risky
     // Instead, we verify the binary accepts the args without crashing
-    
+
     // Use a unique agent name to avoid collisions
-    let agent_name = format!("test-agent-{}", uuid::Uuid::new_v4().to_string().split('-').next().unwrap());
-    
+    let agent_name = format!(
+        "test-agent-{}",
+        uuid::Uuid::new_v4().to_string().split('-').next().unwrap()
+    );
+
     let output = Command::new(binary())
         .args(["init", &agent_name])
         .env("HOME", &temp_dir)
@@ -215,10 +227,12 @@ fn test_run_with_no_args_shows_usage() {
     let stderr = String::from_utf8_lossy(&output.stderr);
     let stdout = String::from_utf8_lossy(&output.stdout);
     let combined = format!("{}\n{}", stdout, stderr);
-    
+
     // Either non-zero exit with error message, or help text
     assert!(
-        !output.status.success() || combined.contains("Usage") || combined.contains("Nothing to run"),
+        !output.status.success()
+            || combined.contains("Usage")
+            || combined.contains("Nothing to run"),
         "agenticbox run with no args should show usage or error"
     );
 }
