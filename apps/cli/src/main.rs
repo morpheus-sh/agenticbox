@@ -1667,10 +1667,18 @@ fn run_real_sandbox(spec: &SandboxSpec) -> Result<i64> {
     rt.block_on(async {
         let mgr = sandbox_core::SandboxManager::new().map_err(|e| {
             anyhow::anyhow!(
-                "Cannot connect to Docker: {}\n  Is Docker Desktop running?",
+                "Cannot connect to a container runtime: {}\n  \
+                 Is Docker Desktop / Podman running?\n  \
+                 Tip: set AGENTICBOX_CONTAINER_SOCKET=/path/to/socket",
                 e
             )
         })?;
+        println!(
+            "  {} {} runtime via {}",
+            console::style("→").dim(),
+            console::style(mgr.runtime().display_name()).cyan(),
+            console::style(mgr.socket()).dim()
+        );
 
         // Check / pull image
         if !mgr.image_exists(&spec.image).await {
@@ -1769,7 +1777,9 @@ fn run_harness_sandbox(spec: &HarnessSpec) -> Result<i64> {
     rt.block_on(async {
         let mgr = sandbox_core::SandboxManager::new().map_err(|e| {
             anyhow::anyhow!(
-                "Cannot connect to Docker: {}\n  Is Docker Desktop running?",
+                "Cannot connect to a container runtime: {}\n  \
+                 Is Docker Desktop / Podman running?\n  \
+                 Tip: set AGENTICBOX_CONTAINER_SOCKET=/path/to/socket",
                 e
             )
         })?;

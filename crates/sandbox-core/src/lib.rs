@@ -1,3 +1,7 @@
+mod runtime;
+
+pub use runtime::ContainerRuntime;
+
 use bollard::container::{
     Config, CreateContainerOptions, LogOutput, LogsOptions, RemoveContainerOptions,
     StartContainerOptions, StopContainerOptions, WaitContainerOptions,
@@ -284,12 +288,85 @@ impl ExecPipe {
 
 pub struct SandboxManager {
     client: Docker,
+    runtime: ContainerRuntime,
+    /// The socket/endpoint path the client is connected to (for diagnostics).
+    socket: String,
 }
 
 impl SandboxManager {
+    /// Create a `SandboxManager` by auto-detecting an available container runtime.
+    ///
+    /// Probes for Docker and Podman sockets in order of preference. See
+    /// [`ContainerRuntime::detect`] for detection order and environment overrides.
     pub fn new() -> anyhow::Result<Self> {
-        let client = Docker::connect_with_local_defaults()?;
-        Ok(Self { client })
+        let (runtime, socket) = ContainerRuntime::detect()?;
+        let client = Self::connect(&socket)?;
+        Ok(Self {
+            client,
+            runtime,
+            socket,
+        })
+    }
+
+    /// Create a `SandboxManager` connected to an explicit runtime + endpoint.
+    ///
+    /// Use this when the caller has already resolved the runtime (e.g. from
+    /// config) and does not want auto-detection.
+    pub fn with_runtime(
+        runtime: ContainerRuntime,
+        socket: impl Into<String>,
+    ) -> anyhow::Result<Self> {
+        let socket = socket.into();
+        let client = Self::connect(&socket)?;
+        Ok(Self {
+            client,
+            runtime,
+            socket,
+        })
+    }
+
+    /// Which container runtime this manager is connected to.
+    pub fn runtime(&self) -> ContainerRuntime {
+        self.runtime
+    }
+
+    /// The socket/endpoint path the client is connected to.
+    pub fn socket(&self) -> &str {
+        &self.socket
+    }
+
+    /// Construct a bollard client for the given endpoint.
+    ///
+    /// On Unix, connects to a Unix socket path. On non-Unix (Windows/macOS),
+    /// delegates to bollard's platform-aware `connect_with_local_defaults()`
+    /// for standard Docker Desktop / named-pipe connections.
+    #[cfg(unix)]
+    fn connect(socket: &str) -> anyhow::Result<Docker> {
+        // DOCKER_HOST-style URLs (unix://, tcp://, npipe://) or plain socket paths.
+        if socket.starts_with("unix://")
+            || socket.starts_with("tcp://")
+            || socket.starts_with("http://")
+            || socket.starts_with("https://")
+            || socket.starts_with("npipe://")
+        {
+            Ok(Docker::connect_with_local_defaults()?)
+        } else if socket == "default" {
+            Ok(Docker::connect_with_local_defaults()?)
+        } else {
+            Ok(Docker::connect_with_unix(
+                socket,
+                120,
+                bollard::API_DEFAULT_VERSION,
+            )?)
+        }
+    }
+
+    #[cfg(not(unix))]
+    fn connect(socket: &str) -> anyhow::Result<Docker> {
+        // On Windows, bollard's defaults handle Docker Desktop's named pipe.
+        // Custom npipe:// or tcp:// endpoints are handled via DOCKER_HOST.
+        let _ = socket; // acknowledged; bollard handles the platform default.
+        Ok(Docker::connect_with_local_defaults()?)
     }
 
     /// Check if a Docker image exists locally.

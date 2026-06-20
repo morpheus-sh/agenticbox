@@ -34,7 +34,7 @@ It has 🔴 NOW / 🟡 NEXT / 🔵 LATER with explicit **"Done when"** criteria.
 
 | Decision | Rationale |
 |----------|-----------|
-| CLI talks directly to Docker via bollard | No daemon needed for `run`. Daemon is only for persistent sessions (`deploy`) |
+| CLI talks directly to container runtime via bollard | Supports Docker + Podman (auto-detected). No daemon needed for `run`. Daemon is only for persistent sessions (`deploy`) |
 | Agent CLI runs inside container, host relays stdio | Agent is sandboxed. No pre-built images per agent. |
 | Runtime agent install via `[image].setup` commands | Wrap ANY agent — just write a TOML profile, no Dockerfile |
 | `exec_interactive` with PTY support (crossterm) | Interactive agents (pi, hermes) get a real terminal |

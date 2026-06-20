@@ -238,7 +238,7 @@ agenticbox health                      # health check
 7. on exit: docker stop + docker rm
 ```
 
-**No daemon required for `run`.** The CLI talks directly to Docker via [bollard](https://github.com/fussybeaver/bollard-rust). The daemon is only needed for persistent, background sessions (`deploy`).
+**No daemon required for `run`.** The CLI talks directly to your container runtime via [bollard](https://github.com/fussybeaver/bollard-rust). Docker and Podman are both supported (auto-detected at startup). Set `AGENTICBOX_CONTAINER_SOCKET=/path/to/socket` to override. The daemon is only needed for persistent, background sessions (`deploy`).
 
 ### Crates (Rust)
 
