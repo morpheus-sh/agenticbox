@@ -175,6 +175,12 @@
     .code-block .copy-btn { position: absolute; top: 14px; right: 14px; background: var(--surface); border: 1px solid var(--border); color: var(--text-dim); padding: 6px 10px; font-family: var(--font-mono); font-size: 0.62rem; border-radius: 6px; cursor: pointer; opacity: 0; transition: all var(--transition); }
     .code-block:hover .copy-btn { opacity: 1; }
     .code-block .copy-btn:hover { background: var(--accent); color: #040706; border-color: var(--accent); }
+    .install-commands { max-width: 580px; margin: 28px auto 0; }
+    .install-tabs { display: flex; gap: 4px; margin-bottom: -1px; position: relative; z-index: 1; justify-content: center; }
+    .install-tab { background: transparent; border: 1px solid transparent; border-bottom: none; color: var(--text-muted); font-family: var(--font-mono); font-size: 0.72rem; padding: 8px 18px; cursor: pointer; border-radius: 8px 8px 0 0; transition: all var(--transition); }
+    .install-tab:hover { color: var(--text-dim); }
+    .install-tab.active { background: #030504; border-color: var(--border); color: var(--neon); }
+    .install-cmd { border-radius: 0 var(--radius-lg) var(--radius-lg) var(--radius-lg); }
     .os-tabs { display: flex; gap: 6px; margin-bottom: 18px; }
     .os-tab { padding: 8px 16px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-dim); cursor: pointer; transition: all var(--transition); }
     .os-tab.active { background: var(--accent); border-color: var(--accent); color: #040706; }
@@ -287,7 +293,7 @@
       <a href="#pillars">Pillars</a>
       <a href="#features">Runtime</a>
       <a href="https://github.com/morpheus-sh/agenticbox" target="_blank" rel="noopener">GitHub</a>
-      <a href="#waitlist" class="primary">Get Started</a>
+      <a href="https://github.com/morpheus-sh/agenticbox" target="_blank" rel="noopener" class="primary">★ Star</a>
     </nav>
   </div>
 </header>
@@ -305,11 +311,28 @@
     <p class="lede">Agents need workplaces. Permissions define what they can do. Identity defines who they are. Accountability tracks what they did. AgenticBox is Okta + Docker for AI agents.</p>
 
     <div class="btn-group">
-      <a href="#waitlist" class="btn btn-primary">Get Started</a>
+      <a href="https://github.com/morpheus-sh/agenticbox" class="btn btn-primary" target="_blank" rel="noopener">Star on GitHub</a>
       <a href="https://github.com/morpheus-sh/agenticbox" target="_blank" rel="noopener" class="btn btn-secondary">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
         View on GitHub
       </a>
+    </div>
+
+    <div class="install-commands">
+      <div class="install-tabs">
+        <button class="install-tab active" data-os="unix">macOS / Linux</button>
+        <button class="install-tab" data-os="windows">Windows</button>
+      </div>
+      <div class="code-block install-cmd" data-os="unix">
+        <span class="comment"># One-line install (daemon + CLI)</span><br>
+        <span class="prompt">$ </span><span class="command">curl -fsSL https://agenticbox.co/install.sh</span> <span class="arg">| bash</span>
+        <button class="copy-btn" onclick="copyInstall(this)">copy</button>
+      </div>
+      <div class="code-block install-cmd" data-os="windows" style="display:none">
+        <span class="comment"># One-line install (daemon + CLI)</span><br>
+        <span class="prompt">PS&gt; </span><span class="command">irm https://agenticbox.co/install.ps1</span> <span class="arg">| iex</span>
+        <button class="copy-btn" onclick="copyInstall(this)">copy</button>
+      </div>
     </div>
 
     <div class="terminal-demo-wrap">
@@ -393,17 +416,22 @@
   </div>
 </section>
 
-<section class="cta" id="waitlist">
+<section class="cta" id="get-started">
   <div class="cta-glow" aria-hidden="true"></div>
   <div class="container">
-    <h2>Ready to get <em>started</em>?</h2>
-    <p>Join the waitlist for early access to AgenticBox Cloud. We're onboarding beta users in batches.</p>
-    <form class="waitlist-form" action="https://api.agenticbox.co/waitlist" method="POST">
-      <input type="email" name="email" placeholder="your@email.com" required autocomplete="email" />
-      <button type="submit" class="btn btn-primary">Join Waitlist</button>
-    </form>
+    <h2>Star it. Fork it. Build with it.</h2>
+    <p>AgenticBox is fully open source. No signup, no waitlist &mdash; just clone and run.</p>
+    <div class="btn-group" style="justify-content: center;">
+      <a href="https://github.com/morpheus-sh/agenticbox" target="_blank" rel="noopener" class="btn btn-primary">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
+        Star on GitHub
+      </a>
+      <a href="#top" class="btn btn-secondary" onclick="document.querySelector('.install-commands').scrollIntoView({behavior:'smooth'});return false;">
+        Install now
+      </a>
+    </div>
     <p class="cta-note">
-      Or <a href="https://github.com/morpheus-sh/agenticbox" target="_blank" rel="noopener">star on GitHub</a> to follow progress.
+      <a href="https://github.com/morpheus-sh/agenticbox/blob/main/docs/agents.md" target="_blank" rel="noopener">Read the docs</a>
     </p>
   </div>
 </section>
@@ -441,6 +469,25 @@
       if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth', block: 'start' }); history.pushState(null, '', this.getAttribute('href')); }
     });
   });
+  // Install tabs
+  document.querySelectorAll('.install-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      const os = tab.dataset.os;
+      document.querySelectorAll('.install-tab').forEach(t => t.classList.toggle('active', t === tab));
+      document.querySelectorAll('.install-cmd').forEach(c => c.style.display = c.dataset.os === os ? '' : 'none');
+    });
+  });
+  // Copy install command
+  function copyInstall(btn) {
+    const block = btn.closest('.code-block');
+    const text = block.dataset.os === 'unix'
+      ? 'curl -fsSL https://agenticbox.co/install.sh | bash'
+      : 'irm https://agenticbox.co/install.ps1 | iex';
+    navigator.clipboard.writeText(text).then(() => {
+      btn.textContent = 'copied!';
+      setTimeout(() => btn.textContent = 'copy', 1500);
+    });
+  }
 </script>
 </body>
 </html>
