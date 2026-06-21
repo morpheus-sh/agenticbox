@@ -20,6 +20,7 @@ shared-types = { path = "../../crates/shared-types" }
 fs-guard = { path = "../../crates/fs-guard" }
 network-control = { path = "../../crates/network-control" }
 sandbox-core = { path = "../../crates/sandbox-core" }
+agent-loop = { path = "../../crates/agent-loop" }
 tokio = { version = "1.38", features = ["full"] }
 crossterm = "0.27"
 

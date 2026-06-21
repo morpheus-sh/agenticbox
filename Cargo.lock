@@ -9,9 +9,27 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "320119579fcad9c21884f5c4861d16174d0e06250625266f50fe6898340abefa"
 
 [[package]]
+name = "agent-loop"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "console",
+ "fs-guard",
+ "network-control",
+ "policy-engine",
+ "reqwest 0.12.28",
+ "serde",
+ "serde_json",
+ "shared-types",
+ "tokio",
+ "tracing",
+]
+
+[[package]]
 name = "agenticbox-cli"
 version = "0.1.0"
 dependencies = [
+ "agent-loop",
  "anyhow",
  "chrono",
  "clap",
