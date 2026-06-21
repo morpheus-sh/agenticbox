@@ -218,32 +218,26 @@ fn extract_target(tool: &str, args: &serde_json::Value) -> String {
     }
 }
 
-/// Print one clean line per action: green ✓ ALLOWED or red ✗ BLOCKED
+/// Print one clean line per action: entire line green for ALLOWED, red for BLOCKED
 fn print_action(tool: &str, target: &str, allowed: bool, reason: &str) {
-    // Truncate target to keep alignment
     let target_display: String = target.chars().take(45).collect();
     let icon = if allowed { "✓" } else { "✗" };
     let status = if allowed { "ALLOWED" } else { "BLOCKED" };
 
     if allowed {
-        println!(
-            "  {} {:<12} {:<47} {}",
-            style(icon).green().bold(),
-            style(tool).cyan(),
-            style(target_display).white(),
-            style(status).green().bold()
-        );
+        // Entire line green
+        let line = format!("  {} {:<12} {:<47} {}", icon, tool, target_display, status);
+        println!("{}", style(line).green());
     } else {
-        println!(
-            "  {} {:<12} {:<47} {}",
-            style(icon).red().bold(),
-            style(tool).yellow(),
-            style(target_display).white(),
-            style(status).red().bold()
-        );
-        // Show reason on next line, indented
+        // Entire line red
+        let line = format!("  {} {:<12} {:<47} {}", icon, tool, target_display, status);
+        println!("{}", style(line).red());
+        // Reason on next line, dim
         println!("    {} {}", style("→").dim(), style(reason).dim());
     }
+
+    // Pace the output so it's readable
+    std::thread::sleep(std::time::Duration::from_millis(400));
 }
 
 // ─── Tool execution (through real guards) ─────────────────────
@@ -459,13 +453,15 @@ pub async fn run_agent_loop(config: AgentLoopConfig) -> Result<AgentLoopResult> 
                     } else {
                         "commands"
                     };
-                    println!(
+                    let line = format!(
                         "  {} {:<12} {:<47} {}",
-                        style("✓").green().bold(),
-                        style("exec").cyan(),
-                        style(format!("{} shell {}", pending_exec, noun)).white(),
-                        style("ALLOWED").green().bold()
+                        "✓",
+                        "exec",
+                        format!("{} shell {}", pending_exec, noun),
+                        "ALLOWED"
                     );
+                    println!("{}", style(line).green());
+                    std::thread::sleep(std::time::Duration::from_millis(400));
                     pending_exec = 0;
                 }
                 // Print this action normally
@@ -504,13 +500,14 @@ pub async fn run_agent_loop(config: AgentLoopConfig) -> Result<AgentLoopResult> 
         } else {
             "commands"
         };
-        println!(
+        let line = format!(
             "  {} {:<12} {:<47} {}",
-            style("✓").green().bold(),
-            style("exec").cyan(),
-            style(format!("{} shell {}", pending_exec, noun)).white(),
-            style("ALLOWED").green().bold()
+            "✓",
+            "exec",
+            format!("{} shell {}", pending_exec, noun),
+            "ALLOWED"
         );
+        println!("{}", style(line).green());
     }
 
     Ok(AgentLoopResult {
