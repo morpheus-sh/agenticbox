@@ -2092,6 +2092,7 @@ struct RunOverrides {
     browser: Option<bool>,
 }
 
+#[allow(clippy::too_many_arguments)]
 fn cmd_run(
     client: &Client,
     base: &str,
