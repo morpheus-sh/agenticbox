@@ -2128,6 +2128,9 @@ fn cmd_run(
 // ─── Real agent demo (LLM + policy enforcement) ─────────────
 
 fn run_real_demo(api_base: &str, llm_model: &str) -> Result<()> {
+    // Force colors on — console crate disables them on non-TTY (git-bash, pipes)
+    console::set_colors_enabled(true);
+
     // Minimal banner
     println!();
     println!(
