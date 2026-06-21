@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AgenticBox for Business — Deploy AI Agents into Production, Safely</title>
+  <meta name="title" content="AgenticBox for Business — Deploy AI Agents into Production, Safely" />
+  <meta name="description" content="Deploy AI agents that handle real business operations — customer support, sales ops, finance. Scoped permissions, full audit trails, enterprise-ready. Book a demo." />
+  <meta name="keywords" content="AI agent deployment business, enterprise AI agents, production AI agents, AI agent governance, customer support automation, AI agent compliance, agent deployment platform, business AI automation" />
+  <meta name="author" content="AgenticBox" />
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large" />
+  <link rel="canonical" href="https://agenticbox.co/start" />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://agenticbox.co/start" />
+  <meta property="og:title" content="AgenticBox for Business — Deploy AI Agents into Production, Safely" />
+  <meta property="og:description" content="Deploy AI agents that handle real business operations. Scoped permissions, full audit trails, enterprise-ready." />
+  <meta property="og:site_name" content="AgenticBox" />
+  <meta property="og:image" content="https://agenticbox.co/og-image.png" />
+  <meta property="og:locale" content="en_US" />
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:url" content="https://agenticbox.co/start" />
+  <meta name="twitter:title" content="AgenticBox for Business — Deploy AI Agents Safely" />
+  <meta name="twitter:description" content="Deploy AI agents that handle real business operations. Scoped permissions, full audit trails, enterprise-ready." />
+  <meta name="twitter:image" content="https://agenticbox.co/og-image.png" />
+  <meta name="twitter:site" content="@agenticbox" />
+
+  <meta name="theme-color" content="#040706" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "AgenticBox for Business",
+    "description": "Deploy AI agents into production business operations safely. Vertical templates for support, sales ops, IT, and finance. Enterprise governance, audit trails, and compliance.",
+    "url": "https://agenticbox.co/start",
+    "applicationCategory": "BusinessApplication",
+    "operatingSystem": "Cross-platform",
+    "offers": [
+      { "@type": "Offer", "price": "49", "priceCurrency": "USD", "description": "Starter — managed cloud beta" },
+      { "@type": "Offer", "price": "199", "priceCurrency": "USD", "description": "Pro — teams, production governance" },
+      { "@type": "Offer", "price": "999", "priceCurrency": "USD", "description": "Enterprise — custom SLAs, RBAC, on-prem" }
+    ]
+  }
+  </script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #040706; --bg-2: #070b09; --surface: #0b110e; --surface-2: #0f1714; --surface-hover: #131d18;
+      --border: #182520; --border-bright: #28392f;
+      --text: #e6f0ea; --text-dim: #8fa49a; --text-muted: #586b62;
+      --accent: #8db84e; --accent-strong: #a4d960; --accent-glow: rgba(141,184,78,0.4); --accent-deep: rgba(141,184,78,0.12);
+      --neon: #b6ff3c; --neon-glow: rgba(182,255,60,0.5);
+      --danger: #ff4d6d; --warning: #ffcc4d; --info: #4ad7ff;
+      --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+      --font-ui: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-serif: 'Instrument Serif', 'Times New Roman', serif;
+      --radius: 6px; --radius-lg: 10px; --transition: 160ms ease;
+      --frame: 18px;
+    }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; } }
+    html { scroll-behavior: smooth; background: var(--bg); }
+    body { font-family: var(--font-ui); background: var(--bg); color: var(--text); line-height: 1.65; min-height: 100vh; font-size: 15px; -webkit-font-smoothing: antialiased; overflow-x: hidden; position: relative; }
+    body::before { content: ''; position: fixed; inset: 0; background-image: linear-gradient(rgba(141,184,78,0.035) 1px, transparent 1px), linear-gradient(90deg, rgba(141,184,78,0.035) 1px, transparent 1px); background-size: 56px 56px; pointer-events: none; z-index: 0; mask-image: radial-gradient(ellipse 90% 70% at 50% 30%, #000 30%, transparent 90%); -webkit-mask-image: radial-gradient(ellipse 90% 70% at 50% 30%, #000 30%, transparent 90%); }
+    .scanlines { position: fixed; inset: 0; background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.18) 2px, rgba(0,0,0,0.18) 3px); pointer-events: none; z-index: 999; opacity: 0.35; mix-blend-mode: multiply; }
+    .vignette { position: fixed; inset: 0; pointer-events: none; z-index: 997; background: radial-gradient(ellipse 80% 60% at 50% 40%, transparent 40%, rgba(0,0,0,0.55) 100%); }
+    .vp-frame { position: fixed; inset: var(--frame); border: 1px solid var(--border); pointer-events: none; z-index: 996; border-radius: 2px; }
+    .vp-frame::before, .vp-frame::after { content: ''; position: absolute; width: 14px; height: 14px; border-color: var(--accent); }
+    .vp-frame::before { top: -1px; left: -1px; border-top: 2px solid; border-left: 2px solid; }
+    .vp-frame::after { bottom: -1px; right: -1px; border-bottom: 2px solid; border-right: 2px solid; }
+    .container { max-width: 1080px; margin: 0 auto; padding: 0 32px; position: relative; z-index: 1; }
+    header { position: sticky; top: 0; z-index: 100; background: rgba(4,7,6,0.8); backdrop-filter: blur(20px) saturate(160%); border-bottom: 1px solid var(--border); }
+    header::after { content: ''; position: absolute; bottom: -1px; left: 20%; right: 20%; height: 1px; background: linear-gradient(90deg, transparent, var(--accent), transparent); opacity: 0.6; }
+    header .container { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding-top: 14px; padding-bottom: 14px; }
+    .logo { font-family: var(--font-mono); font-weight: 700; font-size: 1.05rem; letter-spacing: 0.02em; color: var(--text); text-decoration: none; display: flex; align-items: center; gap: 10px; transition: color var(--transition); }
+    .logo:hover { color: var(--neon); }
+    .logo svg { width: 26px; height: 26px; }
+    .logo .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--neon); box-shadow: 0 0 8px var(--neon-glow); animation: pulse 2.4s infinite; }
+    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.35; } }
+    nav { display: flex; align-items: center; gap: 4px; }
+    nav a { color: var(--text-dim); text-decoration: none; font-family: var(--font-mono); font-size: 0.74rem; font-weight: 500; padding: 8px 13px; border-radius: var(--radius); transition: all var(--transition); border: 1px solid transparent; text-transform: uppercase; letter-spacing: 0.05em; }
+    nav a:hover { color: var(--neon); background: var(--surface); border-color: var(--border); }
+    nav a.primary { background: var(--accent); color: #040706; border-color: var(--accent); box-shadow: 0 0 16px -4px var(--accent-glow); }
+    nav a.primary:hover { background: var(--accent-strong); color: #040706; box-shadow: 0 0 22px -2px var(--accent-glow); }
+
+    .hero { padding: 110px 0 80px; position: relative; overflow: hidden; }
+    .hero-glow { position: absolute; top: 10%; left: 50%; transform: translateX(-50%); width: min(900px, 120vw); height: 600px; background: radial-gradient(ellipse, var(--accent-glow), transparent 65%); filter: blur(70px); opacity: 0.35; pointer-events: none; z-index: 0; }
+    .ghost-word { position: absolute; top: 52%; left: 50%; transform: translate(-50%, -50%); font-family: var(--font-mono); font-weight: 700; font-size: clamp(6rem, 22vw, 20rem); letter-spacing: -0.04em; color: transparent; -webkit-text-stroke: 1px rgba(141,184,78,0.06); white-space: nowrap; pointer-events: none; z-index: 0; user-select: none; }
+    .hero .container { display: flex; flex-direction: column; align-items: center; text-align: center; }
+    .badge { display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: 0.68rem; font-weight: 500; padding: 5px 14px; border-radius: 999px; margin-bottom: 32px; background: var(--accent-deep); color: var(--neon); border: 1px solid rgba(141,184,78,0.2); text-transform: uppercase; letter-spacing: 0.12em; }
+    .hero h1 { font-family: var(--font-ui); font-size: clamp(2.6rem, 7vw, 5.2rem); font-weight: 300; letter-spacing: -0.035em; line-height: 0.95; margin-bottom: 32px; color: var(--text); display: flex; flex-direction: column; gap: 0; }
+    .hero h1 .line { display: block; }
+    .hero h1 .accent-word { font-family: var(--font-serif); font-style: italic; font-weight: 400; color: var(--neon); position: relative; text-shadow: 0 0 30px var(--accent-glow); }
+    .hero p.lede { font-size: clamp(1.02rem, 1.8vw, 1.16rem); color: var(--text-dim); max-width: 620px; margin: 0 auto 44px; line-height: 1.7; }
+    .btn-group { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; margin-bottom: 56px; }
+    .btn { display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-mono); font-size: 0.78rem; font-weight: 600; padding: 14px 28px; border-radius: var(--radius); text-decoration: none; transition: all var(--transition); cursor: pointer; border: 1px solid transparent; letter-spacing: 0.04em; text-transform: uppercase; }
+    .btn-primary { background: var(--accent); color: #040706; border-color: var(--accent); box-shadow: 0 0 0 1px rgba(141,184,78,0.2), 0 6px 24px -8px var(--accent-glow); }
+    .btn-primary:hover { background: var(--accent-strong); border-color: var(--accent-strong); transform: translateY(-2px); box-shadow: 0 0 0 1px rgba(141,184,78,0.35), 0 10px 32px -8px var(--accent-glow); }
+    .btn-secondary { background: var(--surface); color: var(--text); border-color: var(--border-bright); }
+    .btn-secondary:hover { background: var(--surface-hover); border-color: var(--accent); color: var(--neon); }
+
+    .corner-card { background: linear-gradient(180deg, var(--surface), var(--bg-2)); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 30px; transition: all var(--transition); position: relative; overflow: hidden; }
+    .corner-card::before, .corner-card::after { content: ''; position: absolute; width: 14px; height: 14px; border-color: var(--border-bright); transition: all var(--transition); opacity: 0.6; }
+    .corner-card::before { top: 8px; left: 8px; border-top: 2px solid; border-left: 2px solid; }
+    .corner-card::after { bottom: 8px; right: 8px; border-bottom: 2px solid; border-right: 2px solid; }
+    .corner-card:hover { border-color: var(--accent); transform: translateY(-3px); box-shadow: 0 18px 50px -18px rgba(0,0,0,0.6), 0 0 40px -14px var(--accent-glow); }
+    .corner-card:hover::before, .corner-card:hover::after { border-color: var(--neon); opacity: 1; width: 22px; height: 22px; }
+    .card-icon { font-family: var(--font-mono); font-size: 1.3rem; color: var(--neon); margin-bottom: 14px; display: block; text-shadow: 0 0 12px var(--accent-glow); }
+
+    .section { padding: 110px 0; position: relative; }
+    .section::before { content: ''; position: absolute; top: 0; left: 15%; right: 15%; height: 1px; background: linear-gradient(90deg, transparent, var(--border-bright), transparent); }
+    .section-header { text-align: center; margin-bottom: 60px; }
+    .section-tag { display: inline-block; font-family: var(--font-mono); font-size: 0.64rem; font-weight: 600; padding: 4px 14px; border-radius: 999px; background: var(--accent-deep); color: var(--neon); border: 1px solid rgba(141,184,78,0.2); margin-bottom: 18px; text-transform: uppercase; letter-spacing: 0.14em; }
+    .section-title { font-family: var(--font-ui); font-size: clamp(1.8rem, 4vw, 2.7rem); font-weight: 300; letter-spacing: -0.025em; color: var(--text); line-height: 1.1; }
+    .section-title em { font-family: var(--font-serif); font-style: italic; color: var(--neon); font-weight: 400; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr)); gap: 18px; }
+    .corner-card h3 { font-family: var(--font-ui); font-size: 1.05rem; font-weight: 600; color: var(--text); margin-bottom: 10px; line-height: 1.3; }
+    .corner-card p { font-size: 0.86rem; color: var(--text-dim); line-height: 1.65; }
+
+    /* Verticals */
+    .vert-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr)); gap: 14px; }
+    .vert-card { background: linear-gradient(180deg, var(--surface), var(--bg-2)); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 24px; transition: all var(--transition); }
+    .vert-card:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: 0 0 30px -10px var(--accent-glow); }
+    .vert-card .vert-icon { font-family: var(--font-mono); font-size: 1.1rem; color: var(--neon); margin-bottom: 10px; display: block; }
+    .vert-card h4 { font-family: var(--font-ui); font-size: 0.96rem; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+    .vert-card p { font-size: 0.82rem; color: var(--text-dim); line-height: 1.55; margin-bottom: 10px; }
+    .vert-card .vert-status { display: inline-block; font-family: var(--font-mono); font-size: 0.56rem; font-weight: 600; padding: 2px 8px; border-radius: 999px; text-transform: uppercase; letter-spacing: 0.06em; }
+    .vert-status.active { background: var(--accent-deep); color: var(--neon); border: 1px solid rgba(141,184,78,0.3); }
+    .vert-status.roadmap { background: rgba(74,215,255,0.12); color: var(--info); border: 1px solid rgba(74,215,255,0.25); }
+
+    /* Pricing */
+    .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr)); gap: 18px; max-width: 920px; margin: 0 auto; }
+    .price-card { background: linear-gradient(180deg, var(--surface), var(--bg-2)); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 32px; transition: all var(--transition); position: relative; }
+    .price-card:hover { border-color: var(--border-bright); transform: translateY(-2px); }
+    .price-card.featured { border-color: var(--accent); box-shadow: 0 0 40px -14px var(--accent-glow); }
+    .price-card .price-label { font-family: var(--font-mono); font-size: 0.64rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.14em; color: var(--text-muted); margin-bottom: 14px; }
+    .price-card.featured .price-label { color: var(--neon); }
+    .price-card .price-amount { font-family: var(--font-ui); font-size: 2.4rem; font-weight: 300; color: var(--text); margin-bottom: 4px; }
+    .price-card .price-period { font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-muted); margin-bottom: 24px; }
+    .price-card ul { list-style: none; padding: 0; }
+    .price-card li { font-size: 0.82rem; color: var(--text-dim); padding: 7px 0; border-bottom: 1px solid var(--border); display: flex; align-items: flex-start; gap: 8px; }
+    .price-card li:last-child { border-bottom: none; }
+    .price-card li::before { content: '✓'; color: var(--neon); font-family: var(--font-mono); flex-shrink: 0; }
+    .price-card .price-cta { margin-top: 24px; display: block; text-align: center; font-family: var(--font-mono); font-size: 0.72rem; font-weight: 600; padding: 10px 20px; border-radius: var(--radius); text-decoration: none; text-transform: uppercase; letter-spacing: 0.04em; transition: all var(--transition); }
+    .price-card .price-cta { background: var(--surface); color: var(--text); border: 1px solid var(--border-bright); }
+    .price-card .price-cta:hover { background: var(--surface-hover); border-color: var(--accent); color: var(--neon); }
+    .price-card.featured .price-cta { background: var(--accent); color: #040706; border-color: var(--accent); }
+    .price-card.featured .price-cta:hover { background: var(--accent-strong); }
+
+    /* How it works */
+    .steps-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; max-width: 920px; margin: 0 auto; position: relative; }
+    .steps-grid::before { content: ''; position: absolute; top: 36px; left: 12%; right: 12%; height: 1px; background: linear-gradient(90deg, transparent, var(--border-bright), var(--border-bright), transparent); z-index: 0; }
+    .step-card { text-align: center; padding: 0 16px; position: relative; z-index: 1; }
+    .step-num { width: 44px; height: 44px; border-radius: 50%; background: var(--surface); border: 2px solid var(--border-bright); display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-size: 0.9rem; font-weight: 700; color: var(--neon); margin: 0 auto 16px; transition: all var(--transition); }
+    .step-card:hover .step-num { border-color: var(--accent); box-shadow: 0 0 0 4px var(--accent-deep); }
+    .step-card h4 { font-family: var(--font-ui); font-size: 0.92rem; font-weight: 600; color: var(--text); margin-bottom: 8px; }
+    .step-card p { font-size: 0.8rem; color: var(--text-dim); line-height: 1.55; }
+
+    /* Comparison table */
+    .compare-wrap { max-width: 720px; margin: 0 auto; }
+    .compare-table { width: 100%; border-collapse: collapse; font-size: 0.86rem; }
+    .compare-table th, .compare-table td { padding: 14px 20px; text-align: left; border-bottom: 1px solid var(--border); }
+    .compare-table th { font-family: var(--font-mono); font-size: 0.64rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.14em; color: var(--text-muted); padding-bottom: 10px; border-bottom: 1px solid var(--border-bright); }
+    .compare-table td { color: var(--text-dim); }
+    .compare-table tr:hover td { color: var(--text); background: var(--surface); }
+    .compare-table td:first-child { font-family: var(--font-mono); font-size: 0.78rem; color: var(--neon); }
+
+    .cta { padding: 110px 0; text-align: center; position: relative; overflow: hidden; }
+    .cta::before { content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 420px; height: 1px; background: linear-gradient(90deg, transparent, var(--neon), transparent); }
+    .cta-glow { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 700px; height: 400px; background: radial-gradient(ellipse, var(--accent-glow), transparent 70%); filter: blur(60px); opacity: 0.25; pointer-events: none; }
+    .cta h2 { font-family: var(--font-ui); font-size: clamp(1.8rem, 4vw, 2.6rem); font-weight: 300; color: var(--text); margin-bottom: 16px; letter-spacing: -0.02em; }
+    .cta h2 em { font-family: var(--font-serif); font-style: italic; color: var(--neon); font-weight: 400; }
+    .cta p { color: var(--text-dim); margin-bottom: 36px; max-width: 540px; margin-left: auto; margin-right: auto; line-height: 1.7; }
+    .cta-note { margin-top: 18px; font-size: 0.8rem; color: var(--text-muted); position: relative; z-index: 1; }
+    .cta-note a { color: var(--neon); text-decoration: none; }
+    .cta-note a:hover { text-decoration: underline; }
+
+    footer { border-top: 1px solid var(--border); padding: 48px 0 60px; text-align: center; position: relative; }
+    .footer-wordmark { font-family: var(--font-mono); font-weight: 700; font-size: clamp(3rem, 12vw, 9rem); letter-spacing: -0.04em; color: transparent; -webkit-text-stroke: 1px rgba(141,184,78,0.1); line-height: 1; margin-bottom: 30px; user-select: none; }
+    footer p { color: var(--text-muted); font-size: 0.8rem; }
+    footer a { color: var(--neon); text-decoration: none; margin: 0 10px; transition: color var(--transition); font-family: var(--font-mono); font-size: 0.76rem; }
+    footer a:hover { color: var(--accent-strong); }
+
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border-bright); border-radius: 4px; border: 2px solid var(--bg); }
+    ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+    *:focus-visible { outline: 2px solid var(--neon); outline-offset: 2px; }
+
+    @media (max-width: 768px) {
+      :root { --frame: 8px; }
+      .container { padding: 0 18px; }
+      .hero { padding: 80px 0 60px; }
+      .section { padding: 70px 0; }
+      .grid { grid-template-columns: 1fr; }
+      .vert-grid { grid-template-columns: 1fr; }
+      .pricing-grid { grid-template-columns: 1fr; }
+      .steps-grid { grid-template-columns: repeat(2, 1fr); gap: 24px 0; }
+      .steps-grid::before { display: none; }
+      .compare-table { font-size: 0.76rem; }
+      .compare-table th, .compare-table td { padding: 10px 12px; }
+      nav a:not(.primary) { display: none; }
+      .ghost-word { font-size: clamp(4rem, 24vw, 8rem); }
+    }
+  </style>
+</head>
+<body>
+<div class="scanlines" aria-hidden="true"></div>
+<div class="vignette" aria-hidden="true"></div>
+<div class="vp-frame" aria-hidden="true"></div>
+
+<header>
+  <div class="container">
+    <a href="/" class="logo">
+      <span class="dot"></span>
+      <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <rect width="32" height="32" rx="6" fill="currentColor"/>
+        <path d="M8 11h16M8 16h12M8 21h8" stroke="#040706" stroke-width="2.5" stroke-linecap="round"/>
+      </svg>
+      AgenticBox
+    </a>
+    <nav>
+      <a href="#how-it-works">How it works</a>
+      <a href="#verticals">Use cases</a>
+      <a href="#pricing">Pricing</a>
+      <a href="/" class="primary">For Developers</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero" id="top">
+  <div class="hero-glow" aria-hidden="true"></div>
+  <div class="ghost-word" aria-hidden="true">AGENTICBOX</div>
+  <div class="container">
+    <span class="badge">For Business — Enterprise-Ready</span>
+    <h1>
+      <span class="line">Put AI agents to</span>
+      <span class="line">work in your business —</span>
+      <span class="line accent-word">safely</span>
+    </h1>
+    <p class="lede">Your agents can handle support tickets, process refunds, update CRM records, and reconcile transactions. AgenticBox makes it safe to let them — scoped permissions, bounded actions, full audit trails. No custom guardrails to build.</p>
+    <div class="btn-group">
+      <a href="mailto:hello@agenticbox.co?subject=Book%20a%20demo" class="btn btn-primary">Book a Demo</a>
+      <a href="#verticals" class="btn btn-secondary">See Use Cases</a>
+    </div>
+  </div>
+</section>
+
+<section id="how-it-works" class="section">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag">// From idea to production in four steps</span>
+      <h2 class="section-title">How it <em>works</em></h2>
+    </div>
+    <div class="steps-grid">
+      <div class="step-card">
+        <div class="step-num">1</div>
+        <h4>Pick a use case</h4>
+        <p>Customer support, sales ops, IT, finance. Each comes with a pre-configured agent template.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">2</div>
+        <h4>Connect your tools</h4>
+        <p>Helpdesk, CRM, database, APIs. We handle the integrations. Your agent gets access to what it needs.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">3</div>
+        <h4>Set boundaries</h4>
+        <p>Define what the agent can and cannot do. "Can refund up to $50. Cannot delete accounts." Plain language, enforced.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">4</div>
+        <h4>Deploy</h4>
+        <p>The agent runs in production with full audit trails. Every action logged. Every action attributed. Compliant by default.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="verticals" class="section">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag">// One platform, many use cases</span>
+      <h2 class="section-title">What agents can <em>do</em></h2>
+    </div>
+    <div class="vert-grid">
+      <article class="vert-card">
+        <span class="vert-icon">[CX]</span>
+        <h4>Customer Support</h4>
+        <p>Handle tickets, process refunds, update customer records. Agent can read PII, issue refunds up to a limit, escalate complex cases. Full audit trail for compliance.</p>
+        <span class="vert-status active">Available now</span>
+      </article>
+      <article class="vert-card">
+        <span class="vert-icon">[OPS]</span>
+        <h4>Sales / Revenue Ops</h4>
+        <p>Update CRM pipelines, draft prospect emails, qualify leads. Agent sends real emails, updates real records — within boundaries you define.</p>
+        <span class="vert-status roadmap">Roadmap</span>
+      </article>
+      <article class="vert-card">
+        <span class="vert-icon">[IT]</span>
+        <h4>Internal IT Ops</h4>
+        <p>Provision access, reset passwords, handle internal tickets. Agent touches identity systems and HR tools — safely, with full accountability.</p>
+        <span class="vert-status roadmap">Roadmap</span>
+      </article>
+      <article class="vert-card">
+        <span class="vert-icon">[FIN]</span>
+        <h4>Finance Ops</h4>
+        <p>Reconcile transactions, generate reports, flag anomalies. Agent touches financial systems with audit trails that satisfy your compliance team.</p>
+        <span class="vert-status roadmap">Roadmap</span>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section id="why" class="section">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag">// Why businesses trust it</span>
+      <h2 class="section-title">Built for <em>compliance</em></h2>
+    </div>
+    <div class="grid">
+      <article class="corner-card">
+        <span class="card-icon">[01]</span>
+        <h3>Scoped Permissions</h3>
+        <p>Agents can only do what you authorize. Refund up to $50? Yes. Delete customer accounts? No. Every action stays within boundaries you define — enforced by the platform, not by prompt engineering.</p>
+      </article>
+      <article class="corner-card">
+        <span class="card-icon">[02]</span>
+        <h3>Full Audit Trail</h3>
+        <p>Every action the agent takes is logged, attributed, and timestamped. When your compliance team asks "who did this and why," you have the answer. Exportable, searchable, tamper-proof.</p>
+      </article>
+      <article class="corner-card">
+        <span class="card-icon">[03]</span>
+        <h3>Isolated Execution</h3>
+        <p>Agents run in bounded containers — not on your production servers. They can't access systems you haven't explicitly connected. No lateral movement, no privilege escalation.</p>
+      </article>
+      <article class="corner-card">
+        <span class="card-icon">[04]</span>
+        <h3>Vendor-Neutral</h3>
+        <p>Works with OpenAI, Anthropic, Google, or your own self-hosted models. No vendor lock-in. Your agent infrastructure stays yours — run on your cloud or ours.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section id="pricing" class="section">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag">// Start small, scale as you trust it</span>
+      <h2 class="section-title">Simple <em>pricing</em></h2>
+    </div>
+    <div class="pricing-grid">
+      <article class="price-card">
+        <div class="price-label">Starter</div>
+        <div class="price-amount">$49<span style="font-size:1rem;color:var(--text-muted);">/mo</span></div>
+        <div class="price-period">Managed cloud beta</div>
+        <ul>
+          <li>1 production agent</li>
+          <li>1 vertical template</li>
+          <li>Scoped permissions + audit trail</li>
+          <li>Community support</li>
+        </ul>
+        <a href="mailto:hello@agenticbox.co?subject=Starter%20plan" class="price-cta">Get Started</a>
+      </article>
+      <article class="price-card featured">
+        <div class="price-label">Pro — Most Popular</div>
+        <div class="price-amount">$199<span style="font-size:1rem;color:var(--text-muted);">/mo</span></div>
+        <div class="price-period">Teams &amp; production</div>
+        <ul>
+          <li>Up to 10 production agents</li>
+          <li>All vertical templates</li>
+          <li>Advanced governance + RBAC</li>
+          <li>Priority support</li>
+          <li>Custom integrations</li>
+        </ul>
+        <a href="mailto:hello@agenticbox.co?subject=Pro%20plan" class="price-cta">Get Started</a>
+      </article>
+      <article class="price-card">
+        <div class="price-label">Enterprise</div>
+        <div class="price-amount">$999<span style="font-size:1rem;color:var(--text-muted);">/mo</span></div>
+        <div class="price-period">Custom SLAs, on-prem</div>
+        <ul>
+          <li>Unlimited agents</li>
+          <li>On-premise deployment</li>
+          <li>Custom SLAs + dedicated support</li>
+          <li>SSO + advanced RBAC</li>
+          <li>Compliance consulting</li>
+        </ul>
+        <a href="mailto:hello@agenticbox.co?subject=Enterprise%20plan" class="price-cta">Contact Sales</a>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section id="comparison" class="section">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag">// The same playbook, a different layer</span>
+      <h2 class="section-title">The <em>Vercel</em> for agent deployment</h2>
+    </div>
+    <div class="compare-wrap">
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>Vercel</th>
+            <th>AgenticBox</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>git push &rarr; live site</td>
+            <td>agenticbox deploy &rarr; agent in production</td>
+          </tr>
+          <tr>
+            <td>Edge network + serverless</td>
+            <td>Bounded container runtime</td>
+          </tr>
+          <tr>
+            <td>DDoS protection, rate limits, auth</td>
+            <td>Permissions, scopes, audit trails</td>
+          </tr>
+          <tr>
+            <td>Templates per use case</td>
+            <td>Vertical agent templates (support, ops, finance)</td>
+          </tr>
+          <tr>
+            <td>Developers ship web apps</td>
+            <td>Companies ship agent workforces</td>
+          </tr>
+        </tbody>
+      </table>
+      <p style="text-align: center; margin-top: 28px; font-size: 0.84rem; color: var(--text-muted); font-style: italic; max-width: 560px; margin-left: auto; margin-right: auto;">
+        Vercel made web deployment so smooth that companies stopped managing servers.<br>
+        AgenticBox makes agent deployment so safe that companies stop building custom guardrails.
+      </p>
+    </div>
+  </div>
+</section>
+
+<section class="cta" id="get-started">
+  <div class="cta-glow" aria-hidden="true"></div>
+  <div class="container">
+    <h2>Ready to put agents to <em>work</em>?</h2>
+    <p>Book a 30-minute demo. We'll show you how to deploy a production agent in your business — with the governance your compliance team needs.</p>
+    <div class="btn-group" style="justify-content: center;">
+      <a href="mailto:hello@agenticbox.co?subject=Book%20a%20demo" class="btn btn-primary">Book a Demo</a>
+      <a href="/" class="btn btn-secondary">For Developers</a>
+    </div>
+    <p class="cta-note">
+      Questions? <a href="mailto:hello@agenticbox.co">hello@agenticbox.co</a>
+    </p>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="footer-wordmark" aria-hidden="true">AGENTICBOX</div>
+    <p>&copy; 2025 AgenticBox. Deploy AI agents into production, safely.</p>
+    <p style="margin-top:12px;">
+      <a href="/">For Developers</a> &middot;
+      <a href="/start">For Business</a> &middot;
+      <a href="mailto:hello@agenticbox.co">Email</a> &middot;
+      <a href="https://twitter.com/agenticbox" target="_blank" rel="noopener">Twitter</a>
+    </p>
+  </div>
+</footer>
+
+<script>
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function(e) {
+      const target = document.querySelector(this.getAttribute('href'));
+      if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth', block: 'start' }); history.pushState(null, '', this.getAttribute('href')); }
+    });
+  });
+</script>
+</body>
+</html>
