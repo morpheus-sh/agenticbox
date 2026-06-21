@@ -230,10 +230,7 @@ fn print_snippet(data: &str) {
 
 // ─── Tool execution (through real guards) ─────────────────────
 
-fn execute_read_file(
-    path: &str,
-    guard: &FsGuard,
-) -> (bool, String, String) {
+fn execute_read_file(path: &str, guard: &FsGuard) -> (bool, String, String) {
     match guard.resolve(path) {
         Ok(resolved) => match std::fs::read_to_string(&resolved) {
             Ok(content) => (true, "within allowed roots".into(), content),
@@ -243,39 +240,36 @@ fn execute_read_file(
     }
 }
 
-fn execute_write_file(
-    path: &str,
-    content: &str,
-    guard: &FsGuard,
-) -> (bool, String, String) {
+fn execute_write_file(path: &str, content: &str, guard: &FsGuard) -> (bool, String, String) {
     match guard.resolve(path) {
         Ok(resolved) => match std::fs::write(&resolved, content) {
-            Ok(()) => (true, "within allowed roots".into(), "File written successfully".into()),
+            Ok(()) => (
+                true,
+                "within allowed roots".into(),
+                "File written successfully".into(),
+            ),
             Err(e) => (false, format!("write error: {e}"), String::new()),
         },
         Err(e) => (false, format!("filesystem: {e}"), String::new()),
     }
 }
 
-fn execute_http_request(
-    url: &str,
-    _method: &str,
-    guard: &NetworkGuard,
-) -> (bool, String, String) {
+fn execute_http_request(url: &str, _method: &str, guard: &NetworkGuard) -> (bool, String, String) {
     match guard.check(url) {
         Ok(()) => {
             // URL is allowed — attempt real request, but we may be offline
             // Return simulated response for demo purposes (the guard ran)
-            (true, "domain in allowlist".into(), format!("HTTP 200 OK (simulated — {url} is allowlisted)"))
+            (
+                true,
+                "domain in allowlist".into(),
+                format!("HTTP 200 OK (simulated — {url} is allowlisted)"),
+            )
         }
         Err(e) => (false, format!("network: {e}"), String::new()),
     }
 }
 
-fn execute_exec(
-    command: &str,
-    engine: &PolicyEngine,
-) -> (bool, String, String) {
+fn execute_exec(command: &str, engine: &PolicyEngine) -> (bool, String, String) {
     let perms = PermissionSet {
         terminal: true,
         filesystem: FsPermission::ReadWrite,
@@ -289,13 +283,15 @@ fn execute_exec(
     };
     match engine.evaluate(req) {
         PolicyDecision::Allow => {
-            // Actually run the command
-            let parts: Vec<&str> = command.split_whitespace().collect();
-            if parts.is_empty() {
-                return (false, "empty command".into(), String::new());
-            }
-            let output = std::process::Command::new(parts[0])
-                .args(&parts[1..])
+            // Use shell to handle pipes, paths, && — Windows uses cmd, Unix uses sh
+            #[cfg(windows)]
+            let (shell, flag) = ("cmd.exe", "/C");
+            #[cfg(not(windows))]
+            let (shell, flag) = ("sh", "-c");
+
+            let output = std::process::Command::new(shell)
+                .arg(flag)
+                .arg(command)
                 .output();
             match output {
                 Ok(out) => {
@@ -320,9 +316,7 @@ pub async fn run_agent_loop(config: AgentLoopConfig) -> Result<AgentLoopResult> 
 
     // Initialize real guards
     let fs_guard = FsGuard::new(vec![config.workspace.clone()]);
-    let net_guard = NetworkGuard::new(NetworkPolicy::Allowlist(
-        config.network_allowlist.clone(),
-    ));
+    let net_guard = NetworkGuard::new(NetworkPolicy::Allowlist(config.network_allowlist.clone()));
     let policy_engine = PolicyEngine::new();
 
     let mut allowed: u32 = 0;
@@ -408,8 +402,8 @@ pub async fn run_agent_loop(config: AgentLoopConfig) -> Result<AgentLoopResult> 
 
         // Execute each tool call through the guards
         for tc in &tool_calls {
-            let args: serde_json::Value = serde_json::from_str(&tc.function.arguments)
-                .unwrap_or(serde_json::json!({}));
+            let args: serde_json::Value =
+                serde_json::from_str(&tc.function.arguments).unwrap_or(serde_json::json!({}));
 
             let tool_name = &tc.function.name;
             let args_str = serde_json::to_string(&args).unwrap_or_default();
@@ -418,38 +412,24 @@ pub async fn run_agent_loop(config: AgentLoopConfig) -> Result<AgentLoopResult> 
 
             let (is_allowed, reason, output) = match tool_name.as_str() {
                 "read_file" => {
-                    let path = args.get("path")
-                        .and_then(|v| v.as_str())
-                        .unwrap_or("");
+                    let path = args.get("path").and_then(|v| v.as_str()).unwrap_or("");
                     execute_read_file(path, &fs_guard)
                 }
                 "write_file" => {
-                    let path = args.get("path")
-                        .and_then(|v| v.as_str())
-                        .unwrap_or("");
-                    let content = args.get("content")
-                        .and_then(|v| v.as_str())
-                        .unwrap_or("");
+                    let path = args.get("path").and_then(|v| v.as_str()).unwrap_or("");
+                    let content = args.get("content").and_then(|v| v.as_str()).unwrap_or("");
                     execute_write_file(path, content, &fs_guard)
                 }
                 "http_request" => {
-                    let url = args.get("url")
-                        .and_then(|v| v.as_str())
-                        .unwrap_or("");
-                    let method = args.get("method")
-                        .and_then(|v| v.as_str())
-                        .unwrap_or("GET");
+                    let url = args.get("url").and_then(|v| v.as_str()).unwrap_or("");
+                    let method = args.get("method").and_then(|v| v.as_str()).unwrap_or("GET");
                     execute_http_request(url, method, &net_guard)
                 }
                 "exec" => {
-                    let command = args.get("command")
-                        .and_then(|v| v.as_str())
-                        .unwrap_or("");
+                    let command = args.get("command").and_then(|v| v.as_str()).unwrap_or("");
                     execute_exec(command, &policy_engine)
                 }
-                _ => {
-                    (false, format!("unknown tool: {tool_name}"), String::new())
-                }
+                _ => (false, format!("unknown tool: {tool_name}"), String::new()),
             };
 
             if is_allowed {
