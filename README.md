@@ -1,6 +1,6 @@
 # AgenticBox
 
-> **Give your AI agent a workplace, not root access.** Okta + Docker for AI agents. Open source. Local-first.
+> **Deploy AI agents into production — safely.** Scoped permissions, bounded execution, full audit trail. Open source. Local-first.
 
 [![License](https://img.shields.io/badge/License-MIT%20OR%20Apache--2.0-blue.svg)](LICENSE)
 [![Rust](https://img.shields.io/badge/Rust-1.75%2B-orange.svg)](https://rustup.rs)
@@ -10,14 +10,16 @@
 
 ## What Is This?
 
-Agents need workplaces. From that single idea, the rest follows naturally:
+Every company wants agents that do real work — touch real customer data, take real actions, move real money. But deploying an agent into production today means either building custom guardrails from scratch or handing it the keys and hoping for the best.
 
-- **Permissions** — what the coworker is allowed to do
-- **Identity** — who the coworker is
-- **Accountability** — what the coworker did
-- **Ownership boundaries** — what belongs to the coworker vs. the organization
+AgenticBox makes that a solved problem. It's the infrastructure layer for agent deployment: pick a vertical template, connect your tools, set what the agent is allowed to do, and deploy into production — with scoped permissions, bounded execution, and full accountability built in.
 
-Give your AI agent a workplace instead of root access. Okta + Docker for AI agents — scoped permissions, isolated execution, full accountability.
+The rest follows from that:
+
+- **Permissions** — what the agent is allowed to do
+- **Accountability** — what the agent did
+- **Ownership boundaries** — what belongs to the agent vs. the organization
+- **Identity** — who the agent is (emerging)
 
 ```
 ┌─────────────────────────────────────────────────────┐
@@ -49,9 +51,9 @@ The agent CLI runs **inside** a sandboxed container. The host relays stdin/stdou
 | Pillar | What it means |
 |--------|---------------|
 | **Permissions** | Terminal, filesystem, network, browser — scoped and enforced. The agent can only do what it's authorized to do. |
-| **Ownership Boundaries** | Clear boundaries: resources, outputs, budgets, assets. |
 | **Accountability** | Every action attributed, logged, auditable. Full audit trail. |
-| **Identity** | Agents get their own credentials, accounts, digital identity — provisioned and revocable. *(The moat.)* |
+| **Ownership Boundaries** | Clear boundaries: resources, outputs, budgets, assets. What belongs to the agent vs. the org. |
+| **Identity** | Agents get their own credentials, accounts, digital identity — provisioned and revocable. *(Emerging moat.)* |
 
 ---
 
@@ -266,13 +268,13 @@ agenticbox health                      # health check
 ## Roadmap
 
 ### Now ✅
-Real Docker execution — `agenticbox run` spawns containers, installs agents at runtime, relays interactive stdio with PTY support.
+Core deployment engine — `agenticbox run` spawns bounded containers, installs agents at runtime, relays interactive stdio with PTY support. Scoped permissions enforced at the runtime boundary.
 
 ### Next 🟡
-ACP permission interception — parse JSON-RPC traffic between host and agent, enforce allow/deny on tool calls based on the permission profile.
+First vertical template — customer support agent (helpdesk connector + tuned permission profile). ACP permission interception on tool calls. The `create-next-app` moment for AI agents.
 
 ### Later 🔵
-Agent identity — agents get their own credentials and accounts. Browser automation. The bounded agent becomes an coworker.
+More verticals — sales ops, IT ops, finance ops. Agent identity: agents get their own credentials and accounts. Browser automation. The path from developer tool to infrastructure company.
 
 ---
 
@@ -310,4 +312,4 @@ export PATH="/c/Program Files (x86)/Microsoft Visual Studio/2022/BuildTools/VC/T
 
 ---
 
-> **AgenticBox** — Give your agent a workplace.
+> **AgenticBox** — Deploy agents into production — safely.

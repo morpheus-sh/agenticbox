@@ -2389,20 +2389,18 @@ domains = ["*"]
     // ── Override application logic ─────────────────────────
     // (Tests the pattern used in cmd_run_named_agent)
 
+    fn apply_override(manifest: bool, cli: Option<bool>) -> bool {
+        cli.unwrap_or(manifest)
+    }
+
     #[test]
     fn override_logic_uses_override_when_present() {
-        let manifest_val = true;
-        let override_val: Option<bool> = Some(false);
-        let result = override_val.unwrap_or(manifest_val);
-        assert!(!result);
+        assert!(!apply_override(true, Some(false)));
     }
 
     #[test]
     fn override_logic_falls_back_to_manifest() {
-        let manifest_val = true;
-        let override_val: Option<bool> = None;
-        let result = override_val.unwrap_or(manifest_val);
-        assert!(result);
+        assert!(apply_override(true, None));
     }
 
     #[test]

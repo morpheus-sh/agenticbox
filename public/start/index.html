@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AgenticBox for Business — Deploy AI Agents into Production, Safely</title>
+  <meta name="title" content="AgenticBox for Business — Deploy AI Agents into Production, Safely" />
+  <meta name="description" content="Deploy AI agents that handle real business operations — customer support, sales ops, finance. Scoped permissions, full audit trails, enterprise-ready. Book a demo." />
+  <meta name="keywords" content="AI agent deployment business, enterprise AI agents, production AI agents, AI agent governance, customer support automation, AI agent compliance, agent deployment platform, business AI automation" />
+  <meta name="author" content="AgenticBox" />
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large" />
+  <link rel="canonical" href="https://agenticbox.co/start" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://agenticbox.co/start" />
+  <meta property="og:title" content="AgenticBox for Business — Deploy AI Agents into Production, Safely" />
+  <meta property="og:description" content="Deploy AI agents that handle real business operations. Scoped permissions, full audit trails, enterprise-ready." />
+  <meta property="og:site_name" content="AgenticBox" />
+  <meta property="og:image" content="https://agenticbox.co/og-image.png" />
+  <meta property="og:locale" content="en_US" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:url" content="https://agenticbox.co/start" />
+  <meta name="twitter:title" content="AgenticBox for Business — Deploy AI Agents Safely" />
+  <meta name="twitter:description" content="Deploy AI agents that handle real business operations. Scoped permissions, full audit trails, enterprise-ready." />
+  <meta name="twitter:image" content="https://agenticbox.co/og-image.png" />
+  <meta name="twitter:site" content="@agenticbox" />
+
+  <meta name="theme-color" content="#faf9f6" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "AgenticBox for Business",
+    "description": "Deploy AI agents into production business operations safely. Vertical templates for customer support, sales ops, IT ops, and finance ops. Enterprise governance, audit trails, and compliance.",
+    "url": "https://agenticbox.co/start",
+    "applicationCategory": "BusinessApplication",
+    "operatingSystem": "Cross-platform",
+    "offers": [
+      { "@type": "Offer", "price": "49", "priceCurrency": "USD", "description": "Starter — managed cloud beta" },
+      { "@type": "Offer", "price": "199", "priceCurrency": "USD", "description": "Pro — teams, production governance" },
+      { "@type": "Offer", "price": "999", "priceCurrency": "USD", "description": "Enterprise — custom SLAs, RBAC, on-prem" }
+    ]
+  }
+  </script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #faf9f6; --bg-2: #f3f0ea; --surface: #ffffff; --surface-2: #f8f6f1;
+      --border: #e8e4dc; --border-bright: #d4cfc4;
+      --text: #1a1a18; --text-dim: #5a5852; --text-muted: #8a8780;
+      --olive: #6b8e23; --olive-dark: #557018; --olive-light: #8fae3c; --olive-bg: #f0f4e3; --olive-border: #d9e4b8;
+      --olive-glow: rgba(107,142,35,0.12);
+      --coral: #d64545; --coral-bg: #fceaea; --coral-border: #f3cccc;
+      --radius: 8px; --radius-lg: 14px; --radius-xl: 20px;
+      --shadow-sm: 0 1px 2px rgba(0,0,0,0.04), 0 1px 3px rgba(0,0,0,0.03);
+      --shadow-md: 0 4px 12px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.04);
+      --shadow-lg: 0 12px 40px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.04);
+      --transition: 180ms cubic-bezier(0.4, 0, 0.2, 1);
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', 'SF Mono', monospace;
+      --font-serif: 'Instrument Serif', 'Georgia', serif;
+    }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; } }
+    html { scroll-behavior: smooth; background: var(--bg); }
+    body { font-family: var(--font-sans); background: var(--bg); color: var(--text); line-height: 1.6; min-height: 100vh; font-size: 16px; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+    .container { max-width: 1120px; margin: 0 auto; padding: 0 32px; position: relative; }
+
+    /* HEADER */
+    header { position: sticky; top: 0; z-index: 100; background: rgba(250,249,246,0.85); backdrop-filter: blur(16px) saturate(180%); border-bottom: 1px solid var(--border); }
+    header .container { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding-top: 16px; padding-bottom: 16px; }
+    .logo { font-weight: 700; font-size: 1.05rem; letter-spacing: -0.01em; color: var(--text); text-decoration: none; display: flex; align-items: center; gap: 10px; transition: color var(--transition); }
+    .logo:hover { color: var(--olive-dark); }
+    .logo svg { width: 28px; height: 28px; }
+    .logo .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--olive); flex-shrink: 0; }
+    nav { display: flex; align-items: center; gap: 2px; }
+    nav a { color: var(--text-dim); text-decoration: none; font-size: 0.875rem; font-weight: 500; padding: 8px 14px; border-radius: var(--radius); transition: all var(--transition); }
+    nav a:hover { color: var(--text); background: var(--surface-2); }
+    nav a.primary { background: var(--text); color: var(--bg); padding: 9px 18px; font-weight: 600; }
+    nav a.primary:hover { background: var(--olive-dark); }
+
+    /* HERO — ASYMMETRIC SPLIT */
+    .hero { padding: 80px 0 60px; position: relative; overflow: hidden; }
+    .hero-bg { position: absolute; top: -10%; right: -15%; width: 600px; height: 600px; background: radial-gradient(circle, var(--olive-glow), transparent 70%); filter: blur(80px); pointer-events: none; z-index: 0; }
+    .hero .container { display: grid; grid-template-columns: 1.4fr 1fr; gap: 48px; align-items: center; position: relative; z-index: 1; }
+    .hero-left h1 { font-size: clamp(2rem, 4.5vw, 3.4rem); font-weight: 900; letter-spacing: -0.03em; line-height: 1.05; margin-bottom: 24px; color: var(--text); }
+    .hero-left h1 em { font-family: var(--font-serif); font-style: italic; font-weight: 400; color: var(--olive); }
+    .hero-left .lede { font-size: 1.1rem; color: var(--text-dim); margin-bottom: 32px; line-height: 1.65; max-width: 480px; }
+    .badge { display: inline-flex; align-items: center; gap: 6px; font-size: 0.75rem; font-weight: 600; padding: 6px 14px; border-radius: 999px; margin-bottom: 24px; background: var(--olive-bg); color: var(--olive-dark); border: 1px solid var(--olive-border); }
+    .badge .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--olive); animation: pulse 2.5s infinite; }
+    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+    .btn { display: inline-flex; align-items: center; gap: 8px; font-size: 0.9rem; font-weight: 600; padding: 13px 26px; border-radius: var(--radius); text-decoration: none; transition: all var(--transition); cursor: pointer; border: 1px solid transparent; }
+    .btn-primary { background: var(--text); color: var(--bg); }
+    .btn-primary:hover { background: var(--olive-dark); transform: translateY(-1px); box-shadow: var(--shadow-md); }
+    .btn-secondary { background: var(--surface); color: var(--text); border-color: var(--border-bright); }
+    .btn-secondary:hover { border-color: var(--olive); color: var(--olive-dark); }
+    .btn-group { display: flex; gap: 12px; flex-wrap: wrap; }
+
+    /* AGENT ACTIVITY PANEL — live audit log mockup */
+    .activity-panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); overflow: hidden; }
+    .activity-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; background: var(--surface-2); border-bottom: 1px solid var(--border); }
+    .activity-header .title { font-size: 0.78rem; font-weight: 700; color: var(--text); letter-spacing: -0.01em; }
+    .activity-header .live { display: flex; align-items: center; gap: 5px; font-size: 0.68rem; font-weight: 600; color: var(--olive-dark); text-transform: uppercase; letter-spacing: 0.05em; }
+    .activity-header .live::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--olive); animation: pulse 1.5s infinite; }
+    .activity-body { padding: 12px 18px; min-height: 320px; display: flex; flex-direction: column; gap: 2px; }
+    .log-entry { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 0.82rem; opacity: 0; transform: translateY(-8px); animation: logSlideIn 0.5s ease forwards; }
+    .log-entry:last-child { border-bottom: none; }
+    @keyframes logSlideIn { to { opacity: 1; transform: translateY(0); } }
+    .log-entry .ts { font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-muted); flex-shrink: 0; width: 42px; }
+    .log-entry .action { flex: 1; color: var(--text-dim); font-weight: 500; }
+    .log-entry .action code { font-family: var(--font-mono); font-size: 0.78rem; color: var(--text); background: var(--surface-2); padding: 1px 5px; border-radius: 3px; }
+    .log-entry .status { font-size: 0.66rem; font-weight: 700; padding: 3px 8px; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.05em; flex-shrink: 0; }
+    .log-entry .status.allowed { background: var(--olive-bg); color: var(--olive-dark); }
+    .log-entry .status.blocked { background: var(--coral-bg); color: var(--coral); }
+    .log-entry .status.denied { background: var(--coral-bg); color: var(--coral); }
+    .activity-footer { padding: 10px 18px; background: var(--surface-2); border-top: 1px solid var(--border); font-size: 0.7rem; color: var(--text-muted); text-align: center; }
+
+    /* SECTIONS */
+    .section { padding: 80px 0; position: relative; }
+    .section-header { margin-bottom: 48px; }
+    .section-header.center { text-align: center; }
+    .section-tag { display: inline-block; font-size: 0.72rem; font-weight: 600; padding: 4px 12px; border-radius: 999px; background: var(--olive-bg); color: var(--olive-dark); border: 1px solid var(--olive-border); margin-bottom: 14px; }
+    .section-title { font-size: clamp(1.6rem, 3vw, 2.3rem); font-weight: 800; letter-spacing: -0.025em; color: var(--text); line-height: 1.15; }
+    .section-title em { font-family: var(--font-serif); font-style: italic; color: var(--olive); font-weight: 400; }
+    .section-sub { font-size: 1rem; color: var(--text-dim); max-width: 520px; margin: 12px 0 0; line-height: 1.6; }
+
+    /* BENTO GRID — asymmetric */
+    .bento { display: grid; grid-template-columns: repeat(3, 1fr); grid-auto-rows: auto; gap: 16px; }
+    .bento-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 28px; transition: all var(--transition); position: relative; overflow: hidden; }
+    .bento-card:hover { border-color: var(--border-bright); box-shadow: var(--shadow-md); transform: translateY(-2px); }
+    .bento-large { grid-column: span 2; grid-row: span 1; }
+    .bento-wide { grid-column: span 3; }
+    .bento-card h3 { font-size: 1.1rem; font-weight: 700; color: var(--text); margin-bottom: 8px; letter-spacing: -0.01em; }
+    .bento-card p { font-size: 0.88rem; color: var(--text-dim); line-height: 1.6; }
+    .bento-card .visual { margin-top: 16px; }
+
+    /* Permission boundary diagram */
+    .perm-diagram { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .perm-node { padding: 6px 12px; border-radius: 6px; font-size: 0.72rem; font-weight: 600; font-family: var(--font-mono); }
+    .perm-node.yes { background: var(--olive-bg); color: var(--olive-dark); border: 1px solid var(--olive-border); }
+    .perm-node.no { background: var(--coral-bg); color: var(--coral); border: 1px solid var(--coral-border); text-decoration: line-through; }
+    .perm-arrow { color: var(--text-muted); font-size: 0.7rem; }
+
+    /* Audit trail mini visual */
+    .audit-mini { background: var(--surface-2); border-radius: 6px; padding: 12px; font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-dim); line-height: 1.8; }
+    .audit-mini .ok { color: var(--olive-dark); }
+    .audit-mini .ts { color: var(--text-muted); }
+
+    /* Isolation mini visual */
+    .iso-mini { display: flex; gap: 6px; align-items: center; }
+    .iso-box { padding: 8px 12px; border-radius: 6px; background: var(--surface-2); border: 1px solid var(--border); font-size: 0.68rem; font-family: var(--font-mono); color: var(--text-dim); }
+    .iso-box.agent { border-color: var(--olive-border); background: var(--olive-bg); color: var(--olive-dark); }
+    .iso-wall { font-size: 0.7rem; color: var(--coral); font-weight: 600; }
+
+    /* Provider pills */
+    .providers { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+    .provider-pill { padding: 5px 12px; border-radius: 999px; background: var(--surface-2); border: 1px solid var(--border); font-size: 0.75rem; font-weight: 500; color: var(--text-dim); }
+
+    /* PULL QUOTE */
+    .quote-section { padding: 80px 0; text-align: center; }
+    .quote-text { font-family: var(--font-serif); font-style: italic; font-size: clamp(1.8rem, 4vw, 2.8rem); color: var(--text); line-height: 1.3; max-width: 700px; margin: 0 auto; letter-spacing: -0.01em; }
+    .quote-text .olive { color: var(--olive); }
+    .quote-attr { margin-top: 20px; font-size: 0.85rem; color: var(--text-muted); font-weight: 500; }
+
+    /* USE CASE TABS */
+    .tabs-bar { display: flex; gap: 4px; margin-bottom: 32px; border-bottom: 1px solid var(--border); overflow-x: auto; }
+    .tab-btn { padding: 12px 20px; font-size: 0.875rem; font-weight: 600; color: var(--text-dim); background: none; border: none; cursor: pointer; border-bottom: 2px solid transparent; transition: all var(--transition); white-space: nowrap; }
+    .tab-btn:hover { color: var(--text); }
+    .tab-btn.active { color: var(--olive-dark); border-bottom-color: var(--olive); }
+    .tab-badge { display: inline-block; font-size: 0.58rem; font-weight: 700; padding: 2px 7px; border-radius: 999px; margin-left: 8px; text-transform: uppercase; letter-spacing: 0.04em; vertical-align: middle; }
+    .tab-badge.live { background: var(--olive-bg); color: var(--olive-dark); }
+    .tab-badge.soon { background: var(--surface-2); color: var(--text-muted); }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: grid; grid-template-columns: 1.2fr 1fr; gap: 32px; align-items: start; }
+    .ticket-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 24px; box-shadow: var(--shadow-sm); }
+    .ticket-header { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+    .ticket-id { font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-muted); background: var(--surface-2); padding: 3px 8px; border-radius: 4px; }
+    .ticket-priority { font-size: 0.65rem; font-weight: 700; padding: 3px 8px; border-radius: 4px; text-transform: uppercase; }
+    .ticket-priority.high { background: var(--coral-bg); color: var(--coral); }
+    .ticket-priority.med { background: #fef3e2; color: #b87333; }
+    .ticket-body { font-size: 0.85rem; color: var(--text-dim); line-height: 1.6; margin-bottom: 16px; }
+    .ticket-response { background: var(--surface-2); border-radius: 8px; padding: 14px; font-size: 0.82rem; color: var(--text); line-height: 1.55; border-left: 3px solid var(--olive); }
+    .ticket-response .agent-name { font-weight: 600; color: var(--olive-dark); font-size: 0.75rem; margin-bottom: 6px; }
+    .perm-boundaries { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; }
+    .perm-boundaries h4 { font-size: 0.82rem; font-weight: 700; color: var(--text); margin-bottom: 14px; }
+    .perm-row { display: flex; align-items: center; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 0.8rem; }
+    .perm-row:last-child { border-bottom: none; }
+    .perm-row .label { color: var(--text-dim); }
+    .perm-row .val { font-family: var(--font-mono); font-size: 0.72rem; font-weight: 600; padding: 2px 8px; border-radius: 4px; }
+    .perm-row .val.yes { background: var(--olive-bg); color: var(--olive-dark); }
+    .perm-row .val.no { background: var(--coral-bg); color: var(--coral); }
+
+    /* PRICING TABLE */
+    .pricing-table-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-sm); }
+    .pricing-table { width: 100%; border-collapse: collapse; }
+    .pricing-table th { padding: 20px 24px; text-align: left; border-bottom: 2px solid var(--border); background: var(--surface-2); }
+    .pricing-table th .plan-name { font-size: 0.82rem; font-weight: 700; color: var(--text); }
+    .pricing-table th .plan-price { font-size: 1.8rem; font-weight: 800; color: var(--text); margin-top: 4px; letter-spacing: -0.02em; }
+    .pricing-table th .plan-price .currency { font-size: 1rem; font-weight: 600; color: var(--text-muted); vertical-align: top; }
+    .pricing-table th .plan-price .period { font-size: 0.85rem; font-weight: 500; color: var(--text-muted); }
+    .pricing-table th .plan-desc { font-size: 0.72rem; color: var(--text-muted); margin-top: 2px; }
+    .pricing-table th.featured { background: var(--olive-bg); }
+    .pricing-table th.featured .plan-name { color: var(--olive-dark); }
+    .pricing-table td { padding: 14px 24px; border-bottom: 1px solid var(--border); font-size: 0.85rem; color: var(--text-dim); }
+    .pricing-table td:first-child { font-weight: 600; color: var(--text); }
+    .pricing-table tr:last-child td { border-bottom: none; }
+    .pricing-table .check { color: var(--olive); font-weight: 700; }
+    .pricing-table .dash { color: var(--text-muted); }
+    .pricing-table .cta-row td { padding: 20px 24px; background: var(--surface-2); }
+    .pricing-table .cta-row a { display: inline-block; font-size: 0.82rem; font-weight: 600; padding: 10px 20px; border-radius: var(--radius); text-decoration: none; transition: all var(--transition); }
+    .pricing-table .cta-row a { background: var(--surface); color: var(--text); border: 1px solid var(--border-bright); }
+    .pricing-table .cta-row a:hover { border-color: var(--olive); color: var(--olive-dark); }
+    .pricing-table .cta-row .featured-cta { background: var(--text); color: var(--bg); border-color: var(--text); }
+    .pricing-table .cta-row .featured-cta:hover { background: var(--olive-dark); border-color: var(--olive-dark); }
+
+    /* COMPARISON */
+    .compare-wrap { max-width: 680px; margin: 0 auto; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-sm); }
+    .compare-table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+    .compare-table th { padding: 14px 20px; text-align: left; font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); background: var(--surface-2); border-bottom: 1px solid var(--border); }
+    .compare-table td { padding: 12px 20px; border-bottom: 1px solid var(--border); color: var(--text-dim); }
+    .compare-table tr:last-child td { border-bottom: none; }
+    .compare-table tr:hover td { background: var(--surface-2); color: var(--text); }
+    .compare-table td:first-child { font-family: var(--font-mono); font-size: 0.78rem; color: var(--olive-dark); }
+    .compare-table code { font-family: var(--font-mono); font-size: 0.8em; color: var(--olive-dark); background: var(--olive-bg); padding: 2px 6px; border-radius: 4px; }
+
+    /* CTA */
+    .cta-section { padding: 90px 0; text-align: center; position: relative; overflow: hidden; }
+    .cta-bg { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 700px; height: 400px; background: radial-gradient(ellipse, var(--olive-glow), transparent 70%); filter: blur(60px); pointer-events: none; }
+    .cta-section .container { position: relative; z-index: 1; }
+    .cta-section h2 { font-size: clamp(1.6rem, 3vw, 2.3rem); font-weight: 800; color: var(--text); margin-bottom: 14px; letter-spacing: -0.02em; }
+    .cta-section h2 em { font-family: var(--font-serif); font-style: italic; color: var(--olive); font-weight: 400; }
+    .cta-section p { font-size: 1.02rem; color: var(--text-dim); margin-bottom: 28px; max-width: 500px; margin-left: auto; margin-right: auto; line-height: 1.6; }
+    .cta-note { margin-top: 16px; font-size: 0.82rem; color: var(--text-muted); }
+    .cta-note a { color: var(--olive-dark); text-decoration: none; font-weight: 500; }
+    .cta-note a:hover { text-decoration: underline; }
+
+    /* FOOTER */
+    footer { border-top: 1px solid var(--olive-border); padding: 44px 0 52px; text-align: center; background: var(--olive-bg); }
+    footer .logo { justify-content: center; margin-bottom: 16px; }
+    footer p { color: var(--text-muted); font-size: 0.82rem; }
+    footer .footer-links { margin-top: 12px; }
+    footer .footer-links a { color: var(--text-dim); text-decoration: none; margin: 0 12px; font-size: 0.82rem; font-weight: 500; transition: color var(--transition); }
+    footer .footer-links a:hover { color: var(--olive-dark); }
+
+    ::-webkit-scrollbar { width: 10px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border-bright); border-radius: 5px; border: 2px solid var(--bg); }
+    ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+    *:focus-visible { outline: 2px solid var(--olive); outline-offset: 2px; }
+
+    /* Scroll animations */
+    .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    @media (max-width: 900px) {
+      .hero .container { grid-template-columns: 1fr; gap: 40px; }
+      .activity-panel { max-width: 420px; }
+      .bento { grid-template-columns: 1fr; }
+      .bento-large, .bento-wide { grid-column: span 1; }
+      .tab-panel.active { grid-template-columns: 1fr; }
+      .pricing-table { font-size: 0.78rem; }
+      .pricing-table th, .pricing-table td { padding: 12px 14px; }
+    }
+    @media (max-width: 600px) {
+      .container { padding: 0 18px; }
+      .hero { padding: 60px 0 40px; }
+      .section { padding: 56px 0; }
+      nav a:not(.primary) { display: none; }
+      .pricing-table th .plan-price { font-size: 1.3rem; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <a href="/" class="logo">
+      <span class="dot"></span>
+      <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <rect width="32" height="32" rx="8" fill="#1a1a18"/>
+        <path d="M8 11h16M8 16h12M8 21h8" stroke="#6b8e23" stroke-width="2.5" stroke-linecap="round"/>
+      </svg>
+      AgenticBox
+    </a>
+    <nav>
+      <a href="#how-it-works">How it works</a>
+      <a href="#use-cases">Use cases</a>
+      <a href="#pricing">Pricing</a>
+      <a href="/" class="primary">For Developers</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero" id="top">
+  <div class="hero-bg" aria-hidden="true"></div>
+  <div class="container">
+    <div class="hero-left">
+      <span class="badge"><span class="dot"></span> For Business — Enterprise-Ready</span>
+      <h1>Put AI agents to work in your business — <em>safely</em></h1>
+      <p class="lede">Your agents can handle support tickets, process refunds, update CRM records, and reconcile transactions. AgenticBox makes it safe to let them — scoped permissions, bounded actions, full audit trails. No custom guardrails to build.</p>
+      <div class="btn-group">
+        <a href="mailto:hello@agenticbox.co?subject=Book%20a%20demo" class="btn btn-primary">Book a Demo</a>
+        <a href="#use-cases" class="btn btn-secondary">See Use Cases</a>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="activity-panel">
+        <div class="activity-header">
+          <span class="title">Agent Activity — Live Audit</span>
+          <span class="live">Live</span>
+        </div>
+        <div class="activity-body" id="auditLog">
+          <div class="log-entry" style="animation-delay: 0s;">
+            <span class="ts">14:31</span>
+            <span class="action">Read ticket <code>#4821</code></span>
+            <span class="status allowed">Allowed</span>
+          </div>
+          <div class="log-entry" style="animation-delay: 0.8s;">
+            <span class="ts">14:31</span>
+            <span class="action">Refund <code>$45.00</code> to customer</span>
+            <span class="status allowed">Allowed</span>
+          </div>
+          <div class="log-entry" style="animation-delay: 1.6s;">
+            <span class="ts">14:32</span>
+            <span class="action">Delete user account <code>u_8832</code></span>
+            <span class="status blocked">Blocked</span>
+          </div>
+          <div class="log-entry" style="animation-delay: 2.4s;">
+            <span class="ts">14:32</span>
+            <span class="action">Update CRM record <code>lead_441</code></span>
+            <span class="status allowed">Allowed</span>
+          </div>
+          <div class="log-entry" style="animation-delay: 3.2s;">
+            <span class="ts">14:33</span>
+            <span class="action">Access <code>/etc/shadow</code></span>
+            <span class="status blocked">Blocked</span>
+          </div>
+          <div class="log-entry" style="animation-delay: 4s;">
+            <span class="ts">14:33</span>
+            <span class="action">Send email to prospect</span>
+            <span class="status allowed">Allowed</span>
+          </div>
+        </div>
+        <div class="activity-footer">Every action logged · Every action attributed · Tamper-proof</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="how-it-works" class="section">
+  <div class="container">
+    <div class="section-header center reveal">
+      <span class="section-tag">How it works</span>
+      <h2 class="section-title">From idea to production in <em>four steps</em></h2>
+    </div>
+    <div class="bento reveal">
+      <div class="bento-card bento-large">
+        <h3>1 · Pick a use case → 2 · Connect your tools</h3>
+        <p>Customer support, sales ops, IT, or finance. Each comes with a pre-configured agent template. Connect your helpdesk, CRM, database, or APIs — we handle the integrations.</p>
+        <div class="visual">
+          <div class="providers">
+            <span class="provider-pill">Zendesk</span>
+            <span class="provider-pill">Salesforce</span>
+            <span class="provider-pill">Stripe</span>
+            <span class="provider-pill">Postgres</span>
+            <span class="provider-pill">Slack</span>
+            <span class="provider-pill">Intercom</span>
+          </div>
+        </div>
+      </div>
+      <div class="bento-card">
+        <h3>3 · Set boundaries</h3>
+        <p>Define what the agent can and cannot do. Plain language, enforced by the platform — not by prompts.</p>
+        <div class="visual">
+          <div class="perm-diagram">
+            <span class="perm-node yes">refund ≤ $50</span>
+            <span class="perm-arrow">→</span>
+            <span class="perm-node no">delete account</span>
+          </div>
+        </div>
+      </div>
+      <div class="bento-card bento-wide">
+        <h3>4 · Deploy — the agent runs in production with full governance</h3>
+        <p>Every action logged, attributed, and timestamped. When your compliance team asks "who did this and why," you have the answer. Exportable, searchable, tamper-proof. The agent runs in an isolated container — not on your production servers. No lateral movement, no privilege escalation.</p>
+        <div class="visual">
+          <div class="audit-mini">
+            <span class="ts">14:31:02</span> <span class="ok">✓ ALLOWED</span> refund $45.00 → ticket #4821<br>
+            <span class="ts">14:32:15</span> <span style="color:var(--coral)">✗ BLOCKED</span> delete user u_8832 → policy: destructive<br>
+            <span class="ts">14:33:01</span> <span class="ok">✓ ALLOWED</span> update CRM lead_441 → status: qualified
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="quote-section reveal">
+  <div class="container">
+    <p class="quote-text">"The blocker isn't intelligence — <span class="olive">it's trust.</span>"</p>
+    <p class="quote-attr">AgenticBox makes agents trustworthy enough to do real work.</p>
+  </div>
+</section>
+
+<section id="use-cases" class="section" style="background: var(--bg-2);">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-tag">Use cases</span>
+      <h2 class="section-title">What agents can <em>do</em></h2>
+      <p class="section-sub">One platform, many verticals. Each template ships with sane defaults tuned for the use case.</p>
+    </div>
+    <div class="tabs-bar reveal">
+      <button class="tab-btn active" data-tab="support">Customer Support<span class="tab-badge live">Available</span></button>
+      <button class="tab-btn" data-tab="sales">Sales Ops<span class="tab-badge soon">Soon</span></button>
+      <button class="tab-btn" data-tab="it">IT Ops<span class="tab-badge soon">Soon</span></button>
+      <button class="tab-btn" data-tab="finance">Finance Ops<span class="tab-badge soon">Soon</span></button>
+    </div>
+
+    <div class="tab-panel active" id="tab-support">
+      <div class="ticket-card">
+        <div class="ticket-header">
+          <span class="ticket-id">#4821</span>
+          <span class="ticket-priority high">High Priority</span>
+        </div>
+        <p class="ticket-body">Customer requesting a refund for order #11983. Order total was $45.00. Customer is within 30-day refund window.</p>
+        <div class="ticket-response">
+          <div class="agent-name">🤖 Agent · support-bot</div>
+          I've verified order #11983 ($45.00) is within the 30-day refund window. Processing refund via Stripe. The customer has been notified via email.
+          <br><br>
+          <span style="font-size:0.72rem;color:var(--text-muted);">Refund processed in 4.2s · Ticket auto-closed · CSAT survey sent</span>
+        </div>
+      </div>
+      <div class="perm-boundaries">
+        <h4>Permission Boundaries</h4>
+        <div class="perm-row"><span class="label">Read customer tickets</span><span class="val yes">Allowed</span></div>
+        <div class="perm-row"><span class="label">Refund up to $50</span><span class="val yes">Allowed</span></div>
+        <div class="perm-row"><span class="label">Refund over $50</span><span class="val no">Blocked</span></div>
+        <div class="perm-row"><span class="label">Delete customer account</span><span class="val no">Blocked</span></div>
+        <div class="perm-row"><span class="label">Access payment card numbers</span><span class="val no">Blocked</span></div>
+        <div class="perm-row"><span class="label">Send email to customer</span><span class="val yes">Allowed</span></div>
+      </div>
+    </div>
+
+    <div class="tab-panel" id="tab-sales">
+      <div class="ticket-card">
+        <div class="ticket-header">
+          <span class="ticket-id">lead_441</span>
+          <span class="ticket-priority med">Medium</span>
+        </div>
+        <p class="ticket-body">New lead from website form. Company: Acme Corp (50 employees). Needs: team collaboration tool. Score: 7/10.</p>
+        <div class="ticket-response">
+          <div class="agent-name">🤖 Agent · sales-bot</div>
+          Lead qualified. Updated CRM: status → "Qualified", assigned to AE Sarah Chen. Drafted follow-up email (pending human approval before sending).
+          <br><br>
+          <span style="font-size:0.72rem;color:var(--text-muted);">CRM updated · Email drafted · Awaiting approval</span>
+          <br><br>
+          <span style="font-size:0.65rem;color:var(--text-muted);font-style:italic;">Illustrative — Sales Ops template is in development</span>
+        </div>
+      </div>
+      <div class="perm-boundaries">
+        <h4>Permission Boundaries</h4>
+        <div class="perm-row"><span class="label">Read CRM records</span><span class="val yes">Allowed</span></div>
+        <div class="perm-row"><span class="label">Update lead status</span><span class="val yes">Allowed</span></div>
+        <div class="perm-row"><span class="label">Draft prospect emails</span><span class="val yes">Allowed</span></div>
+        <div class="perm-row"><span class="label">Send email without approval</span><span class="val no">Blocked</span></div>
+        <div class="perm-row"><span class="label">Modify pipeline forecast</span><span class="val no">Blocked</span></div>
+        <div class="perm-row"><span class="label">Delete CRM records</span><span class="val no">Blocked</span></div>
+      </div>
+    </div>
+
+    <div class="tab-panel" id="tab-it">
+      <div class="ticket-card">
+        <div class="ticket-header">
+          <span class="ticket-id">IT-2207</span>
+          <span class="ticket-priority med">Medium</span>
+        </div>
+        <p class="ticket-body">Employee requesting password reset for Okta account. Employee verified via manager approval chain.</p>
+        <div class="ticket-response">
+          <div class="agent-name">🤖 Agent · it-bot</div>
+          Manager approval verified for user j.smith@company.com. Password reset initiated via Okta API. Temporary password sent to registered device. User will be prompted to change on next login.
+          <br><br>
+          <span style="font-size:0.72rem;color:var(--text-muted);">Reset completed in 2.1s · Audit logged · Ticket closed</span>
+          <br><br>
+          <span style="font-size:0.65rem;color:var(--text-muted);font-style:italic;">Illustrative — IT Ops template is in development</span>
+        </div>
+      </div>
+      <div class="perm-boundaries">
+        <h4>Permission Boundaries</h4>
+        <div class="perm-row"><span class="label">Reset passwords (verified)</span><span class="val yes">Allowed</span></div>
+        <div class="perm-row"><span class="label">Provision new accounts</span><span class="val no">Blocked</span></div>
+        <div class="perm-row"><span class="label">Deactivate accounts</span><span class="val no">Blocked</span></div>
+        <div class="perm-row"><span class="label">Read HR records</span><span class="val no">Blocked</span></div>
+        <div class="perm-row"><span class="label">Update access groups</span><span class="val no">Blocked</span></div>
+      </div>
+    </div>
+
+    <div class="tab-panel" id="tab-finance">
+      <div class="ticket-card">
+        <div class="ticket-header">
+          <span class="ticket-id">FIN-0934</span>
+          <span class="ticket-priority high">High</span>
+        </div>
+        <p class="ticket-body">Daily reconciliation: 3 transactions flagged as anomalies. Transaction amounts exceed typical pattern by 4x.</p>
+        <div class="ticket-response">
+          <div class="agent-name">🤖 Agent · finance-bot</div>
+          Reconciliation complete. 1,247 transactions processed. 3 anomalies flagged for review. Report generated and sent to finance@company.com. No transactions modified — anomalies escalated for human review.
+          <br><br>
+          <span style="font-size:0.72rem;color:var(--text-muted);">1,247 txns processed · 3 flagged · 0 modified · Report sent</span>
+          <br><br>
+          <span style="font-size:0.65rem;color:var(--text-muted);font-style:italic;">Illustrative — Finance Ops template is in development</span>
+        </div>
+      </div>
+      <div class="perm-boundaries">
+        <h4>Permission Boundaries</h4>
+        <div class="perm-row"><span class="label">Read transactions</span><span class="val yes">Allowed</span></div>
+        <div class="perm-row"><span class="label">Generate reports</span><span class="val yes">Allowed</span></div>
+        <div class="perm-row"><span class="label">Flag anomalies</span><span class="val yes">Allowed</span></div>
+        <div class="perm-row"><span class="label">Modify transactions</span><span class="val no">Blocked</span></div>
+        <div class="perm-row"><span class="label">Initiate transfers</span><span class="val no">Blocked</span></div>
+        <div class="perm-row"><span class="label">Access bank credentials</span><span class="val no">Blocked</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="pricing" class="section">
+  <div class="container">
+    <div class="section-header center reveal">
+      <span class="section-tag">Pricing</span>
+      <h2 class="section-title">Start small, scale as you <em>trust it</em></h2>
+      <p class="section-sub" style="margin-left:auto;margin-right:auto;">No hidden fees. No per-agent markup. Pay for managed governance, not compute.</p>
+    </div>
+    <div class="pricing-table-wrap reveal">
+      <table class="pricing-table">
+        <thead>
+          <tr>
+            <th></th>
+            <th>
+              <div class="plan-name">Starter</div>
+              <div class="plan-price"><span class="currency">$</span>49<span class="period">/mo</span></div>
+              <div class="plan-desc">Managed cloud beta</div>
+            </th>
+            <th class="featured">
+              <div class="plan-name">Pro</div>
+              <div class="plan-price"><span class="currency">$</span>199<span class="period">/mo</span></div>
+              <div class="plan-desc">Teams &amp; production</div>
+            </th>
+            <th>
+              <div class="plan-name">Enterprise</div>
+              <div class="plan-price"><span class="currency">$</span>999<span class="period">/mo</span></div>
+              <div class="plan-desc">Custom SLAs, on-prem</div>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Production agents</td><td>1</td><td>10</td><td>Unlimited</td></tr>
+          <tr><td>Vertical templates</td><td>1</td><td class="check">All</td><td class="check">All + custom</td></tr>
+          <tr><td>Scoped permissions</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td></tr>
+          <tr><td>Audit trail</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td></tr>
+          <tr><td>RBAC</td><td class="dash">—</td><td class="check">✓</td><td class="check">Advanced</td></tr>
+          <tr><td>Custom integrations</td><td class="dash">—</td><td class="check">✓</td><td class="check">✓</td></tr>
+          <tr><td>On-premise deployment</td><td class="dash">—</td><td class="dash">—</td><td class="check">✓</td></tr>
+          <tr><td>SSO</td><td class="dash">—</td><td class="dash">—</td><td class="check">✓</td></tr>
+          <tr><td>Custom SLAs</td><td class="dash">—</td><td class="dash">—</td><td class="check">✓</td></tr>
+          <tr><td>Support</td><td>Community</td><td>Priority</td><td>Dedicated</td></tr>
+          <tr class="cta-row">
+            <td></td>
+            <td><a href="mailto:hello@agenticbox.co?subject=Starter%20plan">Get Started</a></td>
+            <td><a href="mailto:hello@agenticbox.co?subject=Pro%20plan" class="featured-cta">Get Started</a></td>
+            <td><a href="mailto:hello@agenticbox.co?subject=Enterprise%20plan">Contact Sales</a></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section id="comparison" class="section" style="background: var(--bg-2);">
+  <div class="container">
+    <div class="section-header center reveal">
+      <span class="section-tag">The model</span>
+      <h2 class="section-title">The <em>Vercel</em> for agent deployment</h2>
+    </div>
+    <div class="compare-wrap reveal">
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>Vercel</th>
+            <th>AgenticBox</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><code>git push</code> → live site</td><td><code>agenticbox deploy</code> → agent in production</td></tr>
+          <tr><td>Edge network + serverless</td><td>Bounded container runtime</td></tr>
+          <tr><td>DDoS protection, rate limits</td><td>Permissions, scopes, audit trails</td></tr>
+          <tr><td>Templates per use case</td><td>Vertical agent templates</td></tr>
+          <tr><td>Developers ship web apps</td><td>Companies ship agent workforces</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="text-align: center; margin-top: 24px; font-size: 0.9rem; color: var(--text-muted); max-width: 480px; margin-left: auto; margin-right: auto; line-height: 1.6;">
+      Vercel made web deployment so smooth that companies stopped managing servers.<br>
+      AgenticBox makes agent deployment so safe that companies stop building custom guardrails.
+    </p>
+  </div>
+</section>
+
+<section class="cta-section" id="get-started">
+  <div class="cta-bg" aria-hidden="true"></div>
+  <div class="container">
+    <h2>Ready to put agents to <em>work</em>?</h2>
+    <p>Book a 30-minute demo. We'll show you how to deploy a production agent in your business — with the governance your compliance team needs.</p>
+    <div class="btn-group" style="justify-content: center;">
+      <a href="mailto:hello@agenticbox.co?subject=Book%20a%20demo" class="btn btn-primary">Book a Demo</a>
+      <a href="/" class="btn btn-secondary">For Developers</a>
+    </div>
+    <p class="cta-note">Questions? <a href="mailto:hello@agenticbox.co">hello@agenticbox.co</a></p>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <a href="/" class="logo" style="display:inline-flex;">
+      <span class="dot"></span>
+      AgenticBox
+    </a>
+    <p>&copy; 2025 AgenticBox. Deploy AI agents into production, safely.</p>
+    <div class="footer-links">
+      <a href="/">For Developers</a>
+      <a href="/start">For Business</a>
+      <a href="mailto:hello@agenticbox.co">Email</a>
+      <a href="https://twitter.com/agenticbox" target="_blank" rel="noopener">Twitter</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Tab switching
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const tabId = btn.dataset.tab;
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b === btn));
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.toggle('active', p.id === 'tab-' + tabId));
+    });
+  });
+
+  // Scroll reveal
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  // Restart audit log animation periodically
+  const logEntries = document.querySelectorAll('#auditLog .log-entry');
+  function restartLog() {
+    logEntries.forEach((entry, i) => {
+      entry.style.animation = 'none';
+      void entry.offsetWidth;
+      entry.style.animation = `logSlideIn 0.5s ease forwards`;
+      entry.style.animationDelay = `${i * 0.8}s`;
+    });
+  }
+  setInterval(restartLog, 6000);
+
+  // Smooth scroll
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', function(e) {
+      const t = document.querySelector(this.getAttribute('href'));
+      if (t) { e.preventDefault(); t.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+    });
+  });
+</script>
+</body>
+</html>

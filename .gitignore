@@ -19,5 +19,8 @@ __pycache__
 data/
 sessions/
 
+# Internal strategy & company docs — never track
+/company/
+
 # Proton Drive sync conflict files
 *# Name clash*

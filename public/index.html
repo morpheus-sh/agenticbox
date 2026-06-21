@@ -3,13 +3,77 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AgenticBox — Give Your Agent a Workplace, Not Root Access</title>
-  <meta name="description" content="Agents need workplaces. Permissions define what they can do. Identity defines who they are. Accountability tracks what they did. Okta + Docker for AI agents." />
-  <meta property="og:title" content="AgenticBox — Give Your Agent a Workplace, Not Root Access" />
-  <meta property="og:description" content="Agents need workplaces. Okta + Docker for AI agents." />
+  <!-- Primary Meta Tags -->
+  <title>AgenticBox — Deploy AI Agents into Production, Safely</title>
+  <meta name="title" content="AgenticBox — Deploy AI Agents into Production, Safely" />
+  <meta name="description" content="Deploy AI agents that do real business work — safely. Pick a vertical template, connect your tools, set permissions, ship to production. Scoped execution, full audit trail. Open source." />
+  <meta name="keywords" content="AI agent deployment, agent infrastructure, AI agent governance, agent sandbox, production AI agents, agent permissions, deploy AI agents safely, agent execution platform, Vercel for AI agents" />
+  <meta name="author" content="AgenticBox" />
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large" />
+  <link rel="canonical" href="https://agenticbox.co/" />
+
+  <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://agenticbox.co/" />
+  <meta property="og:title" content="AgenticBox — Deploy AI Agents into Production, Safely" />
+  <meta property="og:description" content="Deploy AI agents that do real business work — safely. Scoped permissions, bounded execution, full audit trail. Open source. Local-first." />
+  <meta property="og:site_name" content="AgenticBox" />
+  <meta property="og:image" content="https://agenticbox.co/og-image.png" />
+  <meta property="og:image:alt" content="AgenticBox — Deploy AI Agents into Production, Safely" />
+  <meta property="og:locale" content="en_US" />
+
+  <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:url" content="https://agenticbox.co/" />
+  <meta name="twitter:title" content="AgenticBox — Deploy AI Agents into Production, Safely" />
+  <meta name="twitter:description" content="Deploy AI agents that do real business work — safely. Scoped permissions, bounded execution, full audit trail. Open source." />
+  <meta name="twitter:image" content="https://agenticbox.co/og-image.png" />
+  <meta name="twitter:image:alt" content="AgenticBox — Deploy AI Agents into Production, Safely" />
+  <meta name="twitter:site" content="@agenticbox" />
+  <meta name="twitter:creator" content="@agenticbox" />
+
   <meta name="theme-color" content="#040706" />
+
+  <!-- Structured Data (JSON-LD) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "AgenticBox",
+    "description": "Deploy AI agents into production safely. Scoped permissions, bounded execution, full audit trail. Open source agent deployment platform with vertical templates for customer support, sales ops, IT ops, and finance ops.",
+    "url": "https://agenticbox.co/",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "Cross-platform",
+    "softwareVersion": "0.1.0",
+    "license": "https://github.com/morpheus-sh/agenticbox/blob/main/LICENSE",
+    "codeRepository": "https://github.com/morpheus-sh/agenticbox",
+    "programmingLanguage": "Rust",
+    "offers": [
+      { "@type": "Offer", "price": "0", "priceCurrency": "USD", "description": "Self-hosted — free and open source (MIT OR Apache-2.0)" },
+      { "@type": "Offer", "price": "49", "priceCurrency": "USD", "description": "Starter — managed cloud beta" },
+      { "@type": "Offer", "price": "199", "priceCurrency": "USD", "description": "Pro — teams, production governance" },
+      { "@type": "Offer", "price": "999", "priceCurrency": "USD", "description": "Enterprise — custom SLAs, RBAC, on-prem" }
+    ],
+    "featureList": [
+      "Container-based sandbox execution (Docker + Podman)",
+      "Scoped permissions: terminal, filesystem, network, browser",
+      "Full audit trail and session accountability",
+      "Vertical agent templates (customer support, sales ops, IT ops, finance ops)",
+      "Agent packages via TOML manifests",
+      "Local-first, vendor-neutral, Rust-native",
+      "Tauri desktop console"
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "AgenticBox",
+    "url": "https://agenticbox.co/",
+    "description": "Deploy AI agents into production — safely. Open source agent deployment infrastructure."
+  }
+  </script>
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -33,16 +97,14 @@
     html { scroll-behavior: smooth; background: var(--bg); }
     body { font-family: var(--font-ui); background: var(--bg); color: var(--text); line-height: 1.65; min-height: 100vh; font-size: 15px; -webkit-font-smoothing: antialiased; overflow-x: hidden; position: relative; }
 
+    /* === MATRIX RAIN CANVAS === */
+    #matrix-rain { position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: 0.18; }
+
     /* === ATMOSPHERIC LAYERS === */
-    /* Grid */
     body::before { content: ''; position: fixed; inset: 0; background-image: linear-gradient(rgba(141,184,78,0.035) 1px, transparent 1px), linear-gradient(90deg, rgba(141,184,78,0.035) 1px, transparent 1px); background-size: 56px 56px; pointer-events: none; z-index: 0; mask-image: radial-gradient(ellipse 90% 70% at 50% 30%, #000 30%, transparent 90%); -webkit-mask-image: radial-gradient(ellipse 90% 70% at 50% 30%, #000 30%, transparent 90%); }
-    /* Scanlines */
     .scanlines { position: fixed; inset: 0; background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.18) 2px, rgba(0,0,0,0.18) 3px); pointer-events: none; z-index: 999; opacity: 0.35; mix-blend-mode: multiply; }
-    /* Noise (SVG turbulence data-uri) */
     .noise { position: fixed; inset: 0; pointer-events: none; z-index: 998; opacity: 0.035; mix-blend-mode: overlay; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
-    /* Vignette */
     .vignette { position: fixed; inset: 0; pointer-events: none; z-index: 997; background: radial-gradient(ellipse 80% 60% at 50% 40%, transparent 40%, rgba(0,0,0,0.55) 100%); }
-    /* Viewport frame (inset border, Hermes-style) */
     .vp-frame { position: fixed; inset: var(--frame); border: 1px solid var(--border); pointer-events: none; z-index: 996; border-radius: 2px; }
     .vp-frame::before, .vp-frame::after { content: ''; position: absolute; width: 14px; height: 14px; border-color: var(--accent); }
     .vp-frame::before { top: -1px; left: -1px; border-top: 2px solid; border-left: 2px solid; }
@@ -71,26 +133,137 @@
     .phase-badge { display: inline-flex; align-items: center; gap: 5px; font-family: var(--font-mono); font-size: 0.6rem; font-weight: 600; padding: 3px 10px; border-radius: 999px; text-transform: uppercase; letter-spacing: 0.08em; }
     .phase-badge.ready { background: var(--accent-deep); color: var(--neon); border: 1px solid rgba(141,184,78,0.3); }
 
-    /* === HERO === */
-    .hero { padding: 110px 0 80px; position: relative; overflow: hidden; }
-    .hero-glow { position: absolute; top: 10%; left: 50%; transform: translateX(-50%); width: min(900px, 120vw); height: 600px; background: radial-gradient(ellipse, var(--accent-glow), transparent 65%); filter: blur(70px); opacity: 0.35; pointer-events: none; z-index: 0; }
-    .ghost-word { position: absolute; top: 52%; left: 50%; transform: translate(-50%, -50%); font-family: var(--font-mono); font-weight: 700; font-size: clamp(6rem, 22vw, 20rem); letter-spacing: -0.04em; color: transparent; -webkit-text-stroke: 1px rgba(141,184,78,0.06); white-space: nowrap; pointer-events: none; z-index: 0; user-select: none; }
+    /* === TERMINAL-FIRST HERO === */
+    .hero { padding: 70px 0 60px; position: relative; overflow: hidden; }
+    .hero-glow { position: absolute; top: 20%; left: 50%; transform: translateX(-50%); width: min(1100px, 130vw); height: 700px; background: radial-gradient(ellipse, var(--accent-glow), transparent 65%); filter: blur(80px); opacity: 0.3; pointer-events: none; z-index: 0; }
+    .ghost-word { position: absolute; top: 60%; left: 50%; transform: translate(-50%, -50%); font-family: var(--font-mono); font-weight: 700; font-size: clamp(6rem, 22vw, 20rem); letter-spacing: -0.04em; color: transparent; -webkit-text-stroke: 1px rgba(141,184,78,0.05); white-space: nowrap; pointer-events: none; z-index: 0; user-select: none; }
     .hero .container { display: flex; flex-direction: column; align-items: center; text-align: center; }
-    .badge { display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: 0.68rem; font-weight: 500; padding: 5px 14px; border-radius: 999px; margin-bottom: 32px; background: var(--accent-deep); color: var(--neon); border: 1px solid rgba(141,184,78,0.2); text-transform: uppercase; letter-spacing: 0.12em; }
-    .hero h1 { font-family: var(--font-ui); font-size: clamp(3rem, 8.5vw, 6.4rem); font-weight: 300; letter-spacing: -0.035em; line-height: 0.92; margin-bottom: 32px; color: var(--text); position: relative; display: flex; flex-direction: column; gap: 0; }
-    .hero h1 .line { display: block; }
-    .hero h1 .accent-word { font-family: var(--font-serif); font-style: italic; font-weight: 400; color: var(--neon); position: relative; text-shadow: 0 0 30px var(--accent-glow); }
-    .hero h1 .accent-word::after { content: '_'; color: var(--neon); animation: blink 1.1s step-end infinite; margin-left: 0.05em; }
+    .hero-headline { display: flex; flex-direction: column; align-items: center; gap: 14px; margin-bottom: 38px; position: relative; z-index: 1; }
+    .hero-tag { display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: 0.68rem; font-weight: 500; padding: 5px 14px; border-radius: 999px; background: var(--accent-deep); color: var(--neon); border: 1px solid rgba(141,184,78,0.2); text-transform: uppercase; letter-spacing: 0.12em; }
+    .hero-headline h1 { font-family: var(--font-ui); font-size: clamp(1.7rem, 3.6vw, 2.6rem); font-weight: 400; letter-spacing: -0.025em; line-height: 1.15; color: var(--text); max-width: 720px; }
+    .hero-headline h1 em { font-family: var(--font-serif); font-style: italic; font-weight: 400; color: var(--neon); text-shadow: 0 0 24px var(--accent-glow); }
+    .hero-sub { font-family: var(--font-mono); font-size: 0.82rem; color: var(--text-dim); max-width: 540px; line-height: 1.7; }
+
+    /* Terminal demo is the hero centerpiece — make it LARGE */
+    .terminal-demo-wrap { width: 100%; max-width: 940px; margin: 0 auto; perspective: 1400px; position: relative; z-index: 1; }
+    .terminal-demo { background: #020403; border: 1px solid var(--border-bright); border-radius: var(--radius-lg); overflow: hidden; box-shadow: 0 0 0 1px rgba(141,184,78,0.1), 0 36px 90px -28px rgba(0,0,0,0.85), 0 0 140px -40px var(--accent-glow); font-family: var(--font-mono); transform: rotateX(1.2deg); transition: transform 400ms ease; position: relative; }
+    .terminal-demo::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, var(--neon), transparent); opacity: 0.5; z-index: 5; }
+    .terminal-demo:hover { transform: rotateX(0deg) translateY(-3px); }
+    .terminal-header { display: flex; align-items: center; gap: 8px; padding: 12px 18px; background: #060908; border-bottom: 1px solid var(--border); }
+    .terminal-dots { display: flex; gap: 6px; }
+    .terminal-dot { width: 11px; height: 11px; border-radius: 50%; background: var(--border-bright); }
+    .terminal-title { flex: 1; text-align: center; font-size: 0.68rem; color: var(--text-muted); letter-spacing: 0.04em; }
+    .terminal-body { padding: 20px 24px; min-height: 340px; font-size: 0.8rem; line-height: 1.9; color: var(--text); position: relative; }
+    .terminal-body .cursor { display: inline-block; width: 8px; height: 15px; background: var(--neon); vertical-align: middle; animation: blink 1s step-end infinite; box-shadow: 0 0 6px var(--neon-glow); }
     @keyframes blink { 50% { opacity: 0; } }
-    .hero p.lede { font-size: clamp(1.02rem, 1.8vw, 1.16rem); color: var(--text-dim); max-width: 600px; margin: 0 auto 44px; line-height: 1.7; }
-    .btn-group { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; margin-bottom: 56px; }
-    .btn { display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-mono); font-size: 0.78rem; font-weight: 600; padding: 14px 28px; border-radius: var(--radius); text-decoration: none; transition: all var(--transition); cursor: pointer; border: 1px solid transparent; letter-spacing: 0.04em; text-transform: uppercase; }
+    .terminal-demo #asciinema-player { display: block; width: 100%; --term-background: #020403; }
+    .terminal-demo #asciinema-player .asciinema-player { background: #020403 !important; padding: 16px 20px !important; }
+
+    /* Install commands below the demo */
+    .hero-install { margin-top: 34px; position: relative; z-index: 1; }
+    .install-commands { max-width: 620px; margin: 0 auto; }
+    .install-tabs { display: flex; gap: 4px; margin-bottom: -1px; position: relative; z-index: 1; justify-content: center; }
+    .install-tab { background: transparent; border: 1px solid transparent; border-bottom: none; color: var(--text-muted); font-family: var(--font-mono); font-size: 0.72rem; padding: 8px 18px; cursor: pointer; border-radius: 8px 8px 0 0; transition: all var(--transition); }
+    .install-tab:hover { color: var(--text-dim); }
+    .install-tab.active { background: #030504; border-color: var(--border); color: var(--neon); }
+    .install-cmd { border-radius: 0 var(--radius-lg) var(--radius-lg) var(--radius-lg); }
+    .code-block { background: #030504; border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px 26px; font-family: var(--font-mono); font-size: 0.86rem; color: var(--text); overflow-x: auto; position: relative; box-shadow: inset 0 0 0 1px rgba(141,184,78,0.05), 0 16px 50px -20px rgba(0,0,0,0.7); }
+    .code-block::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, var(--neon), transparent); opacity: 0.5; }
+    .code-block .prompt { color: var(--neon); user-select: none; }
+    .code-block .comment { color: var(--text-muted); font-style: italic; }
+    .code-block .command { color: var(--text); }
+    .code-block .arg { color: var(--info); }
+    .code-block .copy-btn { position: absolute; top: 14px; right: 14px; background: var(--surface); border: 1px solid var(--border); color: var(--text-dim); padding: 6px 10px; font-family: var(--font-mono); font-size: 0.62rem; border-radius: 6px; cursor: pointer; opacity: 0; transition: all var(--transition); }
+    .code-block:hover .copy-btn { opacity: 1; }
+    .code-block .copy-btn:hover { background: var(--accent); color: #040706; border-color: var(--accent); }
+
+    .hero-meta { margin-top: 22px; font-size: 0.76rem; color: var(--text-muted); font-family: var(--font-mono); position: relative; z-index: 1; }
+    .hero-meta a { color: var(--neon); text-decoration: none; }
+
+    .btn { display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-mono); font-size: 0.78rem; font-weight: 600; padding: 13px 26px; border-radius: var(--radius); text-decoration: none; transition: all var(--transition); cursor: pointer; border: 1px solid transparent; letter-spacing: 0.04em; text-transform: uppercase; }
     .btn-primary { background: var(--accent); color: #040706; border-color: var(--accent); box-shadow: 0 0 0 1px rgba(141,184,78,0.2), 0 6px 24px -8px var(--accent-glow); }
     .btn-primary:hover { background: var(--accent-strong); border-color: var(--accent-strong); transform: translateY(-2px); box-shadow: 0 0 0 1px rgba(141,184,78,0.35), 0 10px 32px -8px var(--accent-glow); }
     .btn-secondary { background: var(--surface); color: var(--text); border-color: var(--border-bright); }
     .btn-secondary:hover { background: var(--surface-hover); border-color: var(--accent); color: var(--neon); }
 
-    /* === CORNER BRACKET CARDS === */
+    /* === SECTIONS === */
+    .section { padding: 110px 0; position: relative; }
+    .section::before { content: ''; position: absolute; top: 0; left: 15%; right: 15%; height: 1px; background: linear-gradient(90deg, transparent, var(--border-bright), transparent); }
+    .section-header { text-align: center; margin-bottom: 60px; }
+    .section-header.left { text-align: left; }
+    .section-tag { display: inline-block; font-family: var(--font-mono); font-size: 0.64rem; font-weight: 600; padding: 4px 14px; border-radius: 999px; background: var(--accent-deep); color: var(--neon); border: 1px solid rgba(141,184,78,0.2); margin-bottom: 18px; text-transform: uppercase; letter-spacing: 0.14em; }
+    .section-title { font-family: var(--font-mono); font-size: clamp(1.7rem, 3.6vw, 2.5rem); font-weight: 500; letter-spacing: -0.02em; color: var(--text); line-height: 1.15; }
+    .section-title em { font-family: var(--font-serif); font-style: italic; color: var(--neon); font-weight: 400; }
+    .section-sub { font-family: var(--font-ui); font-size: 0.92rem; color: var(--text-dim); max-width: 560px; margin: 14px auto 0; line-height: 1.7; }
+    .section-header.left .section-sub { margin-left: 0; }
+
+    /* === ASYMMETRIC FEATURE BENTO === */
+    .bento { display: grid; grid-template-columns: repeat(4, 1fr); grid-auto-rows: minmax(180px, auto); gap: 16px; max-width: 1040px; margin: 0 auto; }
+    .bento-card { background: linear-gradient(180deg, var(--surface), var(--bg-2)); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 26px; transition: all var(--transition); position: relative; overflow: hidden; display: flex; flex-direction: column; }
+    .bento-card::before, .bento-card::after { content: ''; position: absolute; width: 14px; height: 14px; border-color: var(--border-bright); transition: all var(--transition); opacity: 0.6; }
+    .bento-card::before { top: 8px; left: 8px; border-top: 2px solid; border-left: 2px solid; }
+    .bento-card::after { bottom: 8px; right: 8px; border-bottom: 2px solid; border-right: 2px solid; }
+    .bento-card:hover { border-color: var(--accent); transform: translateY(-3px); box-shadow: 0 18px 50px -18px rgba(0,0,0,0.6), 0 0 40px -14px var(--accent-glow); }
+    .bento-card:hover::before, .bento-card:hover::after { border-color: var(--neon); opacity: 1; width: 22px; height: 22px; }
+    .bento-large { grid-column: span 2; grid-row: span 2; }
+    .bento-medium { grid-column: span 1; grid-row: span 1; }
+    .bento-wide { grid-column: span 2; grid-row: span 1; }
+    .bento-small { grid-column: span 1; grid-row: span 1; }
+    .bento-card .card-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px; }
+    .bento-card .card-head .num { font-family: var(--font-mono); font-size: 0.74rem; color: var(--neon); text-shadow: 0 0 10px var(--accent-glow); }
+    .bento-card h3 { font-family: var(--font-ui); font-size: 1.08rem; font-weight: 600; color: var(--text); margin-bottom: 10px; line-height: 1.3; }
+    .bento-card p { font-size: 0.85rem; color: var(--text-dim); line-height: 1.65; }
+    .feature-status { display: inline-flex; align-items: center; gap: 4px; font-family: var(--font-mono); font-size: 0.58rem; font-weight: 600; padding: 2px 8px; border-radius: 999px; text-transform: uppercase; letter-spacing: 0.06em; flex-shrink: 0; }
+    .feature-status.shipped { background: var(--accent-deep); color: var(--neon); border: 1px solid rgba(141,184,78,0.3); }
+    .feature-status.in-dev { background: rgba(255,204,77,0.12); color: var(--warning); border: 1px solid rgba(255,204,77,0.25); }
+    .feature-status.planned { background: rgba(255,77,109,0.12); color: var(--danger); border: 1px solid rgba(255,77,109,0.25); }
+    .feature-status.future { background: rgba(74,215,255,0.12); color: var(--info); border: 1px solid rgba(74,215,255,0.25); }
+
+    /* Mock terminal output inside bento cards */
+    .mock-term { margin-top: 14px; background: #020403; border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; font-family: var(--font-mono); font-size: 0.74rem; line-height: 1.8; color: var(--text-dim); overflow-x: auto; flex: 1; }
+    .mock-term .ok { color: var(--neon); }
+    .mock-term .blocked { color: var(--danger); font-weight: 600; }
+    .mock-term .warn { color: var(--warning); }
+    .mock-term .dim { color: var(--text-muted); }
+    .mock-term .info { color: var(--info); }
+    .mock-term .prompt { color: var(--neon); }
+    .mock-term .key { color: var(--neon); }
+    .mock-term .str { color: var(--accent-strong); }
+
+    /* === CLI-AS-STEPS === */
+    .cli-steps { display: flex; flex-direction: column; gap: 14px; max-width: 760px; margin: 0 auto; }
+    .cli-step { background: #030504; border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px 24px; font-family: var(--font-mono); font-size: 0.9rem; display: flex; align-items: flex-start; gap: 18px; transition: all var(--transition); position: relative; overflow: hidden; }
+    .cli-step::before { content: ''; position: absolute; top: 0; left: 0; bottom: 0; width: 3px; background: var(--accent); opacity: 0.5; transition: opacity var(--transition); }
+    .cli-step:hover { border-color: var(--border-bright); transform: translateX(4px); }
+    .cli-step:hover::before { opacity: 1; box-shadow: 0 0 12px var(--accent-glow); }
+    .cli-step .step-prompt { color: var(--neon); flex-shrink: 0; }
+    .cli-step .step-cmd { color: var(--text); flex: 1; }
+    .cli-step .step-cmd .arg { color: var(--info); }
+    .cli-step .step-cmd .flag { color: var(--warning); }
+    .cli-step .step-comment { color: var(--text-muted); font-style: italic; flex-shrink: 0; font-size: 0.8rem; padding-top: 2px; }
+
+    /* === VERTICALS (asymmetric) === */
+    .vert-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; max-width: 1040px; margin: 0 auto; }
+    .vert-card { background: linear-gradient(180deg, var(--surface), var(--bg-2)); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 24px; transition: all var(--transition); position: relative; }
+    .vert-card:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: 0 0 30px -10px var(--accent-glow); }
+    .vert-card.featured { grid-column: span 2; grid-row: span 2; padding: 34px; display: flex; flex-direction: column; }
+    .vert-card.featured::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, var(--neon), transparent); }
+    .vert-card .vert-icon { font-family: var(--font-mono); font-size: 1.1rem; color: var(--neon); margin-bottom: 10px; display: block; }
+    .vert-card.featured .vert-icon { font-size: 1.5rem; }
+    .vert-card h4 { font-family: var(--font-ui); font-size: 0.96rem; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+    .vert-card.featured h4 { font-size: 1.4rem; margin-bottom: 12px; }
+    .vert-card p { font-size: 0.82rem; color: var(--text-dim); line-height: 1.55; margin-bottom: 10px; }
+    .vert-card.featured p { font-size: 0.94rem; line-height: 1.7; margin-bottom: 18px; }
+    .vert-card .vert-status { display: inline-block; font-family: var(--font-mono); font-size: 0.56rem; font-weight: 600; padding: 2px 8px; border-radius: 999px; text-transform: uppercase; letter-spacing: 0.06em; }
+    .vert-card.featured .vert-status { font-size: 0.64rem; padding: 4px 12px; }
+    .vert-status.active { background: var(--accent-deep); color: var(--neon); border: 1px solid rgba(141,184,78,0.3); }
+    .vert-status.roadmap { background: rgba(74,215,255,0.12); color: var(--info); border: 1px solid rgba(74,215,255,0.25); }
+    .vert-card.featured .vert-bullets { list-style: none; margin-top: auto; padding-top: 16px; border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 6px; }
+    .vert-card.featured .vert-bullets li { font-family: var(--font-mono); font-size: 0.76rem; color: var(--text-dim); display: flex; gap: 8px; }
+    .vert-card.featured .vert-bullets li::before { content: '›'; color: var(--neon); }
+
+    /* === PILLARS === */
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr)); gap: 18px; }
     .corner-card { background: linear-gradient(180deg, var(--surface), var(--bg-2)); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 30px; transition: all var(--transition); position: relative; overflow: hidden; }
     .corner-card::before, .corner-card::after { content: ''; position: absolute; width: 14px; height: 14px; border-color: var(--border-bright); transition: all var(--transition); opacity: 0.6; }
     .corner-card::before { top: 8px; left: 8px; border-top: 2px solid; border-left: 2px solid; }
@@ -98,109 +271,29 @@
     .corner-card:hover { border-color: var(--accent); transform: translateY(-3px); box-shadow: 0 18px 50px -18px rgba(0,0,0,0.6), 0 0 40px -14px var(--accent-glow); }
     .corner-card:hover::before, .corner-card:hover::after { border-color: var(--neon); opacity: 1; width: 22px; height: 22px; }
     .card-icon { font-family: var(--font-mono); font-size: 1.3rem; color: var(--neon); margin-bottom: 14px; display: block; text-shadow: 0 0 12px var(--accent-glow); }
-
-    /* === SECTIONS === */
-    .section { padding: 110px 0; position: relative; }
-    .section::before { content: ''; position: absolute; top: 0; left: 15%; right: 15%; height: 1px; background: linear-gradient(90deg, transparent, var(--border-bright), transparent); }
-    .section-header { text-align: center; margin-bottom: 60px; }
-    .section-tag { display: inline-block; font-family: var(--font-mono); font-size: 0.64rem; font-weight: 600; padding: 4px 14px; border-radius: 999px; background: var(--accent-deep); color: var(--neon); border: 1px solid rgba(141,184,78,0.2); margin-bottom: 18px; text-transform: uppercase; letter-spacing: 0.14em; }
-    .section-title { font-family: var(--font-ui); font-size: clamp(1.8rem, 4vw, 2.7rem); font-weight: 300; letter-spacing: -0.025em; color: var(--text); line-height: 1.1; }
-    .section-title em { font-family: var(--font-serif); font-style: italic; color: var(--neon); font-weight: 400; }
-    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr)); gap: 18px; }
-    .card-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 14px; flex-wrap: wrap; }
     .corner-card h3 { font-family: var(--font-ui); font-size: 1.05rem; font-weight: 600; color: var(--text); margin-bottom: 10px; line-height: 1.3; }
-    .feature-status { display: inline-flex; align-items: center; gap: 4px; font-family: var(--font-mono); font-size: 0.58rem; font-weight: 600; padding: 2px 8px; border-radius: 999px; text-transform: uppercase; letter-spacing: 0.06em; flex-shrink: 0; }
-    .feature-status.shipped { background: var(--accent-deep); color: var(--neon); border: 1px solid rgba(141,184,78,0.3); }
-    .feature-status.in-dev { background: rgba(255,204,77,0.12); color: var(--warning); border: 1px solid rgba(255,204,77,0.25); }
-    .feature-status.planned { background: rgba(255,77,109,0.12); color: var(--danger); border: 1px solid rgba(255,77,109,0.25); }
-    .feature-status.future { background: rgba(74,215,255,0.12); color: var(--info); border: 1px solid rgba(74,215,255,0.25); }
-    .card p, .corner-card p { font-size: 0.86rem; color: var(--text-dim); line-height: 1.65; }
+    .corner-card p { font-size: 0.86rem; color: var(--text-dim); line-height: 1.65; }
     .corner-card code { font-family: var(--font-mono); font-size: 0.82em; color: var(--neon); background: var(--accent-deep); padding: 1px 5px; border-radius: 3px; }
 
-    /* === ARCHITECTURE === */
-    .arch-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0; max-width: 820px; margin: 0 auto; position: relative; }
-    .arch-col { padding: 36px; position: relative; }
-    .arch-col.open { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg) 0 0 var(--radius-lg); }
-    .arch-col.closed { background: var(--bg-2); border: 1px solid var(--border); border-radius: 0 var(--radius-lg) var(--radius-lg) 0; border-left: none; }
-    .arch-label { font-family: var(--font-mono); font-size: 0.64rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.14em; margin-bottom: 22px; }
-    .arch-col.open .arch-label { color: var(--neon); }
-    .arch-col.closed .arch-label { color: var(--text-dim); }
-    .arch-item { display: flex; align-items: center; gap: 10px; padding: 11px 0; border-bottom: 1px solid var(--border); font-size: 0.86rem; }
-    .arch-item:last-child { border-bottom: none; }
-    .arch-item .ico { font-family: var(--font-mono); width: 20px; text-align: center; }
-    .arch-col.open .arch-item .ico { color: var(--neon); }
-    .arch-col.closed .arch-item .ico { color: var(--text-muted); }
-    .arch-item .label { color: var(--text-dim); }
-
-    /* === ROADMAP === */
-    .roadmap-item { display: flex; gap: 20px; padding: 26px 0; border-bottom: 1px solid var(--border); align-items: flex-start; transition: all var(--transition); }
-    .roadmap-item:hover { padding-left: 12px; }
-    .roadmap-item:last-child { border-bottom: none; }
-    .roadmap-marker { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; margin-top: 4px; border: 2px solid var(--border); background: var(--bg); transition: all var(--transition); }
-    .roadmap-item:hover .roadmap-marker { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
-    .roadmap-marker.ready { border-color: var(--accent); background: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
-    .roadmap-marker.in-dev { border-color: var(--warning); background: var(--warning); box-shadow: 0 0 0 3px rgba(255,204,77,0.3); }
-    .roadmap-marker.planned { border-color: var(--danger); background: var(--danger); box-shadow: 0 0 0 3px rgba(255,77,109,0.3); }
-    .roadmap-content { flex: 1; }
-    .roadmap-phase { display: inline-block; font-family: var(--font-mono); font-size: 0.6rem; font-weight: 600; padding: 3px 10px; border-radius: 999px; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; }
-    .roadmap-phase.ready { background: var(--accent-deep); color: var(--neon); }
-    .roadmap-phase.in-dev { background: rgba(255,204,77,0.12); color: var(--warning); }
-    .roadmap-phase.planned { background: rgba(255,77,109,0.12); color: var(--danger); }
-    .roadmap-content h4 { font-family: var(--font-ui); font-size: 1.05rem; font-weight: 600; color: var(--text); margin-bottom: 6px; }
-    .roadmap-content p { font-size: 0.86rem; color: var(--text-dim); line-height: 1.6; }
-    .roadmap-content code { font-family: var(--font-mono); font-size: 0.82em; color: var(--neon); }
-
-    /* === VISION STEPS === */
-    .vision-steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; max-width: 920px; margin: 0 auto; }
-    .vision-step { background: linear-gradient(180deg, var(--surface), var(--bg-2)); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 30px; position: relative; transition: all var(--transition); overflow: hidden; }
-    .vision-step::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, var(--accent), transparent); opacity: 0; transition: opacity var(--transition); }
-    .vision-step:hover { border-color: var(--border-bright); transform: translateY(-3px); }
-    .vision-step:hover::before { opacity: 1; }
-    .vision-step .step-num { font-family: var(--font-mono); font-size: 2rem; font-weight: 700; color: transparent; -webkit-text-stroke: 1px var(--accent); opacity: 0.5; line-height: 1; margin-bottom: 14px; }
-    .vision-step .step-tag { font-family: var(--font-mono); font-size: 0.6rem; font-weight: 600; color: var(--neon); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 10px; }
-    .vision-step h4 { font-family: var(--font-ui); font-size: 1rem; font-weight: 600; color: var(--text); margin-bottom: 8px; }
-    .vision-step p { font-size: 0.82rem; color: var(--text-dim); line-height: 1.6; }
-    .vision-note { text-align: center; margin-top: 36px; font-size: 0.84rem; color: var(--text-muted); font-style: italic; max-width: 600px; margin-left: auto; margin-right: auto; }
-
-    /* === INSTALL / CODE === */
-    .install-block { max-width: 720px; margin: 0 auto; text-align: left; }
-    .install-block summary { font-family: var(--font-mono); font-size: 0.76rem; color: var(--text-muted); cursor: pointer; padding: 8px 0; user-select: none; }
-    .code-block { background: #030504; border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 22px 26px; font-family: var(--font-mono); font-size: 0.86rem; color: var(--text); overflow-x: auto; position: relative; box-shadow: inset 0 0 0 1px rgba(141,184,78,0.05), 0 16px 50px -20px rgba(0,0,0,0.7); }
-    .code-block::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, var(--neon), transparent); opacity: 0.5; }
-    .code-block .prompt { color: var(--neon); user-select: none; }
-    .code-block .comment { color: var(--text-muted); font-style: italic; }
-    .code-block .command { color: var(--text); }
-    .code-block .arg { color: var(--info); }
-    .code-block .output { color: var(--text-dim); }
-    .code-block .copy-btn { position: absolute; top: 14px; right: 14px; background: var(--surface); border: 1px solid var(--border); color: var(--text-dim); padding: 6px 10px; font-family: var(--font-mono); font-size: 0.62rem; border-radius: 6px; cursor: pointer; opacity: 0; transition: all var(--transition); }
-    .code-block:hover .copy-btn { opacity: 1; }
-    .code-block .copy-btn:hover { background: var(--accent); color: #040706; border-color: var(--accent); }
-    .install-commands { max-width: 580px; margin: 28px auto 0; }
-    .install-tabs { display: flex; gap: 4px; margin-bottom: -1px; position: relative; z-index: 1; justify-content: center; }
-    .install-tab { background: transparent; border: 1px solid transparent; border-bottom: none; color: var(--text-muted); font-family: var(--font-mono); font-size: 0.72rem; padding: 8px 18px; cursor: pointer; border-radius: 8px 8px 0 0; transition: all var(--transition); }
-    .install-tab:hover { color: var(--text-dim); }
-    .install-tab.active { background: #030504; border-color: var(--border); color: var(--neon); }
-    .install-cmd { border-radius: 0 var(--radius-lg) var(--radius-lg) var(--radius-lg); }
-    .os-tabs { display: flex; gap: 6px; margin-bottom: 18px; }
-    .os-tab { padding: 8px 16px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-dim); cursor: pointer; transition: all var(--transition); }
-    .os-tab.active { background: var(--accent); border-color: var(--accent); color: #040706; }
-    .os-tab:hover:not(.active) { border-color: var(--border-bright); color: var(--text); }
-    .os-panel { display: none; }
-    .os-panel.active { display: block; animation: fadeIn 120ms ease; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+    /* === COMPARISON TABLE === */
+    .compare-wrap { max-width: 720px; margin: 0 auto; }
+    .compare-table { width: 100%; border-collapse: collapse; font-size: 0.86rem; }
+    .compare-table th, .compare-table td { padding: 14px 20px; text-align: left; border-bottom: 1px solid var(--border); }
+    .compare-table th { font-family: var(--font-mono); font-size: 0.64rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.14em; color: var(--text-muted); padding-bottom: 10px; border-bottom: 1px solid var(--border-bright); }
+    .compare-table th:first-child { width: 35%; }
+    .compare-table td { color: var(--text-dim); }
+    .compare-table tr:hover td { color: var(--text); background: var(--surface); }
+    .compare-table td:first-child { font-family: var(--font-mono); font-size: 0.78rem; color: var(--neon); }
+    .compare-table code { font-family: var(--font-mono); font-size: 0.8em; color: var(--neon); background: var(--accent-deep); padding: 1px 4px; border-radius: 3px; }
 
     /* === CTA === */
     .cta { padding: 110px 0; text-align: center; position: relative; overflow: hidden; }
     .cta::before { content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 420px; height: 1px; background: linear-gradient(90deg, transparent, var(--neon), transparent); }
     .cta-glow { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 700px; height: 400px; background: radial-gradient(ellipse, var(--accent-glow), transparent 70%); filter: blur(60px); opacity: 0.25; pointer-events: none; }
-    .cta h2 { font-family: var(--font-ui); font-size: clamp(1.8rem, 4vw, 2.6rem); font-weight: 300; color: var(--text); margin-bottom: 16px; letter-spacing: -0.02em; }
+    .cta h2 { font-family: var(--font-mono); font-size: clamp(1.7rem, 3.6vw, 2.4rem); font-weight: 500; color: var(--text); margin-bottom: 16px; letter-spacing: -0.02em; }
     .cta h2 em { font-family: var(--font-serif); font-style: italic; color: var(--neon); font-weight: 400; }
     .cta p { color: var(--text-dim); margin-bottom: 36px; max-width: 540px; margin-left: auto; margin-right: auto; line-height: 1.7; }
-    .waitlist-form { display: flex; gap: 10px; max-width: 460px; margin: 0 auto; flex-wrap: wrap; justify-content: center; position: relative; z-index: 1; }
-    .waitlist-form input { flex: 1; min-width: 220px; padding: 14px 18px; border-radius: var(--radius); background: var(--bg-2); border: 1px solid var(--border-bright); color: var(--text); font-family: var(--font-ui); font-size: 0.9rem; transition: all var(--transition); }
-    .waitlist-form input:focus { outline: none; border-color: var(--neon); box-shadow: 0 0 0 3px var(--accent-deep); }
-    .waitlist-form input::placeholder { color: var(--text-muted); }
-    .waitlist-form button { white-space: nowrap; padding: 14px 28px; }
+    .btn-group { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
     .cta-note { margin-top: 18px; font-size: 0.8rem; color: var(--text-muted); position: relative; z-index: 1; }
     .cta-note a { color: var(--neon); text-decoration: none; }
     .cta-note a:hover { text-decoration: underline; }
@@ -220,58 +313,39 @@
 
     *:focus-visible { outline: 2px solid var(--neon); outline-offset: 2px; }
 
-    /* === TERMINAL DEMO === */
-    .terminal-demo-wrap { max-width: 740px; margin: 0 auto; perspective: 1200px; }
-    .terminal-demo { background: #020403; border: 1px solid var(--border-bright); border-radius: var(--radius-lg); overflow: hidden; box-shadow: 0 0 0 1px rgba(141,184,78,0.1), 0 28px 70px -22px rgba(0,0,0,0.8), 0 0 100px -36px var(--accent-glow); font-family: var(--font-mono); transform: rotateX(1.5deg); transition: transform 400ms ease; position: relative; }
-    .terminal-demo::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, var(--neon), transparent); opacity: 0.4; z-index: 5; }
-    .terminal-demo:hover { transform: rotateX(0deg) translateY(-3px); }
-    .terminal-header { display: flex; align-items: center; gap: 8px; padding: 11px 16px; background: #060908; border-bottom: 1px solid var(--border); }
-    .terminal-dots { display: flex; gap: 6px; }
-    .terminal-dot { width: 11px; height: 11px; border-radius: 50%; background: var(--border-bright); }
-    .terminal-title { flex: 1; text-align: center; font-size: 0.66rem; color: var(--text-muted); letter-spacing: 0.04em; }
-    .terminal-body { padding: 20px 24px; min-height: 340px; font-size: 0.8rem; line-height: 1.9; color: var(--text); position: relative; }
-    .terminal-body .cmd { color: var(--text-dim); }
-    .terminal-body .cmd-accent { color: var(--neon); }
-    .terminal-body .agent-action { color: var(--warning); }
-    .terminal-body .blocked { color: var(--danger); font-weight: 600; }
-    .terminal-body .allowed { color: var(--neon); font-weight: 600; }
-    .terminal-body .reason { color: var(--text-muted); }
-    .terminal-body .dim { color: var(--text-muted); }
-    .terminal-body .cursor { display: inline-block; width: 8px; height: 15px; background: var(--neon); vertical-align: middle; animation: blink 1s step-end infinite; box-shadow: 0 0 6px var(--neon-glow); }
-    .terminal-body .demo-line { opacity: 0; animation: lineIn 0.3s ease forwards; }
-    @keyframes lineIn { from { opacity: 0; transform: translateY(2px); } to { opacity: 1; transform: translateY(0); } }
-    .terminal-body .demo-sep { height: 1px; background: linear-gradient(90deg, transparent, var(--border-bright), transparent); margin: 10px 0; opacity: 0; animation: lineIn 0.3s ease forwards; }
-    .terminal-body .demo-summary { color: var(--text); font-weight: 600; }
-    .demo-replay { position: absolute; top: 10px; right: 14px; background: var(--surface); border: 1px solid var(--border); color: var(--text-muted); font-family: var(--font-mono); font-size: 0.6rem; padding: 4px 10px; border-radius: 6px; cursor: pointer; opacity: 0; transition: all var(--transition); }
-    .terminal-demo:hover .demo-replay { opacity: 1; }
-    .demo-replay:hover { background: var(--accent); color: #020403; border-color: var(--accent); }
-    /* asciinema player inside terminal frame */
-    .terminal-demo #asciinema-player { display: block; width: 100%; --term-background: #020403; }
-    .terminal-demo #asciinema-player .asciinema-player { background: #020403 !important; padding: 16px 20px !important; }
-
     /* === RESPONSIVE === */
+    @media (max-width: 980px) {
+      .bento { grid-template-columns: repeat(2, 1fr); }
+      .bento-large { grid-column: span 2; grid-row: span 2; }
+      .bento-wide { grid-column: span 2; }
+      .bento-medium, .bento-small { grid-column: span 1; }
+      .vert-grid { grid-template-columns: repeat(2, 1fr); }
+      .vert-card.featured { grid-column: span 2; grid-row: span 1; }
+    }
     @media (max-width: 768px) {
       :root { --frame: 8px; }
       .container { padding: 0 18px; }
-      .hero { padding: 80px 0 60px; }
+      .hero { padding: 50px 0 50px; }
       .section { padding: 70px 0; }
+      .bento { grid-template-columns: 1fr; }
+      .bento-large, .bento-wide, .bento-medium, .bento-small { grid-column: span 1; grid-row: span 1; }
+      .vert-grid { grid-template-columns: 1fr; }
+      .vert-card.featured { grid-column: span 1; }
       .grid { grid-template-columns: 1fr; }
-      .arch-grid { grid-template-columns: 1fr; }
-      .arch-col.open { border-radius: var(--radius-lg) var(--radius-lg) 0 0; border-right: 1px solid var(--border); }
-      .arch-col.closed { border-radius: 0 0 var(--radius-lg) var(--radius-lg); border-left: 1px solid var(--border); border-top: none; }
-      .vision-steps { grid-template-columns: 1fr; }
       nav a:not(.primary) { display: none; }
-      .roadmap-item { flex-direction: column; gap: 12px; padding-left: 16px; }
-      .roadmap-marker { width: 10px; height: 10px; }
       .code-block { font-size: 0.76rem; padding: 16px 18px; }
       .terminal-body { padding: 14px 16px; font-size: 0.7rem; }
-      .waitlist-form { flex-direction: column; }
-      .waitlist-form input { min-width: unset; width: 100%; }
       .ghost-word { font-size: clamp(4rem, 24vw, 8rem); }
+      .cli-step { flex-direction: column; gap: 6px; font-size: 0.8rem; }
+      .compare-table { font-size: 0.76rem; }
+      .compare-table th, .compare-table td { padding: 10px 12px; }
     }
   </style>
 </head>
 <body>
+
+<!-- Matrix rain background -->
+<canvas id="matrix-rain" aria-hidden="true"></canvas>
 
 <!-- Atmospheric overlays -->
 <div class="scanlines" aria-hidden="true"></div>
@@ -290,138 +364,341 @@
       AgenticBox
     </a>
     <nav>
-      <a href="#pillars">Pillars</a>
+      <a href="#how-it-works">How it works</a>
+      <a href="#verticals">Verticals</a>
       <a href="#features">Runtime</a>
+      <a href="/start">For Business</a>
       <a href="https://github.com/morpheus-sh/agenticbox" target="_blank" rel="noopener">GitHub</a>
       <a href="https://github.com/morpheus-sh/agenticbox" target="_blank" rel="noopener" class="primary">★ Star</a>
     </nav>
   </div>
 </header>
 
-<section class="hero">
+<!-- ============ TERMINAL-FIRST HERO ============ -->
+<section class="hero" id="top">
   <div class="hero-glow" aria-hidden="true"></div>
   <div class="ghost-word" aria-hidden="true">AGENTICBOX</div>
   <div class="container">
-    <span class="badge">Open Source Edge — MIT OR Apache-2.0</span>
-    <h1>
-      <span class="line">Give your agent</span>
-      <span class="line">a workplace, not</span>
-      <span class="line accent-word">root access</span>
-    </h1>
-    <p class="lede">Agents need workplaces. Permissions define what they can do. Identity defines who they are. Accountability tracks what they did. AgenticBox is Okta + Docker for AI agents.</p>
-
-    <div class="btn-group">
-      <a href="https://github.com/morpheus-sh/agenticbox" class="btn btn-primary" target="_blank" rel="noopener">Star on GitHub</a>
-      <a href="https://github.com/morpheus-sh/agenticbox" target="_blank" rel="noopener" class="btn btn-secondary">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
-        View on GitHub
-      </a>
+    <div class="hero-headline">
+      <span class="hero-tag">Open Source — MIT OR Apache-2.0</span>
+      <h1>Deploy agents that do real work — <em>safely</em></h1>
+      <p class="hero-sub">// scoped permissions, bounded execution, full audit trail — production-safe by default</p>
     </div>
 
-    <div class="install-commands">
-      <div class="install-tabs">
-        <button class="install-tab active" data-os="unix">macOS / Linux</button>
-        <button class="install-tab" data-os="windows">Windows</button>
-      </div>
-      <div class="code-block install-cmd" data-os="unix">
-        <span class="comment"># One-line install (daemon + CLI)</span><br>
-        <span class="prompt">$ </span><span class="command">curl -fsSL https://agenticbox.co/install.sh</span> <span class="arg">| bash</span>
-        <button class="copy-btn" onclick="copyInstall(this)">copy</button>
-      </div>
-      <div class="code-block install-cmd" data-os="windows" style="display:none">
-        <span class="comment"># One-line install (daemon + CLI)</span><br>
-        <span class="prompt">PS&gt; </span><span class="command">irm https://agenticbox.co/install.ps1</span> <span class="arg">| iex</span>
-        <button class="copy-btn" onclick="copyInstall(this)">copy</button>
-      </div>
-    </div>
-
+    <!-- Terminal demo IS the hero -->
     <div class="terminal-demo-wrap">
       <div class="terminal-demo" id="terminalDemo">
         <div class="terminal-header">
           <div class="terminal-dots"><div class="terminal-dot"></div><div class="terminal-dot"></div><div class="terminal-dot"></div></div>
-          <div class="terminal-title">agenticbox run demo &mdash; bounded workplace session</div>
+          <div class="terminal-title">agenticbox run demo &mdash; scoped execution session</div>
         </div>
         <div id="asciinema-player"></div>
       </div>
     </div>
 
-    <p style="font-size: 0.78rem; color: var(--text-muted); margin-top: 20px; font-family: var(--font-mono);">
-      <a href="https://github.com/morpheus-sh/agenticbox" style="color: var(--neon);" target="_blank" rel="noopener">github.com/morpheus-sh/agenticbox</a>
-    </p>
+    <!-- Install commands below the demo -->
+    <div class="hero-install">
+      <div class="install-commands">
+        <div class="install-tabs">
+          <button class="install-tab active" data-os="unix">macOS / Linux</button>
+          <button class="install-tab" data-os="windows">Windows</button>
+        </div>
+        <div class="code-block install-cmd" data-os="unix">
+          <span class="comment"># One-line install (daemon + CLI)</span><br>
+          <span class="prompt">$ </span><span class="command">curl -fsSL https://agenticbox.co/install.sh</span> <span class="arg">| bash</span>
+          <button class="copy-btn" onclick="copyInstall(this)">copy</button>
+        </div>
+        <div class="code-block install-cmd" data-os="windows" style="display:none">
+          <span class="comment"># One-line install (daemon + CLI)</span><br>
+          <span class="prompt">PS&gt; </span><span class="command">irm https://agenticbox.co/install.ps1</span> <span class="arg">| iex</span>
+          <button class="copy-btn" onclick="copyInstall(this)">copy</button>
+        </div>
+      </div>
+      <p class="hero-meta">
+        <a href="https://github.com/morpheus-sh/agenticbox" target="_blank" rel="noopener">github.com/morpheus-sh/agenticbox</a> &middot; Rust-native &middot; Local-first
+      </p>
+    </div>
   </div>
 </section>
 
+<!-- ============ CLI-AS-STEPS (How it works) ============ -->
+<section id="how-it-works" class="section">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag">// from agent built to agent deployed</span>
+      <h2 class="section-title">How it <em>works</em></h2>
+      <p class="section-sub">Four commands. That's the whole loop — from kicking the tires to shipping to production.</p>
+    </div>
+    <div class="cli-steps">
+      <div class="cli-step">
+        <span class="step-prompt">$</span>
+        <span class="step-cmd">agenticbox <span class="arg">run</span> <span class="arg">demo</span></span>
+        <span class="step-comment"># See it in action</span>
+      </div>
+      <div class="cli-step">
+        <span class="step-prompt">$</span>
+        <span class="step-cmd">agenticbox <span class="arg">run</span> <span class="arg">hermes</span></span>
+        <span class="step-comment"># Deploy a named agent</span>
+      </div>
+      <div class="cli-step">
+        <span class="step-prompt">$</span>
+        <span class="step-cmd">agenticbox <span class="arg">run</span> <span class="flag">--</span> python3 script.py</span>
+        <span class="step-comment"># Wrap any command</span>
+      </div>
+      <div class="cli-step">
+        <span class="step-prompt">$</span>
+        <span class="step-cmd">agenticbox <span class="arg">deploy</span></span>
+        <span class="step-comment"># Ship to production</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ASYMMETRIC FEATURE BENTO ============ -->
+<section id="features" class="section">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag">// what's running today</span>
+      <h2 class="section-title">The <em>runtime</em></h2>
+      <p class="section-sub">Every primitive an agent needs to do real work without wrecking real systems.</p>
+    </div>
+    <div class="bento">
+      <!-- Large 2x2: Sandbox Execution -->
+      <article class="bento-card bento-large">
+        <div class="card-head">
+          <span class="num">[01]</span>
+          <span class="feature-status shipped">Shipped</span>
+        </div>
+        <h3>Sandbox Execution</h3>
+        <p>Container-based execution with full lifecycle management. Agents run in isolated containers (Docker or Podman, auto-detected) that start and stop on demand — no pre-built images, no persistent daemons required.</p>
+        <div class="mock-term">
+<span class="prompt">$</span> agenticbox run hermes<br>
+<span class="info">[sandbox]</span> detecting runtime... <span class="ok">docker</span><br>
+<span class="info">[sandbox]</span> pulling base image <span class="str">"agent-runtime:slim"</span><br>
+<span class="info">[sandbox]</span> container <span class="key">a8f3c1</span> created<br>
+<span class="ok">[sandbox]</span> container started — cgroup: cpu=2cores mem=1G<br>
+<span class="dim">[agent]</span> stdio relay established (PTY)<br>
+<span class="warn">[agent]</span> running... <span class="dim">session: 0x7e2a</span><br>
+<span class="info">[sandbox]</span> container <span class="key">a8f3c1</span> stopped on exit<br>
+<span class="ok">[sandbox]</span> container removed — audit log written
+        </div>
+      </article>
+
+      <!-- Medium 1x1: Scoped Permissions -->
+      <article class="bento-card bento-medium">
+        <div class="card-head">
+          <span class="num">[02]</span>
+          <span class="feature-status shipped">Shipped</span>
+        </div>
+        <h3>Scoped Permissions</h3>
+        <p>Per-agent allow/deny: terminal, filesystem, browser, network.</p>
+        <div class="mock-term">
+<span class="ok">ALLOWED</span>  terminal.exec<br>
+<span class="ok">ALLOWED</span>  fs.read /data<br>
+<span class="blocked">BLOCKED</span>  fs.write /prod<br>
+<span class="blocked">BLOCKED</span>  net.outbound<br>
+<span class="dim">evaluated by PolicyEngine</span>
+        </div>
+      </article>
+
+      <!-- Medium 1x1: Filesystem Governance -->
+      <article class="bento-card bento-medium">
+        <div class="card-head">
+          <span class="num">[03]</span>
+          <span class="feature-status shipped">Shipped</span>
+        </div>
+        <h3>Filesystem Governance</h3>
+        <p>Path resolution guards prevent escapes via symlinks and <code style="font-family:var(--font-mono);color:var(--neon);">../</code>.</p>
+        <div class="mock-term">
+<span class="prompt">&gt;</span> resolve <span class="str">"/data/../etc/passwd"</span><br>
+<span class="dim">canonicalize →</span> <span class="str">/etc/passwd</span><br>
+<span class="blocked">DENIED</span> root not in allowed<br>
+<span class="ok">roots:</span> /data /tmp/agent
+        </div>
+      </article>
+
+      <!-- Wide 2x1: Agent Packages (TOML) -->
+      <article class="bento-card bento-wide">
+        <div class="card-head">
+          <span class="num">[04]</span>
+          <span class="feature-status shipped">Shipped</span>
+        </div>
+        <h3>Agent Packages</h3>
+        <p>Run agents like Docker containers: <code style="font-family:var(--font-mono);color:var(--neon);background:var(--accent-deep);padding:1px 5px;border-radius:3px;">agenticbox run hermes</code>. TOML manifests — shareable, forkable.</p>
+        <div class="mock-term">
+<span class="key">[agent]</span><br>
+name = <span class="str">"hermes"</span><br>
+image = <span class="str">"agent-runtime:slim"</span><br>
+<span class="key">[permissions]</span><br>
+terminal = <span class="ok">true</span> &nbsp; fs = [<span class="str">"/data:ro"</span>] &nbsp; net = <span class="blocked">"off"</span><br>
+<span class="key">[image.setup]</span><br>
+commands = [<span class="str">"pip install hermes-agent"</span>]
+        </div>
+      </article>
+
+      <!-- Small 1x1: Session Persistence -->
+      <article class="bento-card bento-small">
+        <div class="card-head">
+          <span class="num">[05]</span>
+          <span class="feature-status shipped">Shipped</span>
+        </div>
+        <h3>Session Persistence</h3>
+        <p>SQLite-backed session management. Model config, permissions, and status survive restarts.</p>
+        <div class="mock-term">
+<span class="dim">sqlite: sessions.db</span><br>
+<span class="ok">●</span> <span class="dim">0x7e2a running</span><br>
+<span class="ok">●</span> <span class="dim">0x3b1c paused</span><br>
+<span class="dim">restored on daemon boot</span>
+        </div>
+      </article>
+
+      <!-- Small 1x1: Desktop Console -->
+      <article class="bento-card bento-small">
+        <div class="card-head">
+          <span class="num">[06]</span>
+          <span class="feature-status shipped">Shipped</span>
+        </div>
+        <h3>Desktop Console</h3>
+        <p>Tauri desktop UI (no Electron). Manage agents, view sessions, monitor resources.</p>
+        <div class="mock-term">
+<span class="dim">tauri://console</span><br>
+<span class="ok">▎</span> <span class="dim">agents: 3 active</span><br>
+<span class="ok">▎</span> <span class="dim">cpu: 18% &nbsp; mem: 412M</span><br>
+<span class="dim">native · cross-platform</span>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ VERTICALS (asymmetric) ============ -->
+<section id="verticals" class="section">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag">// one engine, many verticals</span>
+      <h2 class="section-title">Vertical <em>templates</em></h2>
+      <p class="section-sub">The wedge vertical is support — where bounded actions and audit trails matter most. The rest follow the same playbook.</p>
+    </div>
+    <div class="vert-grid">
+      <article class="vert-card featured">
+        <span class="vert-icon">[CX]</span>
+        <h4>Customer Support</h4>
+        <p>Scoped access to customer data. Bounded actions — refund yes, delete no. Full audit trail for every ticket the agent touches, every action it takes, every record it modifies. This is the wedge: support is where companies first need an agent that operates inside guardrails instead of just answering questions.</p>
+        <ul class="vert-bullets">
+          <li>refund &le; $50 — auto-approved</li>
+          <li>account lookup — read-only scope</li>
+          <li>ticket escalation — human-in-the-loop</li>
+          <li>full session replay for compliance</li>
+        </ul>
+        <span class="vert-status active" style="align-self:flex-start;margin-top:18px;">Wedge vertical</span>
+      </article>
+      <article class="vert-card">
+        <span class="vert-icon">[OPS]</span>
+        <h4>Sales Ops</h4>
+        <p>CRM updates, prospecting, pipeline management. Agent sends real emails, updates real records.</p>
+        <span class="vert-status roadmap">Roadmap</span>
+      </article>
+      <article class="vert-card">
+        <span class="vert-icon">[IT]</span>
+        <h4>IT Ops</h4>
+        <p>Provisioning, password resets, ticket handling. Agent touches identity systems safely.</p>
+        <span class="vert-status roadmap">Roadmap</span>
+      </article>
+      <article class="vert-card">
+        <span class="vert-icon">[FIN]</span>
+        <h4>Finance Ops</h4>
+        <p>Reconciliation, reporting, anomaly flagging. Agent touches financial systems with audit trails.</p>
+        <span class="vert-status roadmap">Roadmap</span>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ GOVERNANCE PILLARS ============ -->
 <section id="pillars" class="section">
   <div class="container">
     <div class="section-header">
-      <span class="section-tag">// From one idea, the rest follows</span>
-      <h2 class="section-title">Agents need <em>workplaces</em></h2>
+      <span class="section-tag">// why you can trust it</span>
+      <h2 class="section-title">The governance <em>layer</em></h2>
     </div>
     <div class="grid">
       <article class="corner-card">
         <span class="card-icon">[01]</span>
         <h3>Permissions</h3>
-        <p>What the coworker is allowed to do. Terminal, filesystem, network, browser &mdash; scoped and enforced.</p>
+        <p>What the agent is allowed to do. Terminal, filesystem, network, browser &mdash; scoped and enforced. This is what makes it safe to let an agent refund a customer or modify a production record.</p>
       </article>
       <article class="corner-card">
         <span class="card-icon">[02]</span>
         <h3>Accountability</h3>
-        <p>What the coworker did. Every action attributed, logged, auditable. Full audit trail.</p>
+        <p>Every action attributed, logged, auditable. Full audit trail. This is what makes it compliant to let an agent operate in regulated environments.</p>
       </article>
       <article class="corner-card">
         <span class="card-icon">[03]</span>
         <h3>Ownership Boundaries</h3>
-        <p>What belongs to the coworker vs. the organization. Resources, outputs, budgets, assets.</p>
+        <p>Clear boundaries: resources, outputs, budgets, assets. What belongs to the agent vs. the organization.</p>
+      </article>
+      <article class="corner-card">
+        <span class="card-icon">[04]</span>
+        <h3>Identity <span style="font-size: 0.7rem; color: var(--text-muted);">(emerging)</span></h3>
+        <p>Agents get their own credentials, accounts, digital identity &mdash; provisioned and revocable. The moat that compounds silently as agents accumulate trust.</p>
       </article>
     </div>
   </div>
 </section>
 
-<section id="features" class="section">
+<!-- ============ COMPARISON ============ -->
+<section id="comparison" class="section">
   <div class="container">
     <div class="section-header">
-      <span class="section-tag">// What's running today</span>
-      <h2 class="section-title">The <em>runtime</em></h2>
+      <span class="section-tag">// the same playbook, a different layer</span>
+      <h2 class="section-title">The <em>Vercel</em> for agent deployment</h2>
     </div>
-    <div class="grid">
-      <article class="corner-card">
-        <div class="card-header"><h3>Sandbox Execution</h3><span class="feature-status shipped">Shipped</span></div>
-        <p>Container-based execution with full lifecycle management. Agents run in isolated containers (Docker or Podman, auto-detected) that start and stop on demand.</p>
-      </article>
-      <article class="corner-card">
-        <div class="card-header"><h3>Execution Permissions</h3><span class="feature-status shipped">Shipped</span></div>
-        <p>Per-agent permissions: terminal, filesystem (RO/RW), browser, network (allowlist/localhost/offline).</p>
-      </article>
-      <article class="corner-card">
-        <div class="card-header"><h3>Filesystem Governance</h3><span class="feature-status shipped">Shipped</span></div>
-        <p>Read/write files with path resolution guards preventing escapes. Configurable allowed roots per agent.</p>
-      </article>
-      <article class="corner-card">
-        <div class="card-header"><h3>Session Persistence</h3><span class="feature-status shipped">Shipped</span></div>
-        <p>SQLite-backed session management with model config, permissions, and status tracking across restarts.</p>
-      </article>
-      <article class="corner-card">
-        <div class="card-header"><h3>Terminal Access</h3><span class="feature-status shipped">Shipped</span></div>
-        <p>Execute shell commands inside the sandbox with timeout controls, output capture, and PTY support.</p>
-      </article>
-      <article class="corner-card">
-        <div class="card-header"><h3>Native Desktop Console</h3><span class="feature-status shipped">Shipped</span></div>
-        <p>Tauri desktop UI (no Electron) for managing agents, viewing sessions, and monitoring resources.</p>
-      </article>
-      <article class="corner-card">
-        <div class="card-header"><h3>Agent Packages</h3><span class="feature-status shipped">Shipped</span></div>
-        <p>Run agents like Docker containers: <code>agenticbox run hermes</code>. TOML manifests &mdash; shareable, forkable.</p>
-      </article>
+    <div class="compare-wrap">
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>Vercel</th>
+            <th>AgenticBox</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>git push</code> &rarr; live site</td>
+            <td><code>agenticbox deploy</code> &rarr; agent in production</td>
+          </tr>
+          <tr>
+            <td>Edge network + serverless</td>
+            <td>Bounded container runtime (Docker + Podman)</td>
+          </tr>
+          <tr>
+            <td>DDoS protection, rate limits, auth</td>
+            <td>Permissions, scopes, audit trails</td>
+          </tr>
+          <tr>
+            <td>Next.js templates per use case</td>
+            <td>Vertical agent templates (customer support, sales ops, IT ops, finance ops)</td>
+          </tr>
+          <tr>
+            <td>Developers ship web apps</td>
+            <td>Companies ship agent workforces</td>
+          </tr>
+        </tbody>
+      </table>
+      <p style="text-align: center; margin-top: 28px; font-size: 0.84rem; color: var(--text-muted); font-style: italic; max-width: 560px; margin-left: auto; margin-right: auto;">
+        Vercel didn't build web apps. They made deployment so smooth that developers stopped managing servers.<br>
+        AgenticBox makes agent deployment so safe that companies stop building custom guardrails.
+      </p>
     </div>
   </div>
 </section>
 
+<!-- ============ CTA ============ -->
 <section class="cta" id="get-started">
   <div class="cta-glow" aria-hidden="true"></div>
   <div class="container">
     <h2>Star it. Fork it. Build with it.</h2>
     <p>AgenticBox is fully open source. No signup, no waitlist &mdash; just clone and run.</p>
-    <div class="btn-group" style="justify-content: center;">
+    <div class="btn-group">
       <a href="https://github.com/morpheus-sh/agenticbox" target="_blank" rel="noopener" class="btn btn-primary">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
         Star on GitHub
@@ -439,11 +716,12 @@
 <footer>
   <div class="container">
     <div class="footer-wordmark" aria-hidden="true">AGENTICBOX</div>
-    <p>&copy; 2025 AgenticBox. Okta + Docker for AI agents.</p>
+    <p>&copy; 2025 AgenticBox. Deploy AI agents into production, safely.</p>
     <p style="margin-top:12px;">
       <a href="https://github.com/morpheus-sh/agenticbox" target="_blank" rel="noopener">GitHub</a> &middot;
       <a href="mailto:hello@agenticbox.co">Email</a> &middot;
       <a href="https://twitter.com/agenticbox" target="_blank" rel="noopener">Twitter</a> &middot;
+      <a href="/start">For Business</a> &middot;
       <a href="https://github.com/morpheus-sh/agenticbox/blob/main/docs/agents.md" target="_blank" rel="noopener" style="color: var(--text-muted);">Docs</a>
     </p>
   </div>
@@ -452,17 +730,21 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/asciinema-player@3/dist/bundle/asciinema-player.css">
 <script src="https://cdn.jsdelivr.net/npm/asciinema-player@3/dist/bundle/asciinema-player.min.js"></script>
 <script>
-  AsciinemaPlayer.create('/demo.cast', document.getElementById('asciinema-player'), {
+  const player = AsciinemaPlayer.create('/demo.cast', document.getElementById('asciinema-player'), {
     autoplay: true,
-    loop: true,
+    loop: false,
     theme: 'dark',
     fontSize: '13px',
     speed: 1.2,
     poster: 'npt:0.5',
     idleTimeLimit: 1
   });
+  player.addEventListener('ended', () => {
+    setTimeout(() => { player.currentTime = 0; player.play(); }, 5000);
+  });
 </script>
 <script>
+  // Smooth anchor scroll
   document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function(e) {
       const target = document.querySelector(this.getAttribute('href'));
@@ -488,6 +770,47 @@
       setTimeout(() => btn.textContent = 'copy', 1500);
     });
   }
+
+  // Matrix rain — subtle, low opacity, behind everything
+  (function() {
+    const canvas = document.getElementById('matrix-rain');
+    const ctx = canvas.getContext('2d');
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let cols, drops, fontSize, width, height;
+    const chars = '01ﾊﾐﾋｰｳｼﾅﾓﾆｻﾜﾂｵﾘｱﾎﾃﾏｹﾒｴｶｷﾑﾕﾗｾﾈｽﾀﾇﾍｦｲｸｺｿﾁﾄﾉﾌﾔﾖﾙﾚﾛﾝ#@%&'.split('');
+
+    function resize() {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+      fontSize = 14;
+      cols = Math.floor(width / fontSize);
+      drops = new Array(cols).fill(0).map(() => Math.random() * -50);
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    let last = 0;
+    function draw(ts) {
+      if (reduced) return;
+      if (ts - last < 60) { requestAnimationFrame(draw); return; }
+      last = ts;
+      ctx.fillStyle = 'rgba(4,7,6,0.08)';
+      ctx.fillRect(0, 0, width, height);
+      ctx.font = fontSize + "px 'JetBrains Mono', monospace";
+      for (let i = 0; i < cols; i++) {
+        const ch = chars[Math.floor(Math.random() * chars.length)];
+        const x = i * fontSize;
+        const y = drops[i] * fontSize;
+        // lead character brighter, trail dim
+        ctx.fillStyle = 'rgba(141,184,78,0.85)';
+        ctx.fillText(ch, x, y);
+        if (y > height && Math.random() > 0.975) drops[i] = 0;
+        drops[i]++;
+      }
+      requestAnimationFrame(draw);
+    }
+    if (!reduced) requestAnimationFrame(draw);
+  })();
 </script>
 </body>
 </html>
