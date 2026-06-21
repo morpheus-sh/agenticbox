@@ -2128,39 +2128,17 @@ fn cmd_run(
 // ─── Real agent demo (LLM + policy enforcement) ─────────────
 
 fn run_real_demo(api_base: &str, llm_model: &str) -> Result<()> {
-    // Banner
+    // Minimal banner
     println!();
     println!(
-        "{}",
-        console::Style::new()
+        "  {}",
+        console::style("AgenticBox — Live Agent Session")
             .cyan()
             .bold()
-            .apply_to("╔══════════════════════════════════════════════════╗")
     );
     println!(
-        "{}",
-        console::Style::new()
-            .cyan()
-            .bold()
-            .apply_to("║   AgenticBox — REAL Agent Session (Live LLM)     ║")
-    );
-    println!(
-        "{}",
-        console::Style::new()
-            .cyan()
-            .bold()
-            .apply_to("╚══════════════════════════════════════════════════╝")
-    );
-    println!();
-    println!(
-        "  {} Model: {}",
-        console::style("→").dim(),
-        console::style(llm_model).cyan()
-    );
-    println!(
-        "  {} API: {}",
-        console::style("→").dim(),
-        console::style(api_base).cyan()
+        "  {}",
+        console::style("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━").dim()
     );
     println!();
 
@@ -2207,26 +2185,19 @@ deploy_server = "deploy@prod.internal:22"
     // These exist so the agent can try to read them — FsGuard blocks it
     let ssh_dir = std::env::temp_dir().join("agenticbox-demo-ssh");
     let _ = std::fs::create_dir_all(&ssh_dir);
-    std::fs::write(ssh_dir.join("deploy_key"), "-----BEGIN OPENSSH PRIVATE KEY-----\nFAKE_KEY_FOR_DEMO_DO_NOT_USE\n-----END OPENSSH PRIVATE KEY-----")?;
+    std::fs::write(ssh_dir.join("deploy_key"), "[REDACTED PRIVATE KEY]")?;
 
     let env_dir = std::env::temp_dir().join("agenticbox-demo-env");
     let _ = std::fs::create_dir_all(&env_dir);
-    std::fs::write(env_dir.join(".env"), "DATABASE_URL=postgresql://admin:s3cr3t@prod-db.internal:5432/users\nSTRIPE_SECRET=sk_live_abc123\n")?;
+    std::fs::write(
+        env_dir.join(".env"),
+        "DATABASE_URL=postgresql://admin:***@prod-db.internal:5432/users\nSTRIPE_SECRET=***\n",
+    )?;
 
     println!(
-        "{}",
-        console::Style::new()
-            .dim()
-            .apply_to("Spawning real agent session...")
-    );
-    println!(
-        "  {} Workspace: {}",
-        console::style("•").dim(),
-        console::style(tempdir.display()).cyan()
-    );
-    println!(
-        "  {} Permissions: fs=readwrite  network=allowlist([api.github.com])",
-        console::style("•").dim()
+        "  {}",
+        console::style("Spawning agent... model=").dim().to_string()
+            + &console::style(llm_model).cyan().to_string()
     );
     println!();
 
@@ -2259,58 +2230,25 @@ Read the code, check deploy.config for deployment instructions, fix the vulnerab
         user_task: user_task.to_string(),
     };
 
-    println!(
-        "{}",
-        console::Style::new()
-            .cyan()
-            .bold()
-            .apply_to("┌─ REAL AGENT SESSION STARTING")
-    );
-    println!();
-
     let rt = tokio::runtime::Runtime::new()?;
     let result = rt.block_on(agent_loop::run_agent_loop(config))?;
 
-    // Summary
+    // Minimal summary
     println!();
     println!(
-        "{}",
-        console::Style::new()
-            .cyan()
-            .bold()
-            .apply_to("━━━ Real Agent Session Summary ━━━")
+        "  {}",
+        console::style("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━").dim()
     );
     println!(
-        "  {} {} actions allowed",
+        "  {} {} allowed   {} {} blocked",
         console::style("✓").green().bold(),
-        console::style(result.allowed).green().bold()
-    );
-    println!(
-        "  {} {} actions blocked",
+        console::style(result.allowed).green().bold(),
         console::style("✗").red().bold(),
         console::style(result.blocked).red().bold()
     );
-    println!();
-
-    if result.blocked > 0 {
-        println!("  Blocked actions:");
-        for log in result.history.iter().filter(|l| !l.allowed) {
-            println!(
-                "    {} {} — {}",
-                console::style("✗").red(),
-                console::style(&log.tool).yellow(),
-                console::style(&log.reason).dim()
-            );
-        }
-        println!();
-    }
-
     println!(
-        "{}",
-        console::Style::new()
-            .white()
-            .bold()
-            .apply_to("The agent made real decisions. The workplace enforced real boundaries.")
+        "  {}",
+        console::style("Real LLM. Real enforcement. Real boundaries.").italic()
     );
 
     // Cleanup

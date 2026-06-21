@@ -192,39 +192,57 @@ fn ts() -> String {
     )
 }
 
-fn print_step(tool: &str, args: &str) {
-    println!(
-        "{} {} {}",
-        style(&ts()).dim(),
-        style("AGENT →").cyan().bold(),
-        style(format!("{tool}({args})")).yellow()
-    );
-}
-
-fn print_allowed(reason: &str) {
-    println!(
-        "  {} {}",
-        style("✓ ALLOWED").green().bold(),
-        style(reason).dim()
-    );
-}
-
-fn print_blocked(reason: &str) {
-    println!(
-        "  {} {}",
-        style("✗ BLOCKED").red().bold(),
-        style(reason).dim()
-    );
-}
-
-fn print_snippet(data: &str) {
-    let snippet: String = data.chars().take(200).collect();
-    let ellipsis = if data.len() > 200 { "..." } else { "" };
-    for line in snippet.lines().take(8) {
-        println!("  {} {}", style("│").dim(), style(line).dim());
+/// Extract the most relevant target string from tool args (path, url, or command)
+fn extract_target(tool: &str, args: &serde_json::Value) -> String {
+    match tool {
+        "read_file" | "write_file" => {
+            let path = args.get("path").and_then(|v| v.as_str()).unwrap_or("?");
+            // Show just the filename for readability
+            std::path::Path::new(path)
+                .file_name()
+                .and_then(|n| n.to_str())
+                .unwrap_or(path)
+                .to_string()
+        }
+        "http_request" => args
+            .get("url")
+            .and_then(|v| v.as_str())
+            .unwrap_or("?")
+            .to_string(),
+        "exec" => {
+            let cmd = args.get("command").and_then(|v| v.as_str()).unwrap_or("?");
+            // Show first 45 chars of command
+            cmd.chars().take(45).collect()
+        }
+        _ => "?".to_string(),
     }
-    if !ellipsis.is_empty() {
-        println!("  {} {}", style("│").dim(), style(ellipsis).dim());
+}
+
+/// Print one clean line per action: green ✓ ALLOWED or red ✗ BLOCKED
+fn print_action(tool: &str, target: &str, allowed: bool, reason: &str) {
+    // Truncate target to keep alignment
+    let target_display: String = target.chars().take(45).collect();
+    let icon = if allowed { "✓" } else { "✗" };
+    let status = if allowed { "ALLOWED" } else { "BLOCKED" };
+
+    if allowed {
+        println!(
+            "  {} {:<12} {:<47} {}",
+            style(icon).green().bold(),
+            style(tool).cyan(),
+            style(target_display).white(),
+            style(status).green().bold()
+        );
+    } else {
+        println!(
+            "  {} {:<12} {:<47} {}",
+            style(icon).red().bold(),
+            style(tool).yellow(),
+            style(target_display).white(),
+            style(status).red().bold()
+        );
+        // Show reason on next line, indented
+        println!("    {} {}", style("→").dim(), style(reason).dim());
     }
 }
 
@@ -321,6 +339,7 @@ pub async fn run_agent_loop(config: AgentLoopConfig) -> Result<AgentLoopResult> 
 
     let mut allowed: u32 = 0;
     let mut blocked: u32 = 0;
+    let mut pending_exec: u32 = 0; // batch consecutive allowed exec calls
     let mut history: Vec<DecisionLog> = Vec::new();
     let mut final_message = String::new();
 
@@ -342,7 +361,7 @@ pub async fn run_agent_loop(config: AgentLoopConfig) -> Result<AgentLoopResult> 
 
     let endpoint = format!("{}/chat/completions", config.api_base.trim_end_matches('/'));
 
-    for iteration in 0..config.max_iterations {
+    for _iteration in 0..config.max_iterations {
         // Call the LLM
         let req_body = ChatRequest {
             model: config.model.clone(),
@@ -373,13 +392,9 @@ pub async fn run_agent_loop(config: AgentLoopConfig) -> Result<AgentLoopResult> 
 
         let assistant_msg = choice.message;
 
-        // Print content if the LLM said something
+        // Capture final message silently (don't print — keeps output clean)
         if let Some(content) = &assistant_msg.content {
             if !content.is_empty() {
-                println!();
-                for line in content.lines() {
-                    println!("  {} {}", style("💬").dim(), style(line).white());
-                }
                 final_message = content.clone();
             }
         }
@@ -388,11 +403,6 @@ pub async fn run_agent_loop(config: AgentLoopConfig) -> Result<AgentLoopResult> 
             Some(calls) if !calls.is_empty() => calls.clone(),
             _ => {
                 // No tool calls — agent is done
-                println!(
-                    "\n{} Agent finished after {} iteration(s).",
-                    style("✓").green().bold(),
-                    iteration + 1
-                );
                 break;
             }
         };
@@ -408,9 +418,7 @@ pub async fn run_agent_loop(config: AgentLoopConfig) -> Result<AgentLoopResult> 
             let tool_name = &tc.function.name;
             let args_str = serde_json::to_string(&args).unwrap_or_default();
 
-            print_step(tool_name, &args_str);
-
-            let (is_allowed, reason, output) = match tool_name.as_str() {
+            let (is_allowed, reason, _output) = match tool_name.as_str() {
                 "read_file" => {
                     let path = args.get("path").and_then(|v| v.as_str()).unwrap_or("");
                     execute_read_file(path, &fs_guard)
@@ -432,15 +440,36 @@ pub async fn run_agent_loop(config: AgentLoopConfig) -> Result<AgentLoopResult> 
                 _ => (false, format!("unknown tool: {tool_name}"), String::new()),
             };
 
+            let target = extract_target(tool_name, &args);
+
             if is_allowed {
                 allowed += 1;
-                print_allowed(&reason);
-                if !output.is_empty() {
-                    print_snippet(&output);
-                }
             } else {
                 blocked += 1;
-                print_blocked(&reason);
+            }
+
+            // Batch consecutive allowed exec calls into one line
+            if tool_name == "exec" && is_allowed {
+                pending_exec += 1;
+            } else {
+                // Flush pending exec batch first
+                if pending_exec > 0 {
+                    let noun = if pending_exec == 1 {
+                        "command"
+                    } else {
+                        "commands"
+                    };
+                    println!(
+                        "  {} {:<12} {:<47} {}",
+                        style("✓").green().bold(),
+                        style("exec").cyan(),
+                        style(format!("{} shell {}", pending_exec, noun)).white(),
+                        style("ALLOWED").green().bold()
+                    );
+                    pending_exec = 0;
+                }
+                // Print this action normally
+                print_action(tool_name, &target, is_allowed, &reason);
             }
 
             history.push(DecisionLog {
@@ -452,9 +481,9 @@ pub async fn run_agent_loop(config: AgentLoopConfig) -> Result<AgentLoopResult> 
                 agent_message: assistant_msg.content.clone(),
             });
 
-            // Add tool result message
+            // Feed result back to LLM
             let tool_result = if is_allowed {
-                output.clone()
+                _output.clone()
             } else {
                 format!("BLOCKED: {reason}")
             };
@@ -466,6 +495,22 @@ pub async fn run_agent_loop(config: AgentLoopConfig) -> Result<AgentLoopResult> 
                 tool_call_id: Some(tc.id.clone()),
             });
         }
+    }
+
+    // Flush any remaining batched exec calls
+    if pending_exec > 0 {
+        let noun = if pending_exec == 1 {
+            "command"
+        } else {
+            "commands"
+        };
+        println!(
+            "  {} {:<12} {:<47} {}",
+            style("✓").green().bold(),
+            style("exec").cyan(),
+            style(format!("{} shell {}", pending_exec, noun)).white(),
+            style("ALLOWED").green().bold()
+        );
     }
 
     Ok(AgentLoopResult {
