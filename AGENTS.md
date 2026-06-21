@@ -11,8 +11,9 @@
 Read these, in order:
 
 1. **[README.md](./README.md)** — public intro, quick start, feature table
-2. **[VISION.md](./company/VISION.md)** — core thesis, infrastructure layer positioning, competitive moat
-3. **[Cargo.toml](./Cargo.toml)** — workspace structure (all crates + apps), shared dependencies
+2. **[Cargo.toml](./Cargo.toml)** — workspace structure (all crates + apps), shared dependencies
+
+> **Note:** Internal strategy docs live in `company/` (gitignored). Read the files there when you need product direction, positioning, or decision frameworks. They are not tracked in git — do not commit them.
 
 ---
 
@@ -92,14 +93,11 @@ Read the feature table in [`README.md`](./README.md) — it has ✅/⚠️/❌ f
 | File | What it contains | When to read it |
 |------|-----------------|-----------------|
 | [`README.md`](./README.md) | Project intro, feature table, quick start, architecture diagram | First time, and when checking what's shipped |
-| [`company/VISION.md`](./company/VISION.md) | Core thesis, infrastructure layer positioning, competitive analysis | Before making strategic contributions |
 | [`kanban.md`](./kanban.md) | 🔴/🟡/🔵 priorities with "Done when" criteria | **Before every change** |
 | [`Cargo.toml`](./Cargo.toml) | Workspace members, shared deps, build config | Before adding crates or changing deps |
-| [`docs/designs/dx-user-journey.md`](./docs/designs/dx-user-journey.md) | The three modes (ad-hoc, named, daemon), container lifecycle, transport decisions | When modifying `agenticbox run` |
-| [`company/soul.md`](./company/soul.md) | Hermes cofounder identity (mission, beliefs, decision framework) | **Hermes only** — not relevant for Pi/OpenCode/Codex |
+| [`docs/designs/dx-user-journey.md`](docs/designs/dx-user-journey.md) | The three modes (ad-hoc, named, daemon), container lifecycle, transport decisions | When modifying `agenticbox run` |
 | `agents/*/agent.toml` | Agent package manifests | When adding or modifying agent packages |
-| [`founder_contract.md`](./founder_contract.md) | Founder–agent contract (daily minimums, scorecard, streak system) | Only if asked about gamification or progress tracking |
-| [`game.json`](./game.json) / [`game.py`](./game.py) | RPG progression system (XP, levels, achievements, quests) | Only if asked about gamification |
+| [`company/`](./company/) | Internal strategy docs (gitignored, not in repo). Read these for product direction, positioning, and decision frameworks when working on strategic tasks. | When making strategic or positioning contributions |
 
 ---
 
