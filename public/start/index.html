@@ -36,7 +36,7 @@
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
     "name": "AgenticBox for Business",
-    "description": "Deploy AI agents into production business operations safely. Vertical templates for support, sales ops, IT, and finance. Enterprise governance, audit trails, and compliance.",
+    "description": "Deploy AI agents into production business operations safely. Vertical templates for customer support, sales ops, IT ops, and finance ops. Enterprise governance, audit trails, and compliance.",
     "url": "https://agenticbox.co/start",
     "applicationCategory": "BusinessApplication",
     "operatingSystem": "Cross-platform",
@@ -171,6 +171,9 @@
     .tab-btn { padding: 12px 20px; font-size: 0.875rem; font-weight: 600; color: var(--text-dim); background: none; border: none; cursor: pointer; border-bottom: 2px solid transparent; transition: all var(--transition); white-space: nowrap; }
     .tab-btn:hover { color: var(--text); }
     .tab-btn.active { color: var(--olive-dark); border-bottom-color: var(--olive); }
+    .tab-badge { display: inline-block; font-size: 0.58rem; font-weight: 700; padding: 2px 7px; border-radius: 999px; margin-left: 8px; text-transform: uppercase; letter-spacing: 0.04em; vertical-align: middle; }
+    .tab-badge.live { background: var(--olive-bg); color: var(--olive-dark); }
+    .tab-badge.soon { background: var(--surface-2); color: var(--text-muted); }
     .tab-panel { display: none; }
     .tab-panel.active { display: grid; grid-template-columns: 1.2fr 1fr; gap: 32px; align-items: start; }
     .ticket-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 24px; box-shadow: var(--shadow-sm); }
@@ -410,10 +413,10 @@
       <p class="section-sub">One platform, many verticals. Each template ships with sane defaults tuned for the use case.</p>
     </div>
     <div class="tabs-bar reveal">
-      <button class="tab-btn active" data-tab="support">Customer Support</button>
-      <button class="tab-btn" data-tab="sales">Sales Ops</button>
-      <button class="tab-btn" data-tab="it">Internal IT</button>
-      <button class="tab-btn" data-tab="finance">Finance Ops</button>
+      <button class="tab-btn active" data-tab="support">Customer Support<span class="tab-badge live">Available</span></button>
+      <button class="tab-btn" data-tab="sales">Sales Ops<span class="tab-badge soon">Soon</span></button>
+      <button class="tab-btn" data-tab="it">IT Ops<span class="tab-badge soon">Soon</span></button>
+      <button class="tab-btn" data-tab="finance">Finance Ops<span class="tab-badge soon">Soon</span></button>
     </div>
 
     <div class="tab-panel active" id="tab-support">
@@ -453,6 +456,8 @@
           Lead qualified. Updated CRM: status → "Qualified", assigned to AE Sarah Chen. Drafted follow-up email (pending human approval before sending).
           <br><br>
           <span style="font-size:0.72rem;color:var(--text-muted);">CRM updated · Email drafted · Awaiting approval</span>
+          <br><br>
+          <span style="font-size:0.65rem;color:var(--text-muted);font-style:italic;">Illustrative — Sales Ops template is in development</span>
         </div>
       </div>
       <div class="perm-boundaries">
@@ -478,6 +483,8 @@
           Manager approval verified for user j.smith@company.com. Password reset initiated via Okta API. Temporary password sent to registered device. User will be prompted to change on next login.
           <br><br>
           <span style="font-size:0.72rem;color:var(--text-muted);">Reset completed in 2.1s · Audit logged · Ticket closed</span>
+          <br><br>
+          <span style="font-size:0.65rem;color:var(--text-muted);font-style:italic;">Illustrative — IT Ops template is in development</span>
         </div>
       </div>
       <div class="perm-boundaries">
@@ -502,6 +509,8 @@
           Reconciliation complete. 1,247 transactions processed. 3 anomalies flagged for review. Report generated and sent to finance@company.com. No transactions modified — anomalies escalated for human review.
           <br><br>
           <span style="font-size:0.72rem;color:var(--text-muted);">1,247 txns processed · 3 flagged · 0 modified · Report sent</span>
+          <br><br>
+          <span style="font-size:0.65rem;color:var(--text-muted);font-style:italic;">Illustrative — Finance Ops template is in development</span>
         </div>
       </div>
       <div class="perm-boundaries">
