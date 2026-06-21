@@ -730,14 +730,17 @@ commands = [<span class="str">"pip install hermes-agent"</span>]
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/asciinema-player@3/dist/bundle/asciinema-player.css">
 <script src="https://cdn.jsdelivr.net/npm/asciinema-player@3/dist/bundle/asciinema-player.min.js"></script>
 <script>
-  AsciinemaPlayer.create('/demo.cast', document.getElementById('asciinema-player'), {
+  const player = AsciinemaPlayer.create('/demo.cast', document.getElementById('asciinema-player'), {
     autoplay: true,
-    loop: true,
+    loop: false,
     theme: 'dark',
     fontSize: '13px',
     speed: 1.2,
     poster: 'npt:0.5',
     idleTimeLimit: 1
+  });
+  player.addEventListener('ended', () => {
+    setTimeout(() => { player.currentTime = 0; player.play(); }, 5000);
   });
 </script>
 <script>
