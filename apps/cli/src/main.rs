@@ -294,9 +294,7 @@ fn cmd_setup(non_interactive: bool, reset: bool) -> Result<()> {
     );
 
     let lm_studio_url = "http://localhost:1234/v1";
-    let detect_client = Client::builder()
-        .timeout(Duration::from_secs(2))
-        .build()?;
+    let detect_client = Client::builder().timeout(Duration::from_secs(2)).build()?;
     let lm_studio_detected = match detect_client
         .get(format!("{}/models", lm_studio_url))
         .send()
@@ -2257,7 +2255,7 @@ fn cmd_run(
 }
 
 // ─── Real agent demo (LLM + policy enforcement) ─────────────
-
+#[allow(dead_code)]
 fn run_real_demo(api_base: &str, llm_model: &str) -> Result<()> {
     // Force colors on — console crate disables them on non-TTY (git-bash, pipes)
     console::set_colors_enabled(true);
@@ -2452,9 +2450,8 @@ fn run_builtin_agent(manifest: &AgentManifest, mut config: Config) -> Result<()>
         if let Some(parent) = dest_path.parent() {
             let _ = std::fs::create_dir_all(parent);
         }
-        let content = std::fs::read(&source_path).with_context(|| {
-            format!("Failed to read workspace file: {}", source_path.display())
-        })?;
+        let content = std::fs::read(&source_path)
+            .with_context(|| format!("Failed to read workspace file: {}", source_path.display()))?;
         std::fs::write(&dest_path, content)?;
     }
 
