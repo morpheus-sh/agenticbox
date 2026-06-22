@@ -366,6 +366,7 @@
       <a href="#how-it-works">How it works</a>
       <a href="#verticals">Verticals</a>
       <a href="#features">Runtime</a>
+      <a href="/use-cases/security">Security</a>
       <a href="/start">For Business</a>
       <a href="https://github.com/morpheus-sh/agenticbox" target="_blank" rel="noopener">GitHub</a>
       <a href="https://github.com/morpheus-sh/agenticbox" target="_blank" rel="noopener" class="primary">★ Star</a>
@@ -577,20 +578,28 @@ commands = [<span class="str">"pip install hermes-agent"</span>]
     <div class="section-header">
       <span class="section-tag">// one engine, many verticals</span>
       <h2 class="section-title">Vertical <em>templates</em></h2>
-      <p class="section-sub">The wedge vertical is support — where bounded actions and audit trails matter most. The rest follow the same playbook.</p>
+      <p class="section-sub">Available today: detonate malware, analyze threats, red-team agents — all in bounded containers. Business verticals on the same engine, coming next.</p>
     </div>
     <div class="vert-grid">
       <article class="vert-card featured">
+        <span class="vert-icon">[SEC]</span>
+        <h4>Security Analyst</h4>
+        <p>Sandboxed malware detonation with real behavioral telemetry. Drop a suspicious binary into a bounded container — every filesystem access, network call, and credential read is caught or allowed in real-time. Offline by default. Full audit trail for forensic documentation. The permission engine IS the analysis harness.</p>
+        <ul class="vert-bullets">
+          <li>malware detonation — <code style="color:var(--neon);background:var(--accent-deep);padding:1px 4px;border-radius:3px;font-size:0.72rem;">--network offline</code></li>
+          <li>credential exfil detection — FsGuard blocks <code style="color:var(--neon);background:var(--accent-deep);padding:1px 4px;border-radius:3px;font-size:0.72rem;">~/.ssh</code>, <code style="color:var(--neon);background:var(--accent-deep);padding:1px 4px;border-radius:3px;font-size:0.72rem;">.env</code>, AWS keys</li>
+          <li>C2 observation without reach — allowlist mode</li>
+          <li>full session replay for incident response</li>
+          <li>RE toolchain — radare2, binwalk, YARA, Ghidra headless</li>
+          <li>agent red-teaming — bounded blast radius</li>
+        </ul>
+        <span class="vert-status active" style="align-self:flex-start;margin-top:18px;">Available Now</span>
+      </article>
+      <article class="vert-card">
         <span class="vert-icon">[CX]</span>
         <h4>Customer Support</h4>
-        <p>Scoped access to customer data. Bounded actions — refund yes, delete no. Full audit trail for every ticket the agent touches, every action it takes, every record it modifies. This is the wedge: support is where companies first need an agent that operates inside guardrails instead of just answering questions.</p>
-        <ul class="vert-bullets">
-          <li>refund &le; $50 — auto-approved</li>
-          <li>account lookup — read-only scope</li>
-          <li>ticket escalation — human-in-the-loop</li>
-          <li>full session replay for compliance</li>
-        </ul>
-        <span class="vert-status roadmap" style="align-self:flex-start;margin-top:18px;">Roadmap</span>
+        <p>Scoped access to customer data. Bounded actions — refund yes, delete no. Full audit trail for every ticket the agent touches.</p>
+        <span class="vert-status roadmap">Roadmap</span>
       </article>
       <article class="vert-card">
         <span class="vert-icon">[OPS]</span>
@@ -722,6 +731,7 @@ commands = [<span class="str">"pip install hermes-agent"</span>]
       <a href="mailto:hello@agenticbox.co">Email</a> &middot;
       <a href="https://twitter.com/agenticbox" target="_blank" rel="noopener">Twitter</a> &middot;
       <a href="/start">For Business</a> &middot;
+      <a href="/use-cases/security">Security</a> &middot;
       <a href="https://github.com/morpheus-sh/agenticbox/blob/main/docs/agents.md" target="_blank" rel="noopener" style="color: var(--text-muted);">Docs</a>
     </p>
   </div>
