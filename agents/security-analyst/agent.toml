@@ -1,0 +1,40 @@
+# Security Analyst Agent — sandboxed malware analysis & threat research
+# Copy to ~/.agenticbox/agents/security-analyst/ to use: `agenticbox run security-analyst`
+# Docs: https://github.com/morpheus-sh/agenticbox/blob/main/docs/agents.md
+#
+# Designed for security researchers:
+#   - Offline network by default (detonate malware without C2 reach)
+#   - Switch to allowlist for fetching samples/IOCs from trusted sources
+#   - Full terminal access for RE tools (radare2, Ghidra, binwalk, etc.)
+#   - Filesystem read/write for samples + analysis output
+#   - FsGuard prevents credential exfiltration even if agent is compromised
+
+name = "security-analyst"
+description = "Security Analyst — sandboxed malware analysis, reverse engineering, threat research"
+
+command = "hermes"
+
+[model]
+provider = "openrouter"
+model = "anthropic/claude-sonnet-4"
+api_key_env = "OPENROUTER_API_KEY"
+
+[permissions]
+terminal = true
+filesystem = "readwrite"
+browser = false
+network = "offline"
+
+# For fetching samples/IOCs, switch to allowlist:
+#   agenticbox run security-analyst --network allowlist
+# Then uncomment the domains below:
+# domains = ["api.malwarebazaar.com", "mb-api.abuse.ch", "urlhaus-api.abuse.ch", "openrouter.ai"]
+
+[image]
+base = "ubuntu:24.04"
+setup = [
+    "apt-get update && apt-get install -y --no-install-recommends python3 python3-pip curl wget git ca-certificates file binwalk strings ltrace strace radare2 nmap tcpdump",
+    "pip3 install --break-system-packages yara-python pefile capstone",
+    # Install Hermes for the analysis agent loop
+    "curl -fsSL https://hermes-agent.nousresearch.com/install.sh | bash"
+]
