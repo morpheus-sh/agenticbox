@@ -794,6 +794,7 @@ commands = [<span class="str">"pip install hermes-agent"</span>]
     const line = lines[idx];
     container.innerHTML += renderLine(line);
     idx++;
+    container.scrollTop = container.scrollHeight;
     setTimeout(next, delay);
   }
 
