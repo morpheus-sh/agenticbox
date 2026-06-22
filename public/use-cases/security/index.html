@@ -406,21 +406,15 @@
           <button class="install-tab" data-os="windows">Windows</button>
         </div>
         <div class="code-block install-cmd" data-os="unix">
-          <span class="comment"># Install AgenticBox</span><br>
-          <span class="prompt">$ </span><span class="command">curl -fsSL https://agenticbox.co/install.sh</span> <span class="arg">| bash</span><br>
-          <span class="comment"># Install the security-analyst profile</span><br>
-          <span class="prompt">$ </span><span class="command">cp -r agents/security-analyst ~/.agenticbox/agents/</span><br>
-          <span class="comment"># Configure LLM (auto-detects LM Studio)</span><br>
-          <span class="prompt">$ </span><span class="command">agenticbox setup</span><br>
+          <span class="comment"># Install AgenticBox + security-analyst profile + configure LLM</span><br>
+          <span class="prompt">$ </span><span class="command">curl -fsSL https://agenticbox.co/install.sh</span> <span class="arg">| bash -s -- security-analyst</span><br>
           <span class="comment"># Run</span><br>
           <span class="prompt">$ </span><span class="command">agenticbox run security-analyst</span>
           <button class="copy-btn" onclick="copyInstall(this)">copy</button>
         </div>
         <div class="code-block install-cmd" data-os="windows" style="display:none">
-          <span class="comment"># Install AgenticBox</span><br>
+          <span class="comment"># Install AgenticBox + security-analyst profile + configure LLM</span><br>
           <span class="prompt">PS&gt; </span><span class="command">irm https://agenticbox.co/install.ps1</span> <span class="arg">| iex</span><br>
-          <span class="prompt">PS&gt; </span><span class="command">Copy-Item -Recurse agents\security-analyst ~/.agenticbox\agents\</span><br>
-          <span class="prompt">PS&gt; </span><span class="command">agenticbox setup</span><br>
           <span class="prompt">PS&gt; </span><span class="command">agenticbox run security-analyst</span>
           <button class="copy-btn" onclick="copyInstall(this)">copy</button>
         </div>
@@ -633,13 +627,8 @@ systemd — all while cleaning up its traces.
     <div class="cli-steps">
       <div class="cli-step">
         <span class="step-prompt">$</span>
-        <span class="step-cmd">agenticbox <span class="arg">setup</span></span>
-        <span class="step-comment"># Configure LLM (auto-detects LM Studio)</span>
-      </div>
-      <div class="cli-step">
-        <span class="step-prompt">$</span>
-        <span class="step-cmd">cp -r agents/security-analyst ~/.agenticbox/agents/</span>
-        <span class="step-comment"># Install the security-analyst profile</span>
+        <span class="step-cmd">curl -fsSL https://agenticbox.co/install.sh <span class="arg">| bash -s -- security-analyst</span></span>
+        <span class="step-comment"># Install + profile + LLM config — all in one</span>
       </div>
       <div class="cli-step">
         <span class="step-prompt">$</span>
@@ -908,8 +897,8 @@ files = [
   function copyInstall(btn) {
     const block = btn.closest('.code-block');
     const text = block.dataset.os === 'unix'
-      ? 'curl -fsSL https://agenticbox.co/install.sh | bash\ncp -r agents/security-analyst ~/.agenticbox/agents/\nagenticbox setup\nagenticbox run security-analyst'
-      : 'irm https://agenticbox.co/install.ps1 | iex\nCopy-Item -Recurse agents\\security-analyst ~/.agenticbox\\agents\\\nagenticbox setup\nagenticbox run security-analyst';
+      ? 'curl -fsSL https://agenticbox.co/install.sh | bash -s -- security-analyst\nagenticbox run security-analyst'
+      : 'irm https://agenticbox.co/install.ps1 | iex\nagenticbox run security-analyst';
     navigator.clipboard.writeText(text).then(() => {
       btn.textContent = 'copied!';
       setTimeout(() => btn.textContent = 'copy', 1500);

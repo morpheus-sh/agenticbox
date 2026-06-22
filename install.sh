@@ -23,6 +23,9 @@ BIN_DIR="${INSTALL_DIR}/bin"
 DAEMON_BIN="daemon"
 CLI_BIN="agenticbox"
 
+AGENTS_DIR="${INSTALL_DIR}/agents"
+PROFILES_REPO="https://raw.githubusercontent.com/${REPO}/main/agents"
+
 print_step() { echo -e "${CYAN}▶${RESET} ${BOLD}$1${RESET}"; }
 print_ok() { echo -e "${GREEN}✓${RESET} $1"; }
 print_warn() { echo -e "${YELLOW}⚠${RESET} $1"; }
@@ -184,7 +187,49 @@ detect_shell_rc() {
   esac
 }
 
+install_profile() {
+  local profile="$1"
+  print_step "Installing agent profile: $profile"
+  local profile_dir="${AGENTS_DIR}/${profile}"
+  mkdir -p "$profile_dir"
+
+  # Fetch agent.toml
+  if ! curl -fsSL "${PROFILES_REPO}/${profile}/agent.toml" -o "${profile_dir}/agent.toml"; then
+    print_err "Failed to download agent.toml for '$profile'"
+    print_info "Available profiles: https://github.com/${REPO}/tree/main/agents"
+    return 1
+  fi
+  print_ok "agent.toml downloaded"
+
+  # Fetch any sample files referenced in the profile
+  # Look for samples/ directory in the repo
+  local samples_dir="${profile_dir}/samples"
+  mkdir -p "$samples_dir"
+  local samples_base="${PROFILES_REPO}/${profile}/samples"
+
+  # Try to fetch known sample files (best-effort, don't fail if none)
+  for sample_file in sample_optimize_cache.sh incident_report.txt; do
+    if curl -fsSL "${samples_base}/${sample_file}" -o "${samples_dir}/${sample_file}" 2>/dev/null; then
+      print_ok "sample: ${sample_file}"
+    fi
+  done
+
+  print_ok "Profile '$profile' installed to ${profile_dir}"
+}
+
+run_setup() {
+  local cli="$1"
+  if "$cli" --version >/dev/null 2>&1; then
+    print_step "Running agenticbox setup..."
+    "$cli" setup || print_warn "Setup interrupted — run 'agenticbox setup' manually later"
+    print_ok "Setup complete"
+  else
+    print_warn "CLI not in PATH yet. Run 'agenticbox setup' after sourcing your shell rc."
+  fi
+}
+
 main() {
+  local profile="${1:-}"
   header
   detect_os
   install_rust
@@ -194,17 +239,41 @@ main() {
   setup_path
   verify_install
 
+  # Install agent profile if specified
+  if [[ -n "$profile" ]]; then
+    install_profile "$profile"
+  fi
+
+  # Run setup if profile was specified (builtin mode needs LLM config)
+  if [[ -n "$profile" ]]; then
+    run_setup "$BIN_DIR/$CLI_BIN"
+  fi
+
   echo
   echo -e "${GREEN}${BOLD}Installation complete!${RESET}"
   echo
-  echo -e "${BOLD}Next steps:${RESET}"
-  echo -e "  1. ${CYAN}source $(detect_shell_rc)${RESET}  (or restart your shell)"
-  echo -e "  2. ${CYAN}agenticbox setup${RESET}        (configure API keys, providers)"
-  echo -e "  3. ${CYAN}agenticbox daemon${RESET}       (start the daemon)"
-  echo -e "  4. ${CYAN}agenticbox deploy --name my-agent${RESET}  (run your first agent)"
-  echo
-  echo -e "${DIM}Docs: https://agenticbox.co/docs${RESET}"
-  echo -e "${DIM}GitHub: https://github.com/morpheus-sh/agenticbox${RESET}"
+
+  if [[ -n "$profile" ]]; then
+    echo -e "${BOLD}Next steps:${RESET}"
+    echo -e "  1. ${CYAN}source $(detect_shell_rc)${RESET}  (or restart your shell)"
+    if [[ "$profile" == "security-analyst" ]]; then
+      echo -e "  2. ${CYAN}agenticbox run security-analyst${RESET}  (start analyzing)"
+    else
+      echo -e "  2. ${CYAN}agenticbox run ${profile}${RESET}"
+    fi
+    echo
+    echo -e "${DIM}Docs: https://github.com/${REPO}/blob/main/docs/agents.md${RESET}"
+  else
+    echo -e "${BOLD}Next steps:${RESET}"
+    echo -e "  1. ${CYAN}source $(detect_shell_rc)${RESET}  (or restart your shell)"
+    echo -e "  2. ${CYAN}agenticbox setup${RESET}        (configure LLM inference)"
+    echo -e "  3. ${CYAN}agenticbox run demo${RESET}      (see it in action)"
+    echo -e "  4. ${CYAN}agenticbox run -- python3 script.py${RESET}  (sandbox any command)"
+    echo
+    echo -e "${DIM}Install a profile:  curl -fsSL https://agenticbox.co/install.sh | bash -s -- security-analyst${RESET}"
+    echo -e "${DIM}Docs: https://github.com/${REPO}/blob/main/docs/agents.md${RESET}"
+  fi
+  echo -e "${DIM}GitHub: https://github.com/${REPO}${RESET}"
 }
 
 main "$@"
