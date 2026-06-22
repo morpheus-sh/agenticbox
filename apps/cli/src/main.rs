@@ -178,7 +178,10 @@ enum Commands {
         api_base: String,
 
         /// Override: model name for --real mode
-        #[arg(long, default_value = "huihui-qwen3.6-35b-a3b-claude-4.7-opus-abliterated-mtp@q5_k")]
+        #[arg(
+            long,
+            default_value = "huihui-qwen3.6-35b-a3b-claude-4.7-opus-abliterated-mtp@q5_k"
+        )]
         llm_model: String,
     },
 
