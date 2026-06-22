@@ -156,8 +156,7 @@
     .terminal-body { padding: 20px 24px; min-height: 340px; font-size: 0.8rem; line-height: 1.9; color: var(--text); position: relative; }
     .terminal-body .cursor { display: inline-block; width: 8px; height: 15px; background: var(--neon); vertical-align: middle; animation: blink 1s step-end infinite; box-shadow: 0 0 6px var(--neon-glow); }
     @keyframes blink { 50% { opacity: 0; } }
-    .terminal-demo #asciinema-player { display: block; width: 100%; --term-background: #020403; }
-    .terminal-demo #asciinema-player .asciinema-player { background: #020403 !important; padding: 16px 20px !important; }
+    .terminal-demo #asciinema-player { display: block; width: 100%; }
 
     /* Install commands below the demo */
     .hero-install { margin-top: 34px; position: relative; z-index: 1; }
@@ -727,21 +726,79 @@ commands = [<span class="str">"pip install hermes-agent"</span>]
   </div>
 </footer>
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/asciinema-player@3/dist/bundle/asciinema-player.css">
-<script src="https://cdn.jsdelivr.net/npm/asciinema-player@3/dist/bundle/asciinema-player.min.js"></script>
 <script>
-  const player = AsciinemaPlayer.create('/demo.cast', document.getElementById('asciinema-player'), {
-    autoplay: true,
-    loop: false,
-    theme: 'dark',
-    fontSize: '13px',
-    speed: 1.2,
-    poster: 'npt:0.5',
-    idleTimeLimit: 1
-  });
-  player.addEventListener('ended', () => {
-    setTimeout(() => { player.currentTime = 0; player.play(); }, 5000);
-  });
+(function() {
+  const container = document.getElementById('asciinema-player');
+  if (!container) return;
+
+  const lines = [
+    { t: 'header', text: 'AgenticBox — Live Agent Session' },
+    { t: 'dim', text: '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━' },
+    { t: 'blank' },
+    { t: 'model', text: 'Spawning agent... model=', model: 'qwen3.6-35b-a3b' },
+    { t: 'blank' },
+    { t: 'ok', icon: '✓', action: 'read_file', target: 'app.py', status: 'ALLOWED' },
+    { t: 'ok', icon: '✓', action: 'read_file', target: 'deploy.config', status: 'ALLOWED' },
+    { t: 'no', icon: '✗', action: 'read_file', target: 'deploy_key', status: 'BLOCKED', reason: '→ filesystem: Path outside allowed roots' },
+    { t: 'no', icon: '✗', action: 'read_file', target: '.env', status: 'BLOCKED', reason: '→ filesystem: Path outside allowed roots' },
+    { t: 'ok', icon: '✓', action: 'exec', target: '2 shell commands', status: 'ALLOWED' },
+    { t: 'no', icon: '✗', action: 'read_file', target: '~/.ssh/deploy_key', status: 'BLOCKED', reason: '→ filesystem: Path outside allowed roots' },
+    { t: 'no', icon: '✗', action: 'read_file', target: '~/.env', status: 'BLOCKED', reason: '→ filesystem: Path outside allowed roots' },
+    { t: 'ok', icon: '✓', action: 'exec', target: '2 shell commands', status: 'ALLOWED' },
+    { t: 'ok', icon: '✓', action: 'write_file', target: 'app.py', status: 'ALLOWED' },
+    { t: 'ok', icon: '✓', action: 'exec', target: '1 shell command', status: 'ALLOWED' },
+    { t: 'ok', icon: '✓', action: 'read_file', target: 'app.py', status: 'ALLOWED' },
+    { t: 'blank' },
+    { t: 'dim', text: '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━' },
+    { t: 'summary', allowed: 10, blocked: 4 },
+    { t: 'footer', text: 'Real LLM. Real enforcement. Real boundaries.' }
+  ];
+
+  const isReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const delay = isReduced ? 0 : 280;
+
+  function pad(str, len) {
+    return str + ' '.repeat(Math.max(0, len - str.length));
+  }
+
+  function renderLine(line) {
+    if (line.t === 'blank') return '<div style="height:0.6em"></div>';
+    if (line.t === 'header') return '<div style="color:#8db84e;font-weight:700">  ' + line.text + '</div>';
+    if (line.t === 'dim') return '<div style="color:#3a4a2a">  ' + line.text + '</div>';
+    if (line.t === 'model') return '<div>  <span style="color:#4a5a3a">' + line.text + '</span><span style="color:#8db84e">' + line.model + '</span></div>';
+    if (line.t === 'ok') {
+      return '<div style="color:#8db84e">  ' + line.icon + ' ' + pad(line.action, 13) + pad(line.target, 47) + line.status + '</div>';
+    }
+    if (line.t === 'no') {
+      let html = '<div style="color:#e85d75">  ' + line.icon + ' ' + pad(line.action, 13) + pad(line.target, 47) + line.status + '</div>';
+      html += '<div style="color:#4a5a3a">    ' + line.reason + '</div>';
+      return html;
+    }
+    if (line.t === 'summary') {
+      return '<div>  <span style="color:#8db84e;font-weight:700">✓ ' + line.allowed + ' allowed</span>   <span style="color:#e85d75;font-weight:700">✗ ' + line.blocked + ' blocked</span></div>';
+    }
+    if (line.t === 'footer') {
+      return '<div style="color:#3a4a2a;font-style:italic">  ' + line.text + '</div>';
+    }
+    return '';
+  }
+
+  let idx = 0;
+  container.style.cssText = 'padding:16px 20px;font-family:var(--font-mono);font-size:0.8rem;line-height:1.9;';
+
+  function next() {
+    if (idx >= lines.length) {
+      setTimeout(() => { container.innerHTML = ''; idx = 0; next(); }, 5000);
+      return;
+    }
+    const line = lines[idx];
+    container.innerHTML += renderLine(line);
+    idx++;
+    setTimeout(next, delay);
+  }
+
+  next();
+})();
 </script>
 <script>
   // Smooth anchor scroll
