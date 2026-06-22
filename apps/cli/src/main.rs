@@ -196,7 +196,7 @@ enum Commands {
     },
 }
 
-#[derive(Serialize, Deserialize, Debug, Default)]
+#[derive(Serialize, Deserialize, Debug, Default, Clone)]
 struct Config {
     daemon_url: Option<String>,
     default_provider: Option<String>,
@@ -213,7 +213,7 @@ struct LlmConfig {
     model: String,
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 struct ProviderConfig {
     base_url: Option<String>,
     api_key_env: Option<String>,
@@ -2241,7 +2241,7 @@ fn cmd_run(
         Some(name) => {
             let manifest = load_agent_manifest(name)?;
             if manifest.execution.mode == "builtin" {
-                return run_builtin_agent(&manifest, config);
+                return run_builtin_agent(&manifest, (*config).clone());
             }
             cmd_run_named_agent(client, base, config, manifest, &overrides, standalone)
         }
@@ -2403,21 +2403,41 @@ Do NOT skip deployment. The fix is useless if it's not deployed. Read the deploy
 }
 
 /// Run a builtin agent using the agent-loop crate (local LLM, no Docker).
-fn run_builtin_agent(manifest: &AgentManifest, config: &Config) -> Result<()> {
+fn run_builtin_agent(manifest: &AgentManifest, mut config: Config) -> Result<()> {
     // Resolve api_base and model: config.llm takes priority, else fall back to manifest
-    let api_base = config
+    let mut api_base = config
         .llm
         .as_ref()
         .map(|l| l.api_base.clone())
         .unwrap_or_else(|| provider_api_base(&manifest.model.provider));
-    let model = config
+    let mut model = config
         .llm
         .as_ref()
         .map(|l| l.model.clone())
         .unwrap_or_else(|| manifest.model.model.clone());
 
-    if api_base.is_empty() {
-        anyhow::bail!("No LLM configured. Run `agenticbox setup` first.");
+    // If no LLM configured, run inline setup
+    if api_base.is_empty() || model.is_empty() {
+        console::set_colors_enabled(true);
+        println!(
+            "  {}",
+            console::style("No LLM configured — let's set one up.").yellow()
+        );
+        cmd_setup(false, false)?;
+        config = load_config()?;
+        api_base = config
+            .llm
+            .as_ref()
+            .map(|l| l.api_base.clone())
+            .unwrap_or_else(|| provider_api_base(&manifest.model.provider));
+        model = config
+            .llm
+            .as_ref()
+            .map(|l| l.model.clone())
+            .unwrap_or_else(|| manifest.model.model.clone());
+        if api_base.is_empty() {
+            anyhow::bail!("LLM setup did not complete. Run `agenticbox setup` manually.");
+        }
     }
 
     // Create temp workspace
