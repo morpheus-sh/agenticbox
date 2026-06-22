@@ -766,7 +766,7 @@ commands = [<span class="str">"pip install hermes-agent"</span>]
   ];
 
   const isReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const delay = isReduced ? 0 : 500;
+  const delay = isReduced ? 0 : 1000;
 
   function pad(str, len) {
     return str + ' '.repeat(Math.max(0, len - str.length));
@@ -799,17 +799,18 @@ commands = [<span class="str">"pip install hermes-agent"</span>]
 
   function next() {
     if (idx >= lines.length) {
-      setTimeout(() => { container.innerHTML = ''; idx = 0; next(); }, 5000);
+      setTimeout(() => { container.innerHTML = ''; idx = 0; next(); }, 6000);
       return;
     }
     const line = lines[idx];
     container.innerHTML += renderLine(line);
     idx++;
     container.scrollTop = container.scrollHeight;
-    setTimeout(next, delay);
+    const lineDelay = line.t === 'no' ? delay + 600 : line.t === 'blank' ? delay / 2 : delay;
+    setTimeout(next, lineDelay);
   }
 
-  next();
+  setTimeout(next, 800); // small pause before demo starts
 })();
 </script>
 <script>

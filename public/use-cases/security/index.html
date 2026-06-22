@@ -837,7 +837,7 @@ files = [
     ];
 
     const isReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const delay = isReduced ? 0 : 800;
+    const baseDelay = isReduced ? 0 : 1200;
 
     function pad(str, len) {
       return str + ' '.repeat(Math.max(0, len - str.length));
@@ -864,16 +864,18 @@ files = [
 
     function next() {
       if (idx >= lines.length) {
-        setTimeout(() => { container.innerHTML = ''; idx = 0; next(); }, 6000);
+        setTimeout(() => { container.innerHTML = ''; idx = 0; next(); }, 7000);
         return;
       }
       const line = lines[idx];
       container.innerHTML += renderLine(line);
       idx++;
       container.scrollTop = container.scrollHeight;
-      setTimeout(next, delay);
+      // Blocked lines render an extra reason line — give more time to read
+      const lineDelay = line.t === 'no' ? baseDelay + 800 : line.t === 'blank' ? baseDelay / 2 : baseDelay;
+      setTimeout(next, lineDelay);
     }
-    next();
+    setTimeout(next, 800); // small pause before demo starts
   })();
 
   // Smooth anchor scroll
