@@ -755,7 +755,7 @@ commands = [<span class="str">"pip install hermes-agent"</span>]
   ];
 
   const isReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const delay = isReduced ? 0 : 280;
+  const delay = isReduced ? 0 : 500;
 
   function pad(str, len) {
     return str + ' '.repeat(Math.max(0, len - str.length));
