@@ -63,7 +63,8 @@ The agent CLI runs **inside** a sandboxed container. The host relays stdin/stdou
 |---------|--------|
 | **Real Docker Execution** | ✅ `agenticbox run` spawns real containers via bollard, streams output, cleans up |
 | **Ad-hoc Commands** | ✅ `agenticbox run -- python3 script.py` — any command in a sandbox |
-| **Named Agent Profiles** | ✅ `agenticbox run pi` — runtime install + exec in container |
+| **Named Agent Profiles** | ✅ `agenticbox run security-analyst` — builtin mode with local LLM |
+| **Builtin Agent Mode** | ✅ Agent-loop crate — local LLM inference without Docker |
 | **TTY Support** | ✅ Interactive agents get a real PTY (crossterm raw mode) |
 | **Permission Guards** | ✅ Terminal, filesystem (RO/RW), network (allowlist/localhost/offline) |
 | **Filesystem Governance** | ✅ Path resolution with escape prevention, protected paths (SSH keys, AWS creds) |
@@ -81,8 +82,9 @@ The agent CLI runs **inside** a sandboxed container. The host relays stdin/stdou
 
 ### Prerequisites
 
-- **Docker** (Docker Desktop on macOS/Windows, Docker CE on Linux/WSL)
 - **Rust 1.75+** (to build from source)
+- **Docker** (Docker Desktop on macOS/Windows, Docker CE on Linux/WSL) — only for container mode
+- **LM Studio** or any OpenAI-compatible API — for builtin agent mode (local LLM)
 
 ### Build from source
 
@@ -94,17 +96,26 @@ cargo build --release
 
 The binary will be at `target/release/agenticbox`.
 
+### Configure LLM inference
+
+```bash
+agenticbox setup
+```
+
+Auto-detects LM Studio running locally. If not found, prompts for a provider (OpenRouter, OpenAI, custom endpoint). Saves to `~/.agenticbox/config.toml`.
+
 ### See it work immediately
 
 ```bash
-# Ad-hoc command in a real container
-./target/release/agenticbox run -- echo "hello from sandbox"
-
-# Run python in an isolated container
-./target/release/agenticbox run -- python3 -c "print('sandboxed!')"
-
-# Built-in demo (scripted permission guard showcase)
+# Built-in permission guard demo
 ./target/release/agenticbox run demo
+
+# Security analyst — AI-powered malware analysis (needs `agenticbox setup` first)
+cp -r agents/security-analyst ~/.agenticbox/agents/
+./target/release/agenticbox run security-analyst
+
+# Ad-hoc command in a container
+./target/release/agenticbox run -- python3 -c "print('sandboxed!')"
 ```
 
 ---
@@ -126,11 +137,12 @@ Wraps any command in a sandboxed Docker container. Defaults: `terminal=on`, `fs=
 ### Named Agents
 
 ```bash
-agenticbox run pi          # Pi coding agent (pi.dev)
-agenticbox run hermes      # Hermes agent (Nous Research)
+agenticbox run security-analyst   # AI-powered malware analysis (builtin mode)
+agenticbox run pi                 # Pi coding agent (container mode)
+agenticbox run hermes             # Hermes agent (container mode)
 ```
 
-Reads the agent profile from `~/.agenticbox/agents/<name>/agent.toml`, pulls a base container image, installs the agent at runtime, and launches it with interactive stdio relay.
+Reads the agent profile from `~/.agenticbox/agents/<name>/agent.toml`. In `builtin` mode, stages workspace files and runs the agent-loop crate with the configured LLM. In `container` mode, pulls a base image, installs the agent at runtime, and launches it with interactive stdio relay.
 
 ### Built-in Demo
 
@@ -153,38 +165,47 @@ cp -r agents/* ~/.agenticbox/agents/
 
 ## Agent Profiles
 
-Agents are TOML manifests in `~/.agenticbox/agents/<name>/agent.toml`:
+Agents are TOML manifests in `~/.agenticbox/agents/<name>/agent.toml`. They define a **role** — which agent to use, which LLM, what permissions, what toolchain:
 
 ```toml
-# ~/.agenticbox/agents/pi/agent.toml
-name = "pi"
-description = "Pi Agent — edge computing, IoT device management"
-
-# Command that launches the agent inside the container
-command = "pi"
+# ~/.agenticbox/agents/security-analyst/agent.toml
+name = "security-analyst"
+description = "Security Analyst — sandboxed malware analysis, RE, threat research"
 
 [model]
-provider = "anthropic"
-model = "claude-sonnet-4-20250514"
-api_key_env = "ANTHROPIC_API_KEY"
+provider = "local"          # resolved via `agenticbox setup`
+model = ""                  # empty = use config from setup
 
 [permissions]
 terminal = true
 filesystem = "readwrite"
 browser = false
-network = "allowlist"
-domains = ["pi.dev", "registry.npmjs.org", "api.anthropic.com"]
+network = "offline"         # no C2 callbacks during analysis
+domains = []
 
-# Container image + runtime install steps
-[image]
-base = "node:22-slim"
-setup = [
-    "apt-get update && apt-get install -y curl",
-    "curl -fsSL https://pi.dev/install.sh | sh"
+[execution]
+mode = "builtin"            # agent-loop crate (local LLM, no Docker)
+max_iterations = 20
+
+[prompt]
+system = "You are an expert security analyst..."
+task = "Analyze the files in this workspace..."
+
+[workspace]
+files = [
+  { source = "samples/sample.sh", dest = "sample.sh" },
+  { source = "samples/incident.txt", dest = "incident_report.txt" }
 ]
 ```
 
-Each `setup` command runs as `sh -c "<command>"` — pipes, flags, and `&&` chains all work.
+### Execution Modes
+
+| Mode | Description | Requires |
+|------|-------------|----------|
+| `builtin` | Agent-loop crate talks to local/cloud LLM directly. No Docker needed. | LLM endpoint (LM Studio, OpenRouter, etc.) |
+| `container` | Full Docker isolation. Agent CLI installed at runtime inside container. | Docker |
+
+Omit `[execution]` to default to `container` mode (backwards compatible with existing `pi`/`hermes` profiles).
 
 ### Managing Agents
 

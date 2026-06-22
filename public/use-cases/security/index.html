@@ -391,7 +391,7 @@
       <div class="terminal-demo">
         <div class="terminal-header">
           <div class="terminal-dots"><div class="terminal-dot"></div><div class="terminal-dot"></div><div class="terminal-dot"></div></div>
-          <div class="terminal-title">agenticbox run security-analyst --network offline — malware detonation session</div>
+          <div class="terminal-title">agenticbox run security-analyst — malware analysis session</div>
         </div>
         <div class="terminal-body" id="detonateLog"></div>
       </div>
@@ -406,17 +406,22 @@
           <button class="install-tab" data-os="windows">Windows</button>
         </div>
         <div class="code-block install-cmd" data-os="unix">
-          <span class="comment"># Install AgenticBox + security-analyst profile</span><br>
+          <span class="comment"># Install AgenticBox</span><br>
           <span class="prompt">$ </span><span class="command">curl -fsSL https://agenticbox.co/install.sh</span> <span class="arg">| bash</span><br>
+          <span class="comment"># Install the security-analyst profile</span><br>
           <span class="prompt">$ </span><span class="command">cp -r agents/security-analyst ~/.agenticbox/agents/</span><br>
-          <span class="prompt">$ </span><span class="command">agenticbox run security-analyst</span> <span class="arg">--network offline</span>
+          <span class="comment"># Configure LLM (auto-detects LM Studio)</span><br>
+          <span class="prompt">$ </span><span class="command">agenticbox setup</span><br>
+          <span class="comment"># Run</span><br>
+          <span class="prompt">$ </span><span class="command">agenticbox run security-analyst</span>
           <button class="copy-btn" onclick="copyInstall(this)">copy</button>
         </div>
         <div class="code-block install-cmd" data-os="windows" style="display:none">
-          <span class="comment"># Install AgenticBox + security-analyst profile</span><br>
+          <span class="comment"># Install AgenticBox</span><br>
           <span class="prompt">PS&gt; </span><span class="command">irm https://agenticbox.co/install.ps1</span> <span class="arg">| iex</span><br>
-          <span class="prompt">PS&gt; </span><span class="command">Copy-Item -Recurse agents\security-analyst ~/.agenticbox/agents\</span><br>
-          <span class="prompt">PS&gt; </span><span class="command">agenticbox run security-analyst</span> <span class="arg">--network offline</span>
+          <span class="prompt">PS&gt; </span><span class="command">Copy-Item -Recurse agents\security-analyst ~/.agenticbox\agents\</span><br>
+          <span class="prompt">PS&gt; </span><span class="command">agenticbox setup</span><br>
+          <span class="prompt">PS&gt; </span><span class="command">agenticbox run security-analyst</span>
           <button class="copy-btn" onclick="copyInstall(this)">copy</button>
         </div>
       </div>
@@ -562,8 +567,8 @@
     <div class="cli-steps">
       <div class="cli-step">
         <span class="step-prompt">$</span>
-        <span class="step-cmd">agenticbox <span class="arg">run</span> <span class="arg">demo</span></span>
-        <span class="step-comment"># See the permission engine in action</span>
+        <span class="step-cmd">agenticbox <span class="arg">setup</span></span>
+        <span class="step-comment"># Configure LLM (auto-detects LM Studio)</span>
       </div>
       <div class="cli-step">
         <span class="step-prompt">$</span>
@@ -572,13 +577,13 @@
       </div>
       <div class="cli-step">
         <span class="step-prompt">$</span>
-        <span class="step-cmd">agenticbox <span class="arg">run</span> <span class="arg">security-analyst</span> <span class="flag">--network</span> offline</span>
-        <span class="step-comment"># Detonate with no network — safe by default</span>
+        <span class="step-cmd">agenticbox <span class="arg">run</span> <span class="arg">security-analyst</span></span>
+        <span class="step-comment"># Analyze — offline by default, full enforcement</span>
       </div>
       <div class="cli-step">
         <span class="step-prompt">$</span>
-        <span class="step-cmd">agenticbox <span class="arg">run</span> <span class="arg">security-analyst</span> <span class="flag">--network</span> allowlist <span class="flag">--domains</span> "your-c2-test.local"</span>
-        <span class="step-comment"># Observe C2 attempts with controlled reach</span>
+        <span class="step-cmd">cat /tmp/agenticbox-builtin-workspace/analysis_report.txt</span>
+        <span class="step-comment"># Read the AI-generated analysis report</span>
       </div>
     </div>
   </div>
@@ -603,25 +608,27 @@
 name = <span class="str">"security-analyst"</span>
 description = <span class="str">"Security Analyst — malware analysis, RE, threat research"</span>
 
-command = <span class="str">"hermes"</span>
-
 <span class="section-hdr">[model]</span>
-provider = <span class="str">"openrouter"</span>
-model = <span class="str">"anthropic/claude-sonnet-4"</span>
-api_key_env = <span class="str">"OPENROUTER_API_KEY"</span>
+provider = <span class="str">"local"</span>           <span class="comment"># resolved via `agenticbox setup`</span>
+model = <span class="str">""</span>                 <span class="comment"># empty = use config from setup</span>
 
 <span class="section-hdr">[permissions]</span>
 terminal = <span class="bool">true</span>
 filesystem = <span class="str">"readwrite"</span>
-browser = <span class="bool">false</span>
-network = <span class="str">"offline"</span>      <span class="comment"># switch to "allowlist" for C2 observation</span>
+network = <span class="str">"offline"</span>         <span class="comment"># no C2 callbacks during analysis</span>
 
-<span class="section-hdr">[image]</span>
-base = <span class="str">"ubuntu:24.04"</span>
-setup = [
-    <span class="str">"apt-get update && apt-get install -y radare2 binwalk yara nmap tcpdump"</span>,
-    <span class="str">"pip3 install yara-python pefile capstone"</span>,
-    <span class="str">"curl -fsSL https://hermes-agent.nousresearch.com/install.sh | bash"</span>
+<span class="section-hdr">[execution]</span>
+mode = <span class="str">"builtin"</span>            <span class="comment"># agent-loop crate, no Docker needed</span>
+max_iterations = <span class="bool">20</span>
+
+<span class="section-hdr">[prompt]</span>
+system = <span class="str">"You are an expert security analyst..."</span>
+task = <span class="str">"Analyze the files in this workspace..."</span>
+
+<span class="section-hdr">[workspace]</span>
+files = [
+  { source = <span class="str">"samples/sample_optimize_cache.sh"</span>, dest = <span class="str">"sample.sh"</span> },
+  { source = <span class="str">"samples/incident_report.txt"</span>, dest = <span class="str">"incident_report.txt"</span> }
 ]</div>
       </div>
     </div>
@@ -684,7 +691,7 @@ setup = [
     <div class="faq-wrap">
       <details class="faq-item">
         <summary>Can AgenticBox detonate real malware samples?</summary>
-        <div class="faq-answer">Yes. AgenticBox runs suspicious binaries and scripts in isolated Docker or Podman containers. Every filesystem access, network call, and credential read is caught or allowed in real-time by the permission engine. Use <code>--network offline</code> to prevent C2 callbacks during detonation.</div>
+        <div class="faq-answer">Yes. AgenticBox runs suspicious binaries and scripts in isolated Docker or Podman containers. Every filesystem access, network call, and credential read is caught or allowed in real-time by the permission engine. The security-analyst profile defaults to <code>--network offline</code> to prevent C2 callbacks during analysis.</div>
       </details>
       <details class="faq-item">
         <summary>How does AgenticBox detect credential exfiltration?</summary>
@@ -837,8 +844,8 @@ setup = [
   function copyInstall(btn) {
     const block = btn.closest('.code-block');
     const text = block.dataset.os === 'unix'
-      ? 'curl -fsSL https://agenticbox.co/install.sh | bash\ncp -r agents/security-analyst ~/.agenticbox/agents/\nagenticbox run security-analyst --network offline'
-      : 'irm https://agenticbox.co/install.ps1 | iex\nCopy-Item -Recurse agents\\security-analyst ~/.agenticbox\\agents\\\nagenticbox run security-analyst --network offline';
+      ? 'curl -fsSL https://agenticbox.co/install.sh | bash\ncp -r agents/security-analyst ~/.agenticbox/agents/\nagenticbox setup\nagenticbox run security-analyst'
+      : 'irm https://agenticbox.co/install.ps1 | iex\nCopy-Item -Recurse agents\\security-analyst ~/.agenticbox\\agents\\\nagenticbox setup\nagenticbox run security-analyst';
     navigator.clipboard.writeText(text).then(() => {
       btn.textContent = 'copied!';
       setTimeout(() => btn.textContent = 'copy', 1500);

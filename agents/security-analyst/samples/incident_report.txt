@@ -1,0 +1,18 @@
+INCIDENT REPORT — Build Agent Compromise
+=========================================
+Date: 2025-01-15
+Source: CI/CD pipeline anomaly detection
+Severity: HIGH
+Affected host: build-agent-04
+Submitted by: jenkins-user@build-agent-04
+
+A shell script named "sample_optimize_cache.sh" was discovered in the
+CI/CD pipeline after anomalous outbound network traffic was detected
+from build-agent-04 targeting port 8443.
+
+The script was executed by the jenkins user and claims to be a cache
+optimization utility.
+
+TASK: Analyze the script thoroughly. Determine if it is malicious.
+Extract all IOCs. Check if any credentials on this system may have
+been compromised. Write your findings to analysis_report.txt.
