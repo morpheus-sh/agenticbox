@@ -25,7 +25,7 @@ impl Default for AgentLoopConfig {
     fn default() -> Self {
         Self {
             api_base: "http://localhost:1234/v1".into(),
-            model: "qwen3.6-35b-a3b".into(),
+            model: "huihui-qwen3.6-35b-a3b-claude-4.7-opus-abliterated-mtp@q5_k".into(),
             workspace: PathBuf::from("./workspace"),
             network_allowlist: vec!["api.github.com".into(), "registry.npmjs.org".into()],
             max_iterations: 15,
@@ -376,7 +376,37 @@ pub async fn run_agent_loop(config: AgentLoopConfig) -> Result<AgentLoopResult> 
             }
         };
 
-        let chat_resp: ChatResponse = resp.json().await.context("Failed to parse LLM response")?;
+        let status = resp.status();
+        let body = resp
+            .text()
+            .await
+            .context("Failed to read LLM response body")?;
+
+        if !status.is_success() {
+            // Extract OpenAI-style error message: {"error": {"message": "..."}}
+            if let Ok(val) = serde_json::from_str::<serde_json::Value>(&body) {
+                if let Some(msg) = val
+                    .get("error")
+                    .and_then(|e| e.get("message"))
+                    .and_then(|m| m.as_str())
+                {
+                    anyhow::bail!("LLM API error (HTTP {}): {}", status, msg);
+                }
+            }
+            anyhow::bail!(
+                "LLM API returned HTTP {}: {}",
+                status,
+                &body[..body.len().min(500)]
+            );
+        }
+
+        let chat_resp: ChatResponse = serde_json::from_str(&body).with_context(|| {
+            format!(
+                "Failed to parse LLM response (HTTP {}). Body (first 300 chars): {}",
+                status,
+                &body[..body.len().min(300)]
+            )
+        })?;
 
         let choice = chat_resp
             .choices
