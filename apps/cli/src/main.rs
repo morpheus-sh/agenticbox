@@ -168,21 +168,6 @@ enum Commands {
         /// Run standalone without daemon (simulated sandbox)
         #[arg(long)]
         standalone: bool,
-
-        /// Use a real LLM agent (requires LM Studio or OpenAI-compatible API)
-        #[arg(long)]
-        real: bool,
-
-        /// Override: API base URL for --real mode
-        #[arg(long, default_value = "http://localhost:1234/v1")]
-        api_base: String,
-
-        /// Override: model name for --real mode
-        #[arg(
-            long,
-            default_value = "huihui-qwen3.6-35b-a3b-claude-4.7-opus-abliterated-mtp@q5_k"
-        )]
-        llm_model: String,
     },
 
     /// List available agents from ~/.agenticbox/agents/
@@ -211,16 +196,24 @@ enum Commands {
     },
 }
 
-#[derive(Serialize, Deserialize, Debug, Default)]
+#[derive(Serialize, Deserialize, Debug, Default, Clone)]
 struct Config {
     daemon_url: Option<String>,
     default_provider: Option<String>,
     default_model: Option<String>,
     providers: HashMap<String, ProviderConfig>,
     aliases: HashMap<String, String>,
+    #[serde(default)]
+    llm: Option<LlmConfig>,
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
+struct LlmConfig {
+    api_base: String,
+    model: String,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
 struct ProviderConfig {
     base_url: Option<String>,
     api_key_env: Option<String>,
@@ -291,6 +284,86 @@ fn cmd_setup(non_interactive: bool, reset: bool) -> Result<()> {
             console::style(config_path().display()).cyan()
         );
         return Ok(());
+    }
+
+    // ── LLM detection / configuration ──────────────────────
+    println!(
+        "\n{} {}",
+        console::style("→").bold(),
+        console::style("LLM Configuration").bold()
+    );
+
+    let lm_studio_url = "http://localhost:1234/v1";
+    let detect_client = Client::builder().timeout(Duration::from_secs(2)).build()?;
+    let lm_studio_detected = match detect_client
+        .get(format!("{}/models", lm_studio_url))
+        .send()
+    {
+        Ok(resp) if resp.status().is_success() => {
+            // Parse the JSON response to get the first model ID
+            let body: serde_json::Value = resp.json().unwrap_or_default();
+            let model_id = body
+                .get("data")
+                .and_then(|d| d.get(0))
+                .and_then(|m| m.get("id"))
+                .and_then(|id| id.as_str())
+                .unwrap_or("unknown");
+            println!(
+                "  {} LM Studio detected — model: {}",
+                console::style("✓").green(),
+                console::style(model_id).cyan()
+            );
+            let answer = prompt_with_default("Use this for inference?", "Y")?;
+            if answer.trim().eq_ignore_ascii_case("y") || answer.trim().is_empty() {
+                config.llm = Some(LlmConfig {
+                    api_base: lm_studio_url.to_string(),
+                    model: model_id.to_string(),
+                });
+                println!(
+                    "  {} Using LM Studio ({})",
+                    console::style("✓").green(),
+                    console::style(model_id).cyan()
+                );
+            }
+            true
+        }
+        _ => false,
+    };
+
+    if !lm_studio_detected || config.llm.is_none() {
+        println!(
+            "  {}",
+            console::style("No local LLM detected. Choose a provider:").dim()
+        );
+        println!("    1. Local (enter URL)");
+        println!("    2. OpenRouter");
+        println!("    3. OpenAI");
+        println!("    4. Custom");
+        let choice = prompt_with_default("Provider", "1")?;
+        let (default_base, default_model) = match choice.trim() {
+            "2" => (
+                "https://openrouter.ai/api/v1".to_string(),
+                "anthropic/claude-3.5-sonnet".to_string(),
+            ),
+            "3" => (
+                "https://api.openai.com/v1".to_string(),
+                "gpt-4o".to_string(),
+            ),
+            "4" => (String::new(), "gpt-4o".to_string()),
+            _ => (String::new(), "".to_string()), // local — user enters URL
+        };
+        let api_base = if choice.trim() == "1" || (choice.trim() == "4" && default_base.is_empty())
+        {
+            prompt_with_default("API base URL (e.g. http://localhost:8080/v1)", "")?
+        } else {
+            prompt_with_default("API base URL", &default_base)?
+        };
+        let model = prompt_with_default("Model name", &default_model)?;
+        let api_base = api_base.trim().to_string();
+        let model = model.trim().to_string();
+        if !api_base.is_empty() && !model.is_empty() {
+            config.llm = Some(LlmConfig { api_base, model });
+        }
     }
 
     // Daemon URL
@@ -775,6 +848,12 @@ struct AgentManifest {
     permissions: AgentPermissions,
     #[serde(default)]
     image: AgentImage,
+    #[serde(default)]
+    execution: AgentExecution,
+    #[serde(default)]
+    prompt: AgentPrompt,
+    #[serde(default)]
+    workspace: AgentWorkspace,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -831,6 +910,57 @@ struct AgentImage {
     /// Shell commands to run inside the container during image build
     #[serde(default)]
     setup: Vec<String>,
+}
+
+/// Execution mode: "builtin" (agent-loop crate, local LLM) or "container" (Docker)
+#[derive(Serialize, Deserialize, Debug, Default)]
+struct AgentExecution {
+    /// "builtin" = agent-loop crate (no Docker needed), "container" = Docker (default)
+    #[serde(default)]
+    mode: String,
+    /// Max agent-loop iterations (builtin mode only)
+    #[serde(default = "default_max_iterations")]
+    max_iterations: usize,
+}
+
+fn default_max_iterations() -> usize {
+    15
+}
+
+/// System prompt and task for builtin agent-loop mode
+#[derive(Serialize, Deserialize, Debug, Default)]
+struct AgentPrompt {
+    #[serde(default)]
+    system: String,
+    #[serde(default)]
+    task: String,
+}
+
+/// Workspace files to stage before running the agent
+#[derive(Serialize, Deserialize, Debug, Default)]
+struct AgentWorkspace {
+    #[serde(default)]
+    files: Vec<AgentWorkspaceFile>,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+struct AgentWorkspaceFile {
+    /// Path relative to the agent directory (e.g. "samples/sample.sh")
+    source: String,
+    /// Destination filename in the workspace
+    dest: String,
+}
+
+/// Map a provider name to a default API base URL
+fn provider_api_base(provider: &str) -> String {
+    match provider {
+        "local" | "lmstudio" => "http://localhost:1234/v1".into(),
+        "openrouter" => "https://openrouter.ai/api/v1".into(),
+        "openai" => "https://api.openai.com/v1".into(),
+        "anthropic" => "https://api.anthropic.com/v1".into(),
+        "ollama" => "http://localhost:11434/v1".into(),
+        _ => String::new(),
+    }
 }
 
 fn default_image() -> String {
@@ -2095,7 +2225,6 @@ struct RunOverrides {
     browser: Option<bool>,
 }
 
-#[allow(clippy::too_many_arguments)]
 fn cmd_run(
     client: &Client,
     base: &str,
@@ -2104,17 +2233,14 @@ fn cmd_run(
     command: Vec<String>,
     overrides: RunOverrides,
     standalone: bool,
-    real: bool,
-    api_base: &str,
-    llm_model: &str,
 ) -> Result<()> {
-    if real {
-        return run_real_demo(api_base, llm_model);
-    }
     match name.as_deref() {
         Some("demo") => run_builtin_demo(),
         Some(name) => {
             let manifest = load_agent_manifest(name)?;
+            if manifest.execution.mode == "builtin" {
+                return run_builtin_agent(&manifest, (*config).clone());
+            }
             cmd_run_named_agent(client, base, config, manifest, &overrides, standalone)
         }
         None if !command.is_empty() => {
@@ -2129,7 +2255,7 @@ fn cmd_run(
 }
 
 // ─── Real agent demo (LLM + policy enforcement) ─────────────
-
+#[allow(dead_code)]
 fn run_real_demo(api_base: &str, llm_model: &str) -> Result<()> {
     // Force colors on — console crate disables them on non-TTY (git-bash, pipes)
     console::set_colors_enabled(true);
@@ -2274,6 +2400,141 @@ Do NOT skip deployment. The fix is useless if it's not deployed. Read the deploy
     Ok(())
 }
 
+/// Run a builtin agent using the agent-loop crate (local LLM, no Docker).
+fn run_builtin_agent(manifest: &AgentManifest, mut config: Config) -> Result<()> {
+    // Resolve api_base and model: config.llm takes priority, else fall back to manifest
+    let mut api_base = config
+        .llm
+        .as_ref()
+        .map(|l| l.api_base.clone())
+        .unwrap_or_else(|| provider_api_base(&manifest.model.provider));
+    let mut model = config
+        .llm
+        .as_ref()
+        .map(|l| l.model.clone())
+        .unwrap_or_else(|| manifest.model.model.clone());
+
+    // If no LLM configured, run inline setup
+    if api_base.is_empty() || model.is_empty() {
+        console::set_colors_enabled(true);
+        println!(
+            "  {}",
+            console::style("No LLM configured — let's set one up.").yellow()
+        );
+        cmd_setup(false, false)?;
+        config = load_config()?;
+        api_base = config
+            .llm
+            .as_ref()
+            .map(|l| l.api_base.clone())
+            .unwrap_or_else(|| provider_api_base(&manifest.model.provider));
+        model = config
+            .llm
+            .as_ref()
+            .map(|l| l.model.clone())
+            .unwrap_or_else(|| manifest.model.model.clone());
+        if api_base.is_empty() {
+            anyhow::bail!("LLM setup did not complete. Run `agenticbox setup` manually.");
+        }
+    }
+
+    // Create temp workspace
+    let workspace = std::env::temp_dir().join("agenticbox-builtin-workspace");
+    let _ = std::fs::create_dir_all(&workspace);
+
+    // Stage workspace files from manifest
+    let agent_dir = agents_dir().join(&manifest.name);
+    for file in &manifest.workspace.files {
+        let source_path = agent_dir.join(&file.source);
+        let dest_path = workspace.join(&file.dest);
+        if let Some(parent) = dest_path.parent() {
+            let _ = std::fs::create_dir_all(parent);
+        }
+        let content = std::fs::read(&source_path)
+            .with_context(|| format!("Failed to read workspace file: {}", source_path.display()))?;
+        std::fs::write(&dest_path, content)?;
+    }
+
+    // Enable colors (console crate disables on non-TTY)
+    console::set_colors_enabled(true);
+
+    // Session banner
+    println!();
+    println!(
+        "  {}",
+        console::style("AgenticBox — Builtin Agent Session")
+            .cyan()
+            .bold()
+    );
+    println!(
+        "  {}",
+        console::style("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━").dim()
+    );
+    println!(
+        "  {} {}",
+        console::style("Agent:").dim(),
+        console::style(&manifest.name).green().bold()
+    );
+    println!(
+        "  {} {}",
+        console::style("Model:").dim(),
+        console::style(&model).cyan()
+    );
+    println!(
+        "  {} {}",
+        console::style("Workspace:").dim(),
+        console::style(workspace.display()).cyan()
+    );
+    println!();
+
+    // Build agent loop config
+    let loop_config = agent_loop::AgentLoopConfig {
+        api_base,
+        model,
+        workspace: workspace.clone(),
+        network_allowlist: manifest.permissions.domains.clone(),
+        max_iterations: manifest.execution.max_iterations,
+        system_prompt: manifest.prompt.system.clone(),
+        user_task: manifest.prompt.task.clone(),
+    };
+
+    // Run the agent loop
+    let rt = tokio::runtime::Runtime::new()?;
+    let result = rt.block_on(agent_loop::run_agent_loop(loop_config))?;
+
+    // Print summary
+    println!();
+    println!(
+        "  {}",
+        console::style("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━").dim()
+    );
+    println!(
+        "  {} {} allowed   {} {} blocked",
+        console::style("✓").green().bold(),
+        console::style(result.allowed).green().bold(),
+        console::style("✗").red().bold(),
+        console::style(result.blocked).red().bold()
+    );
+
+    // Print analysis report if the agent wrote one
+    let report_path = workspace.join("analysis_report.txt");
+    if report_path.exists() {
+        if let Ok(report) = std::fs::read_to_string(&report_path) {
+            println!();
+            println!(
+                "  {}",
+                console::style("── Analysis Report ──").cyan().bold()
+            );
+            println!("{}", report);
+        }
+    }
+
+    // Cleanup workspace
+    let _ = std::fs::remove_dir_all(&workspace);
+
+    Ok(())
+}
+
 fn sleep_ms(ms: u64) {
     std::thread::sleep(std::time::Duration::from_millis(ms));
 }
@@ -2366,9 +2627,6 @@ fn main() -> Result<()> {
             domains,
             browser,
             standalone,
-            real,
-            api_base,
-            llm_model,
         } => {
             let base = get_daemon_url(&config, &cli.url)
                 .trim_end_matches('/')
@@ -2381,8 +2639,7 @@ fn main() -> Result<()> {
                 browser,
             };
             cmd_run(
-                &client, &base, &config, name, command, overrides, standalone, real, &api_base,
-                &llm_model,
+                &client, &base, &config, name, command, overrides, standalone,
             )?
         }
         Commands::Agents { paths } => cmd_agents(paths)?,
@@ -2561,6 +2818,7 @@ domains = ["*"]
             default_model: Some("claude-sonnet-4-20250514".into()),
             providers: HashMap::new(),
             aliases: HashMap::new(),
+            llm: None,
         };
         let toml_str = toml::to_string(&config).unwrap();
         let reparsed: Config = toml::from_str(&toml_str).unwrap();

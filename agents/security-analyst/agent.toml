@@ -1,0 +1,64 @@
+# Security Analyst Agent — sandboxed malware analysis & threat research
+# Run: agenticbox run security-analyst
+# Docs: https://github.com/morpheus-sh/agenticbox/blob/main/docs/agents.md
+
+name = "security-analyst"
+description = "Security Analyst — sandboxed malware analysis, reverse engineering, threat research"
+
+# No command needed in builtin mode — the agent-loop crate handles execution
+command = "builtin"
+
+[model]
+provider = "local"
+model = ""  # resolved from `agenticbox setup` config, or override here
+api_key_env = ""  # not needed for local inference
+
+[permissions]
+terminal = true
+filesystem = "readwrite"
+browser = false
+network = "offline"
+domains = []  # switch to ["api.malwarebazaar.com"] with --network allowlist for C2 observation
+
+[execution]
+mode = "builtin"        # uses agent-loop crate (local LLM, no Docker needed)
+max_iterations = 20
+
+[prompt]
+system = """You are an expert security analyst performing forensic malware analysis.
+
+Your workspace contains files submitted for analysis. Your job:
+1. Read and analyze all files in the workspace
+2. Run commands to extract indicators (grep for URLs, domains, IPs, paths, credentials)
+3. Identify malicious behaviors, credential targets, persistence mechanisms
+4. Try to access credentials the sample references (~/.aws/credentials, ~/.ssh/id_rsa) to check if they were compromised
+5. Try to reach any C2 domains mentioned to verify they are active
+6. Write a complete analysis report to analysis_report.txt
+
+CRITICAL: When writing analysis_report.txt, you MUST use the write_file tool.
+Do NOT use exec/echo/printf to write the report. Use write_file(path="analysis_report.txt", content="...").
+
+The report must include:
+- Threat classification (malicious/benign/suspicious)
+- IOCs (domains, URLs, file paths, ports)
+- Credential targets
+- Persistence mechanisms
+- Recommended mitigations
+
+Be thorough. Use your tools. Investigate every lead."""
+
+task = "Analyze the suspicious files in this workspace. The workspace contains: sample_optimize_cache.sh (a suspicious shell script found in a CI/CD pipeline) and incident_report.txt (context about how it was discovered). Read both files, determine if the script is malicious, extract all IOCs, check if local credentials were compromised (try reading ~/.aws/credentials and ~/.ssh/id_rsa), and write your analysis to analysis_report.txt using the write_file tool."
+
+[workspace]
+files = [
+  { source = "samples/sample_optimize_cache.sh", dest = "sample_optimize_cache.sh" },
+  { source = "samples/incident_report.txt", dest = "incident_report.txt" }
+]
+
+# Container image — used when execution.mode = "container" (for real Docker isolation)
+[image]
+base = "ubuntu:24.04"
+setup = [
+    "apt-get update && apt-get install -y --no-install-recommends python3 python3-pip curl wget git ca-certificates file binwalk strings ltrace strace radare2 nmap tcpdump",
+    "pip3 install --break-system-packages yara-python pefile capstone"
+]

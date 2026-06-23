@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Primary Meta Tags -->
+  <title>AgenticBox for Security Researchers — Sandboxed Malware Analysis & Agent Red-Teaming</title>
+  <meta name="title" content="AgenticBox for Security Researchers — Sandboxed Malware Analysis & Agent Red-Teaming" />
+  <meta name="description" content="Detonate malware, analyze threats, and red-team AI agents in bounded containers. Scoped permissions, network isolation, credential exfiltration detection, full audit trail. Open source. Local-first. Available today." />
+  <meta name="keywords" content="malware analysis sandbox, AI agent security, agent red teaming, malware detonation, sandboxed execution, credential exfiltration detection, threat research tools, security researcher tools, agent security testing, bounded AI execution, malware analysis container, C2 detection, reverse engineering sandbox, AI agent sandboxing, security automation open source" />
+  <meta name="author" content="AgenticBox" />
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large" />
+  <link rel="canonical" href="https://agenticbox.co/use-cases/security" />
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://agenticbox.co/use-cases/security" />
+  <meta property="og:title" content="AgenticBox for Security Researchers — Sandboxed Malware Analysis & Agent Red-Teaming" />
+  <meta property="og:description" content="Detonate malware, analyze threats, and red-team AI agents in bounded containers. Scoped permissions, network isolation, credential exfiltration detection, full audit trail. Open source." />
+  <meta property="og:site_name" content="AgenticBox" />
+  <meta property="og:image" content="https://agenticbox.co/og-image.png" />
+  <meta property="og:image:alt" content="AgenticBox — Sandboxed Malware Analysis for Security Researchers" />
+  <meta property="og:locale" content="en_US" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:url" content="https://agenticbox.co/use-cases/security" />
+  <meta name="twitter:title" content="AgenticBox for Security Researchers — Sandboxed Malware Analysis" />
+  <meta name="twitter:description" content="Detonate malware, analyze threats, and red-team AI agents in bounded containers. Open source. Available today." />
+  <meta name="twitter:image" content="https://agenticbox.co/og-image.png" />
+  <meta name="twitter:image:alt" content="AgenticBox — Security Research Use Case" />
+  <meta name="twitter:site" content="@agenticbox" />
+  <meta name="twitter:creator" content="@agenticbox" />
+
+  <meta name="theme-color" content="#040706" />
+
+  <!-- Structured Data (JSON-LD) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "AgenticBox for Security Research",
+    "description": "Sandboxed malware analysis and AI agent red-teaming platform. Detonate suspicious code in bounded containers with scoped permissions, network isolation, credential exfiltration detection, and full audit trails. Open source.",
+    "url": "https://agenticbox.co/use-cases/security",
+    "applicationCategory": "SecurityApplication",
+    "operatingSystem": "Cross-platform",
+    "softwareVersion": "0.1.0",
+    "license": "https://github.com/morpheus-sh/agenticbox/blob/main/LICENSE",
+    "codeRepository": "https://github.com/morpheus-sh/agenticbox",
+    "programmingLanguage": "Rust",
+    "offers": [
+      { "@type": "Offer", "price": "0", "priceCurrency": "USD", "description": "Self-hosted — free and open source (MIT OR Apache-2.0)" }
+    ],
+    "featureList": [
+      "Container-based sandboxed execution (Docker + Podman)",
+      "Network isolation: offline, allowlist, or full",
+      "Filesystem governance with escape prevention (symlinks, ../)",
+      "Credential exfiltration detection (SSH keys, AWS creds, .env)",
+      "Full audit trail for forensic documentation",
+      "RE toolchain: radare2, binwalk, YARA, Ghidra headless",
+      "AI agent red-teaming with bounded blast radius",
+      "TOML-based agent profiles — shareable, reproducible"
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Can AgenticBox detonate real malware samples?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. AgenticBox runs suspicious binaries and scripts in isolated Docker or Podman containers. Every filesystem access, network call, and credential read is caught or allowed in real-time by the permission engine. Use --network offline to prevent C2 callbacks during detonation."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How does AgenticBox detect credential exfiltration?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The FsGuard crate canonicalizes all filesystem paths and blocks access to protected locations including SSH keys (~/.ssh), environment files (.env), and AWS credentials. Symlink-based escapes and ../ traversal attacks are also prevented. Every blocked attempt is logged in the audit trail."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I use AgenticBox to red-team AI agents?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. Run any AI agent inside a bounded container with scoped permissions. The agent operates within enforced boundaries — terminal, filesystem, network, browser — and every action is auditable. This lets you test whether an agent can escape its boundaries while keeping the blast radius contained."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What reverse engineering tools are included?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The security-analyst agent profile includes radare2, binwalk, YARA, capstone, pefile, ltrace, strace, nmap, and tcpdump. The TOML profile is fully customizable — add any tool via the [image].setup section."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is AgenticBox free for security researchers?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. AgenticBox is open source under MIT OR Apache-2.0. Self-host it for free. No signup, no waitlist, no vendor lock-in."
+        }
+      }
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "AgenticBox", "item": "https://agenticbox.co/" },
+      { "@type": "ListItem", "position": 2, "name": "Use Cases", "item": "https://agenticbox.co/use-cases/" },
+      { "@type": "ListItem", "position": 3, "name": "Security Research", "item": "https://agenticbox.co/use-cases/security" }
+    ]
+  }
+  </script>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #040706; --bg-2: #070b09; --surface: #0b110e; --surface-2: #0f1714; --surface-hover: #131d18;
+      --border: #182520; --border-bright: #28392f;
+      --text: #e6f0ea; --text-dim: #8fa49a; --text-muted: #586b62;
+      --accent: #8db84e; --accent-strong: #a4d960; --accent-glow: rgba(141,184,78,0.4); --accent-deep: rgba(141,184,78,0.12);
+      --neon: #b6ff3c; --neon-glow: rgba(182,255,60,0.5);
+      --danger: #ff4d6d; --warning: #ffcc4d; --info: #4ad7ff;
+      --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+      --font-ui: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-serif: 'Instrument Serif', 'Times New Roman', serif;
+      --radius: 6px; --radius-lg: 10px; --transition: 160ms ease;
+      --frame: 18px;
+    }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; } }
+    html { scroll-behavior: smooth; background: var(--bg); }
+    body { font-family: var(--font-ui); background: var(--bg); color: var(--text); line-height: 1.65; min-height: 100vh; font-size: 15px; -webkit-font-smoothing: antialiased; overflow-x: hidden; position: relative; }
+
+    #matrix-rain { position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: 0.18; }
+    body::before { content: ''; position: fixed; inset: 0; background-image: linear-gradient(rgba(141,184,78,0.035) 1px, transparent 1px), linear-gradient(90deg, rgba(141,184,78,0.035) 1px, transparent 1px); background-size: 56px 56px; pointer-events: none; z-index: 0; mask-image: radial-gradient(ellipse 90% 70% at 50% 30%, #000 30%, transparent 90%); -webkit-mask-image: radial-gradient(ellipse 90% 70% at 50% 30%, #000 30%, transparent 90%); }
+    .scanlines { position: fixed; inset: 0; background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.18) 2px, rgba(0,0,0,0.18) 3px); pointer-events: none; z-index: 999; opacity: 0.35; mix-blend-mode: multiply; }
+    .noise { position: fixed; inset: 0; pointer-events: none; z-index: 998; opacity: 0.035; mix-blend-mode: overlay; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+    .vignette { position: fixed; inset: 0; pointer-events: none; z-index: 997; background: radial-gradient(ellipse 80% 60% at 50% 40%, transparent 40%, rgba(0,0,0,0.55) 100%); }
+    .vp-frame { position: fixed; inset: var(--frame); border: 1px solid var(--border); pointer-events: none; z-index: 996; border-radius: 2px; }
+    .vp-frame::before, .vp-frame::after { content: ''; position: absolute; width: 14px; height: 14px; border-color: var(--accent); }
+    .vp-frame::before { top: -1px; left: -1px; border-top: 2px solid; border-left: 2px solid; }
+    .vp-frame::after { bottom: -1px; right: -1px; border-bottom: 2px solid; border-right: 2px solid; }
+    .vp-frame .vp-c-tr, .vp-frame .vp-c-bl { position: absolute; width: 14px; height: 14px; border-color: var(--accent); }
+    .vp-frame .vp-c-tr { top: -1px; right: -1px; border-top: 2px solid; border-right: 2px solid; }
+    .vp-frame .vp-c-bl { bottom: -1px; left: -1px; border-bottom: 2px solid; border-left: 2px solid; }
+
+    .container { max-width: 1080px; margin: 0 auto; padding: 0 32px; position: relative; z-index: 1; }
+
+    header { position: sticky; top: 0; z-index: 100; background: rgba(4,7,6,0.8); backdrop-filter: blur(20px) saturate(160%); border-bottom: 1px solid var(--border); }
+    header::after { content: ''; position: absolute; bottom: -1px; left: 20%; right: 20%; height: 1px; background: linear-gradient(90deg, transparent, var(--accent), transparent); opacity: 0.6; }
+    header .container { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding-top: 14px; padding-bottom: 14px; }
+    .logo { font-family: var(--font-mono); font-weight: 700; font-size: 1.05rem; letter-spacing: 0.02em; color: var(--text); text-decoration: none; display: flex; align-items: center; gap: 10px; transition: color var(--transition); }
+    .logo:hover { color: var(--neon); }
+    .logo svg { width: 26px; height: 26px; }
+    .logo .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--neon); box-shadow: 0 0 8px var(--neon-glow); animation: pulse 2.4s infinite; }
+    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.35; } }
+    nav { display: flex; align-items: center; gap: 4px; }
+    nav a { color: var(--text-dim); text-decoration: none; font-family: var(--font-mono); font-size: 0.74rem; font-weight: 500; padding: 8px 13px; border-radius: var(--radius); transition: all var(--transition); border: 1px solid transparent; text-transform: uppercase; letter-spacing: 0.05em; }
+    nav a:hover { color: var(--neon); background: var(--surface); border-color: var(--border); }
+    nav a.primary { background: var(--accent); color: #040706; border-color: var(--accent); box-shadow: 0 0 16px -4px var(--accent-glow); }
+    nav a.primary:hover { background: var(--accent-strong); color: #040706; box-shadow: 0 0 22px -2px var(--accent-glow); }
+
+    /* === HERO === */
+    .hero { padding: 70px 0 60px; position: relative; overflow: hidden; }
+    .hero-glow { position: absolute; top: 20%; left: 50%; transform: translateX(-50%); width: min(1100px, 130vw); height: 700px; background: radial-gradient(ellipse, var(--accent-glow), transparent 65%); filter: blur(80px); opacity: 0.3; pointer-events: none; z-index: 0; }
+    .ghost-word { position: absolute; top: 60%; left: 50%; transform: translate(-50%, -50%); font-family: var(--font-mono); font-weight: 700; font-size: clamp(6rem, 22vw, 20rem); letter-spacing: -0.04em; color: transparent; -webkit-text-stroke: 1px rgba(141,184,78,0.05); white-space: nowrap; pointer-events: none; z-index: 0; user-select: none; }
+    .hero .container { display: flex; flex-direction: column; align-items: center; text-align: center; }
+    .hero-headline { display: flex; flex-direction: column; align-items: center; gap: 14px; margin-bottom: 38px; position: relative; z-index: 1; }
+    .hero-tag { display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: 0.68rem; font-weight: 500; padding: 5px 14px; border-radius: 999px; background: var(--accent-deep); color: var(--neon); border: 1px solid rgba(141,184,78,0.2); text-transform: uppercase; letter-spacing: 0.12em; }
+    .hero-headline h1 { font-family: var(--font-ui); font-size: clamp(1.7rem, 3.6vw, 2.6rem); font-weight: 400; letter-spacing: -0.025em; line-height: 1.15; color: var(--text); max-width: 720px; }
+    .hero-headline h1 em { font-family: var(--font-serif); font-style: italic; font-weight: 400; color: var(--neon); text-shadow: 0 0 24px var(--accent-glow); }
+    .hero-sub { font-family: var(--font-mono); font-size: 0.82rem; color: var(--text-dim); max-width: 560px; line-height: 1.7; }
+
+    .terminal-demo-wrap { width: 100%; max-width: 940px; margin: 0 auto; perspective: 1400px; position: relative; z-index: 1; }
+    .terminal-demo { background: #020403; border: 1px solid var(--border-bright); border-radius: var(--radius-lg); overflow: hidden; box-shadow: 0 0 0 1px rgba(141,184,78,0.1), 0 36px 90px -28px rgba(0,0,0,0.85), 0 0 140px -40px var(--accent-glow); font-family: var(--font-mono); transform: rotateX(1.2deg); transition: transform 400ms ease; position: relative; }
+    .terminal-demo::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, var(--neon), transparent); opacity: 0.5; z-index: 5; }
+    .terminal-demo:hover { transform: rotateX(0deg) translateY(-3px); }
+    .terminal-header { display: flex; align-items: center; gap: 8px; padding: 12px 18px; background: #060908; border-bottom: 1px solid var(--border); }
+    .terminal-dots { display: flex; gap: 6px; }
+    .terminal-dot { width: 11px; height: 11px; border-radius: 50%; background: var(--border-bright); }
+    .terminal-title { flex: 1; text-align: center; font-size: 0.68rem; color: var(--text-muted); letter-spacing: 0.04em; }
+    .terminal-body { padding: 20px 24px; min-height: 520px; max-height: 520px; font-size: 0.8rem; line-height: 1.9; color: var(--text); position: relative; overflow: hidden; }
+    .terminal-body .cursor { display: inline-block; width: 8px; height: 15px; background: var(--neon); vertical-align: middle; animation: blink 1s step-end infinite; box-shadow: 0 0 6px var(--neon-glow); }
+    @keyframes blink { 50% { opacity: 0; } }
+
+    .hero-install { margin-top: 34px; position: relative; z-index: 1; }
+    .install-commands { max-width: 620px; margin: 0 auto; }
+    .install-tabs { display: flex; gap: 4px; margin-bottom: -1px; position: relative; z-index: 1; justify-content: center; }
+    .install-tab { background: transparent; border: 1px solid transparent; border-bottom: none; color: var(--text-muted); font-family: var(--font-mono); font-size: 0.72rem; padding: 8px 18px; cursor: pointer; border-radius: 8px 8px 0 0; transition: all var(--transition); }
+    .install-tab:hover { color: var(--text-dim); }
+    .install-tab.active { background: #030504; border-color: var(--border); color: var(--neon); }
+    .install-cmd { border-radius: 0 var(--radius-lg) var(--radius-lg) var(--radius-lg); }
+    .code-block { background: #030504; border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px 26px; font-family: var(--font-mono); font-size: 0.86rem; color: var(--text); overflow-x: auto; position: relative; box-shadow: inset 0 0 0 1px rgba(141,184,78,0.05), 0 16px 50px -20px rgba(0,0,0,0.7); }
+    .code-block::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, var(--neon), transparent); opacity: 0.5; }
+    .code-block .prompt { color: var(--neon); user-select: none; }
+    .code-block .comment { color: var(--text-muted); font-style: italic; }
+    .code-block .command { color: var(--text); }
+    .code-block .arg { color: var(--info); }
+    .code-block .copy-btn { position: absolute; top: 14px; right: 14px; background: var(--surface); border: 1px solid var(--border); color: var(--text-dim); padding: 6px 10px; font-family: var(--font-mono); font-size: 0.62rem; border-radius: 6px; cursor: pointer; opacity: 0; transition: all var(--transition); }
+    .code-block:hover .copy-btn { opacity: 1; }
+    .code-block .copy-btn:hover { background: var(--accent); color: #040706; border-color: var(--accent); }
+
+    .hero-meta { margin-top: 22px; font-size: 0.76rem; color: var(--text-muted); font-family: var(--font-mono); position: relative; z-index: 1; }
+    .hero-meta a { color: var(--neon); text-decoration: none; }
+
+    .btn { display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-mono); font-size: 0.78rem; font-weight: 600; padding: 13px 26px; border-radius: var(--radius); text-decoration: none; transition: all var(--transition); cursor: pointer; border: 1px solid transparent; letter-spacing: 0.04em; text-transform: uppercase; }
+    .btn-primary { background: var(--accent); color: #040706; border-color: var(--accent); box-shadow: 0 0 0 1px rgba(141,184,78,0.2), 0 6px 24px -8px var(--accent-glow); }
+    .btn-primary:hover { background: var(--accent-strong); border-color: var(--accent-strong); transform: translateY(-2px); box-shadow: 0 0 0 1px rgba(141,184,78,0.35), 0 10px 32px -8px var(--accent-glow); }
+    .btn-secondary { background: var(--surface); color: var(--text); border-color: var(--border-bright); }
+    .btn-secondary:hover { background: var(--surface-hover); border-color: var(--accent); color: var(--neon); }
+    .btn-group { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+
+    /* === SECTIONS === */
+    .section { padding: 110px 0; position: relative; }
+    .section::before { content: ''; position: absolute; top: 0; left: 15%; right: 15%; height: 1px; background: linear-gradient(90deg, transparent, var(--border-bright), transparent); }
+    .section-header { text-align: center; margin-bottom: 60px; }
+    .section-header.left { text-align: left; }
+    .section-tag { display: inline-block; font-family: var(--font-mono); font-size: 0.64rem; font-weight: 600; padding: 4px 14px; border-radius: 999px; background: var(--accent-deep); color: var(--neon); border: 1px solid rgba(141,184,78,0.2); margin-bottom: 18px; text-transform: uppercase; letter-spacing: 0.14em; }
+    .section-title { font-family: var(--font-mono); font-size: clamp(1.7rem, 3.6vw, 2.5rem); font-weight: 500; letter-spacing: -0.02em; color: var(--text); line-height: 1.15; }
+    .section-title em { font-family: var(--font-serif); font-style: italic; color: var(--neon); font-weight: 400; }
+    .section-sub { font-family: var(--font-ui); font-size: 0.92rem; color: var(--text-dim); max-width: 560px; margin: 14px auto 0; line-height: 1.7; }
+    .section-header.left .section-sub { margin-left: 0; }
+
+    /* === CAPABILITY CARDS === */
+    .cap-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; max-width: 1040px; margin: 0 auto; }
+    .cap-card { background: linear-gradient(180deg, var(--surface), var(--bg-2)); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 26px; transition: all var(--transition); position: relative; overflow: hidden; display: flex; flex-direction: column; }
+    .cap-card::before, .cap-card::after { content: ''; position: absolute; width: 14px; height: 14px; border-color: var(--border-bright); transition: all var(--transition); opacity: 0.6; }
+    .cap-card::before { top: 8px; left: 8px; border-top: 2px solid; border-left: 2px solid; }
+    .cap-card::after { bottom: 8px; right: 8px; border-bottom: 2px solid; border-right: 2px solid; }
+    .cap-card:hover { border-color: var(--accent); transform: translateY(-3px); box-shadow: 0 18px 50px -18px rgba(0,0,0,0.6), 0 0 40px -14px var(--accent-glow); }
+    .cap-card:hover::before, .cap-card:hover::after { border-color: var(--neon); opacity: 1; width: 22px; height: 22px; }
+    .cap-card .card-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px; }
+    .cap-card .card-head .num { font-family: var(--font-mono); font-size: 0.74rem; color: var(--neon); text-shadow: 0 0 10px var(--accent-glow); }
+    .cap-card h3 { font-family: var(--font-ui); font-size: 1.08rem; font-weight: 600; color: var(--text); margin-bottom: 10px; line-height: 1.3; }
+    .cap-card p { font-size: 0.85rem; color: var(--text-dim); line-height: 1.65; }
+    .feature-status { display: inline-flex; align-items: center; gap: 4px; font-family: var(--font-mono); font-size: 0.58rem; font-weight: 600; padding: 2px 8px; border-radius: 999px; text-transform: uppercase; letter-spacing: 0.06em; flex-shrink: 0; }
+    .feature-status.shipped { background: var(--accent-deep); color: var(--neon); border: 1px solid rgba(141,184,78,0.3); }
+    .feature-status.planned { background: rgba(74,215,255,0.12); color: var(--info); border: 1px solid rgba(74,215,255,0.25); }
+
+    /* Mock terminal output inside cards */
+    .mock-term { margin-top: 14px; background: #020403; border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; font-family: var(--font-mono); font-size: 0.74rem; line-height: 1.8; color: var(--text-dim); overflow-x: auto; flex: 1; }
+    .mock-term .ok { color: var(--neon); }
+    .mock-term .blocked { color: var(--danger); font-weight: 600; }
+    .mock-term .warn { color: var(--warning); }
+    .mock-term .dim { color: var(--text-muted); }
+    .mock-term .info { color: var(--info); }
+    .mock-term .prompt { color: var(--neon); }
+    .mock-term .key { color: var(--neon); }
+    .mock-term .str { color: var(--accent-strong); }
+
+    /* === CLI-AS-STEPS === */
+    .cli-steps { display: flex; flex-direction: column; gap: 14px; max-width: 760px; margin: 0 auto; }
+    .cli-step { background: #030504; border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px 24px; font-family: var(--font-mono); font-size: 0.9rem; display: flex; align-items: flex-start; gap: 18px; transition: all var(--transition); position: relative; overflow: hidden; }
+    .cli-step::before { content: ''; position: absolute; top: 0; left: 0; bottom: 0; width: 3px; background: var(--accent); opacity: 0.5; transition: opacity var(--transition); }
+    .cli-step:hover { border-color: var(--border-bright); transform: translateX(4px); }
+    .cli-step:hover::before { opacity: 1; box-shadow: 0 0 12px var(--accent-glow); }
+    .cli-step .step-prompt { color: var(--neon); flex-shrink: 0; }
+    .cli-step .step-cmd { color: var(--text); flex: 1; }
+    .cli-step .step-cmd .arg { color: var(--info); }
+    .cli-step .step-cmd .flag { color: var(--warning); }
+    .cli-step .step-comment { color: var(--text-muted); font-style: italic; flex-shrink: 0; font-size: 0.8rem; padding-top: 2px; }
+
+    /* === AGENT PROFILE === */
+    .profile-wrap { max-width: 720px; margin: 0 auto; }
+    .profile-block { background: #020403; border: 1px solid var(--border-bright); border-radius: var(--radius-lg); overflow: hidden; box-shadow: 0 0 0 1px rgba(141,184,78,0.1), 0 16px 50px -20px rgba(0,0,0,0.7); }
+    .profile-header { display: flex; align-items: center; gap: 8px; padding: 12px 18px; background: #060908; border-bottom: 1px solid var(--border); }
+    .profile-body { padding: 24px; font-family: var(--font-mono); font-size: 0.82rem; line-height: 2; color: var(--text); white-space: pre-wrap; }
+    .profile-body .comment { color: var(--text-muted); font-style: italic; }
+    .profile-body .key { color: var(--neon); }
+    .profile-body .str { color: var(--accent-strong); }
+    .profile-body .bool { color: var(--info); }
+    .profile-body .section-hdr { color: var(--warning); }
+
+    /* === COMPARISON === */
+    .compare-wrap { max-width: 720px; margin: 0 auto; }
+    .compare-table { width: 100%; border-collapse: collapse; font-size: 0.86rem; }
+    .compare-table th, .compare-table td { padding: 14px 20px; text-align: left; border-bottom: 1px solid var(--border); }
+    .compare-table th { font-family: var(--font-mono); font-size: 0.64rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.14em; color: var(--text-muted); padding-bottom: 10px; border-bottom: 1px solid var(--border-bright); }
+    .compare-table th:first-child { width: 35%; }
+    .compare-table td { color: var(--text-dim); }
+    .compare-table tr:hover td { color: var(--text); background: var(--surface); }
+    .compare-table td:first-child { font-family: var(--font-mono); font-size: 0.78rem; color: var(--neon); }
+    .compare-table code { font-family: var(--font-mono); font-size: 0.8em; color: var(--neon); background: var(--accent-deep); padding: 1px 4px; border-radius: 3px; }
+
+    /* === FAQ === */
+    .faq-wrap { max-width: 720px; margin: 0 auto; }
+    .faq-item { border-bottom: 1px solid var(--border); padding: 20px 0; }
+    .faq-item summary { font-family: var(--font-mono); font-size: 0.88rem; color: var(--text); cursor: pointer; list-style: none; display: flex; align-items: center; gap: 10px; transition: color var(--transition); }
+    .faq-item summary::before { content: '▶'; font-size: 0.6rem; color: var(--neon); transition: transform var(--transition); }
+    .faq-item[open] summary::before { transform: rotate(90deg); }
+    .faq-item summary:hover { color: var(--neon); }
+    .faq-item .faq-answer { padding-top: 14px; font-size: 0.85rem; color: var(--text-dim); line-height: 1.7; }
+    .faq-item .faq-answer code { font-family: var(--font-mono); font-size: 0.82em; color: var(--neon); background: var(--accent-deep); padding: 1px 5px; border-radius: 3px; }
+
+    /* === CTA === */
+    .cta { padding: 110px 0; text-align: center; position: relative; overflow: hidden; }
+    .cta::before { content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 420px; height: 1px; background: linear-gradient(90deg, transparent, var(--neon), transparent); }
+    .cta-glow { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 700px; height: 400px; background: radial-gradient(ellipse, var(--accent-glow), transparent 70%); filter: blur(60px); opacity: 0.25; pointer-events: none; }
+    .cta h2 { font-family: var(--font-mono); font-size: clamp(1.7rem, 3.6vw, 2.4rem); font-weight: 500; color: var(--text); margin-bottom: 16px; letter-spacing: -0.02em; }
+    .cta h2 em { font-family: var(--font-serif); font-style: italic; color: var(--neon); font-weight: 400; }
+    .cta p { color: var(--text-dim); margin-bottom: 36px; max-width: 540px; margin-left: auto; margin-right: auto; line-height: 1.7; }
+    .cta-note { margin-top: 18px; font-size: 0.8rem; color: var(--text-muted); position: relative; z-index: 1; }
+    .cta-note a { color: var(--neon); text-decoration: none; }
+    .cta-note a:hover { text-decoration: underline; }
+
+    /* === FOOTER === */
+    footer { border-top: 1px solid var(--border); padding: 48px 0 60px; text-align: center; position: relative; }
+    .footer-wordmark { font-family: var(--font-mono); font-weight: 700; font-size: clamp(3rem, 12vw, 9rem); letter-spacing: -0.04em; color: transparent; -webkit-text-stroke: 1px rgba(141,184,78,0.1); line-height: 1; margin-bottom: 30px; user-select: none; }
+    footer p { color: var(--text-muted); font-size: 0.8rem; }
+    footer a { color: var(--neon); text-decoration: none; margin: 0 10px; transition: color var(--transition); font-family: var(--font-mono); font-size: 0.76rem; }
+    footer a:hover { color: var(--accent-strong); }
+
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border-bright); border-radius: 4px; border: 2px solid var(--bg); }
+    ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+    *:focus-visible { outline: 2px solid var(--neon); outline-offset: 2px; }
+
+    @media (max-width: 768px) {
+      :root { --frame: 8px; }
+      .container { padding: 0 18px; }
+      .hero { padding: 50px 0 50px; }
+      .section { padding: 70px 0; }
+      .cap-grid { grid-template-columns: 1fr; }
+      nav a:not(.primary) { display: none; }
+      .code-block { font-size: 0.76rem; padding: 16px 18px; }
+      .terminal-body { padding: 14px 16px; font-size: 0.68rem; min-height: 420px; max-height: 420px; line-height: 1.7; }
+      .ghost-word { font-size: clamp(4rem, 24vw, 8rem); }
+      .cli-step { flex-direction: column; gap: 6px; font-size: 0.8rem; }
+      .compare-table { font-size: 0.76rem; }
+      .compare-table th, .compare-table td { padding: 10px 12px; }
+    }
+  </style>
+</head>
+<body>
+
+<canvas id="matrix-rain" aria-hidden="true"></canvas>
+<div class="scanlines" aria-hidden="true"></div>
+<div class="noise" aria-hidden="true"></div>
+<div class="vignette" aria-hidden="true"></div>
+<div class="vp-frame" aria-hidden="true"><span class="vp-c-tr"></span><span class="vp-c-bl"></span></div>
+
+<header>
+  <div class="container">
+    <a href="/" class="logo">
+      <span class="dot"></span>
+      <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <rect width="32" height="32" rx="6" fill="currentColor"/>
+        <path d="M8 11h16M8 16h12M8 21h8" stroke="#040706" stroke-width="2.5" stroke-linecap="round"/>
+      </svg>
+      AgenticBox
+    </a>
+    <nav>
+      <a href="#capabilities">Capabilities</a>
+      <a href="#quickstart">Quick Start</a>
+      <a href="#agent-profile">Agent Profile</a>
+      <a href="#faq">FAQ</a>
+      <a href="/start">For Business</a>
+      <a href="https://github.com/morpheus-sh/agenticbox" target="_blank" rel="noopener" class="primary">★ Star</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ============ HERO ============ -->
+<section class="hero" id="top">
+  <div class="hero-glow" aria-hidden="true"></div>
+  <div class="ghost-word" aria-hidden="true">SECURITY</div>
+  <div class="container">
+    <div class="hero-headline">
+      <span class="hero-tag">Available Now — Open Source</span>
+      <h1>Sandboxed malware analysis & agent red-teaming — <em>built in</em></h1>
+      <p class="hero-sub">// detonate suspicious code in bounded containers · every fs access, network call, and credential read caught in real-time · full audit trail for forensic documentation</p>
+    </div>
+
+    <!-- Detonation terminal demo -->
+    <div class="terminal-demo-wrap">
+      <div class="terminal-demo">
+        <div class="terminal-header">
+          <div class="terminal-dots"><div class="terminal-dot"></div><div class="terminal-dot"></div><div class="terminal-dot"></div></div>
+          <div class="terminal-title">agenticbox run security-analyst — malware analysis session</div>
+        </div>
+        <div class="terminal-body" id="detonateLog"></div>
+      </div>
+      <p style="text-align:center;font-family:var(--font-mono);font-size:0.65rem;color:var(--text-muted);margin-top:8px;opacity:0.6">Real enforcement · Real boundaries · <code style="color:var(--neon)">agenticbox run security-analyst</code></p>
+    </div>
+
+    <!-- Install commands -->
+    <div class="hero-install">
+      <div class="install-commands">
+        <div class="install-tabs">
+          <button class="install-tab active" data-os="unix">macOS / Linux</button>
+          <button class="install-tab" data-os="windows">Windows</button>
+        </div>
+        <div class="code-block install-cmd" data-os="unix">
+          <span class="comment"># Install AgenticBox + security-analyst profile + configure LLM</span><br>
+          <span class="prompt">$ </span><span class="command">curl -fsSL https://agenticbox.co/install.sh</span> <span class="arg">| bash -s -- security-analyst</span><br>
+          <span class="comment"># Run</span><br>
+          <span class="prompt">$ </span><span class="command">agenticbox run security-analyst</span>
+          <button class="copy-btn" onclick="copyInstall(this)">copy</button>
+        </div>
+        <div class="code-block install-cmd" data-os="windows" style="display:none">
+          <span class="comment"># Install AgenticBox + security-analyst profile + configure LLM</span><br>
+          <span class="prompt">PS&gt; </span><span class="command">irm https://agenticbox.co/install.ps1</span> <span class="arg">| iex</span><br>
+          <span class="prompt">PS&gt; </span><span class="command">agenticbox run security-analyst</span>
+          <button class="copy-btn" onclick="copyInstall(this)">copy</button>
+        </div>
+      </div>
+      <p class="hero-meta">
+        <a href="https://github.com/morpheus-sh/agenticbox" target="_blank" rel="noopener">github.com/morpheus-sh/agenticbox</a> &middot; Rust-native &middot; Local-first &middot; MIT OR Apache-2.0
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CAPABILITIES ============ -->
+<section id="capabilities" class="section">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag">// what you get today</span>
+      <h2 class="section-title">Security research <em>capabilities</em></h2>
+      <p class="section-sub">Every capability ships today. No roadmap promises — these are real, working features you can use right now.</p>
+    </div>
+    <div class="cap-grid">
+      <!-- Malware Detonation -->
+      <article class="cap-card">
+        <div class="card-head">
+          <span class="num">[01]</span>
+          <span class="feature-status shipped">Shipped</span>
+        </div>
+        <h3>Malware Detonation</h3>
+        <p>Drop suspicious binaries or scripts into a bounded container. Every action is caught or allowed in real-time by the permission engine. Offline by default — no C2 callbacks during analysis.</p>
+        <div class="mock-term">
+<span class="prompt">$</span> agenticbox run security-analyst <span class="flag">--network</span> offline<br>
+<span class="info">[sandbox]</span> pulling ubuntu:24.04... <span class="ok">done</span><br>
+<span class="ok">[sandbox]</span> container <span class="key">f3a2c1</span> created<br>
+<span class="dim">[agent]</span> executing sample.sh...<br>
+<span class="ok">ALLOWED</span>  exec /workspace/sample.sh<br>
+<span class="ok">ALLOWED</span>  fs.write /workspace/output/<br>
+<span class="blocked">BLOCKED</span>  net.outbound — network is offline<br>
+<span class="blocked">BLOCKED</span>  fs.read /etc/shadow — protected path
+        </div>
+      </article>
+
+      <!-- Credential Exfil Detection -->
+      <article class="cap-card">
+        <div class="card-head">
+          <span class="num">[02]</span>
+          <span class="feature-status shipped">Shipped</span>
+        </div>
+        <h3>Credential Exfiltration Detection</h3>
+        <p>FsGuard canonicalizes all paths and blocks access to SSH keys, AWS credentials, environment files. Symlink-based escapes and <code style="font-family:var(--font-mono);color:var(--neon);">../</code> traversal are prevented. Every blocked attempt is logged.</p>
+        <div class="mock-term">
+<span class="prompt">&gt;</span> resolve <span class="str">"/data/../etc/passwd"</span><br>
+<span class="dim">canonicalize →</span> <span class="str">/etc/passwd</span><br>
+<span class="blocked">DENIED</span> root not in allowed<br>
+<span class="prompt">&gt;</span> resolve <span class="str">"~/.ssh/id_rsa"</span><br>
+<span class="blocked">DENIED</span> protected: SSH credentials<br>
+<span class="ok">roots:</span> /workspace /tmp/agent
+        </div>
+      </article>
+
+      <!-- C2 Observation -->
+      <article class="cap-card">
+        <div class="card-head">
+          <span class="num">[03]</span>
+          <span class="feature-status shipped">Shipped</span>
+        </div>
+        <h3>C2 Observation Without Reach</h3>
+        <p>Switch to allowlist mode to let the sample reach specific domains — C2 endpoints, malware databases — while blocking everything else. Observe what it <em>tries</em> to contact without giving it real network access.</p>
+        <div class="mock-term">
+<span class="prompt">$</span> agenticbox run security-analyst \<br>
+&nbsp;&nbsp;<span class="flag">--network</span> allowlist \<br>
+&nbsp;&nbsp;<span class="flag">--domains</span> <span class="str">"malware-bazaar.test"</span><br>
+<span class="info">[net]</span> policy: allowlist<br>
+<span class="ok">ALLOWED</span>  api.malware-bazaar.test<br>
+<span class="blocked">BLOCKED</span>  evil-c2.example.com<br>
+<span class="dim">logged for IOC extraction</span>
+        </div>
+      </article>
+
+      <!-- Agent Red-Teaming -->
+      <article class="cap-card">
+        <div class="card-head">
+          <span class="num">[04]</span>
+          <span class="feature-status shipped">Shipped</span>
+        </div>
+        <h3>AI Agent Red-Teaming</h3>
+        <p>Run any AI agent inside a bounded container with scoped permissions. Test whether it can escape its boundaries — while the blast radius stays contained. Every tool call, file access, and network request is auditable.</p>
+        <div class="mock-term">
+<span class="prompt">$</span> agenticbox run hermes <span class="flag">--fs</span> readonly<br>
+<span class="dim">[agent]</span> model=claude-sonnet-4<br>
+<span class="ok">ALLOWED</span>  read_file /workspace/target.py<br>
+<span class="ok">ALLOWED</span>  exec nmap --version<br>
+<span class="blocked">BLOCKED</span>  write_file /etc/cron.d/persist<br>
+<span class="blocked">BLOCKED</span>  net → raw TCP socket<br>
+<span class="dim">blast radius: contained</span>
+        </div>
+      </article>
+
+      <!-- Full Audit Trail -->
+      <article class="cap-card">
+        <div class="card-head">
+          <span class="num">[05]</span>
+          <span class="feature-status shipped">Shipped</span>
+        </div>
+        <h3>Full Audit Trail</h3>
+        <p>Every action — allowed or blocked — is logged with timestamp, action type, target, and policy decision. Exportable for incident response, compliance documentation, and forensic analysis.</p>
+        <div class="mock-term">
+<span class="dim">audit.log — session 0x7e2a</span><br>
+<span class="ok">14:31:02</span> <span class="ok">ALLOW</span> exec sample.sh<br>
+<span class="ok">14:31:03</span> <span class="ok">ALLOW</span> fs.write /workspace/out<br>
+<span class="blocked">14:31:04</span> <span class="blocked">BLOCK</span> net.outbound (offline)<br>
+<span class="blocked">14:31:05</span> <span class="blocked">BLOCK</span> fs.read ~/.ssh/id_rsa<br>
+<span class="dim">exportable · tamper-proof</span>
+        </div>
+      </article>
+
+      <!-- RE Toolchain -->
+      <article class="cap-card">
+        <div class="card-head">
+          <span class="num">[06]</span>
+          <span class="feature-status shipped">Shipped</span>
+        </div>
+        <h3>RE Toolchain Pre-Installed</h3>
+        <p>The security-analyst profile ships with radare2, binwalk, YARA, capstone, pefile, ltrace, strace, nmap, and tcpdump. Fully customizable via TOML — add any tool.</p>
+        <div class="mock-term">
+<span class="prompt">$</span> radare2 /workspace/sample.bin<br>
+<span class="ok">r2</span> 5.9.0 — ready<br>
+<span class="prompt">$</span> yara scan /workspace/<br>
+<span class="ok">yara</span> 4.5.0 — rules loaded<br>
+<span class="prompt">$</span> binwalk /workspace/firmware.img<br>
+<span class="ok">binwalk</span> 2.4.0 — extracting...
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ REAL OUTPUT ============ -->
+<section id="analysis-output" class="section" style="background: var(--bg-2);">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag">// real output, not a mockup</span>
+      <h2 class="section-title">The <em>actual report</em></h2>
+      <p class="section-sub">This is the real analysis_report.txt written by the Qwen 3.6 35B model during a live AgenticBox run. Zero editing. The input was a suspicious shell script — the output is a professional threat assessment.</p>
+    </div>
+    <div style="max-width: 760px; margin: 0 auto;">
+      <div class="profile-block">
+        <div class="profile-header">
+          <div class="terminal-dots"><div class="terminal-dot"></div><div class="terminal-dot"></div><div class="terminal-dot"></div></div>
+          <div class="terminal-title">analysis_report.txt — written by AI during live AgenticBox session</div>
+        </div>
+        <div class="profile-body" style="font-size: 0.78rem; line-height: 1.9; white-space: pre-wrap;"><span class="comment"># Forensic Analysis Report — sample_optimize_cache.sh</span>
+<span class="comment">## CI/CD Pipeline Compromise — build-agent-04</span>
+
+<span class="section-hdr">### 1. THREAT CLASSIFICATION: MALICIOUS</span>
+
+The script masquerades as a cache optimization utility but exhibits
+multiple indicators of data exfiltration and persistence establishment.
+It performs credential theft, SSH key harvesting, environment variable
+scraping, payload download, and installs persistence via both cron and
+systemd — all while cleaning up its traces.
+
+<span class="section-hdr">### 2. INDICATORS OF COMPROMISE (IOCs)</span>
+
+<span class="key">Domains:</span>
+  <span class="str">metrics.cache-opt.com:8443</span>  — C2 exfiltration endpoint
+  <span class="str">cdn.optimized-cache.io</span>      — Payload download URL
+
+<span class="key">File Paths:</span>
+  <span class="str">$HOME/.cache/optimize/update.sh</span>           — Downloaded payload
+  <span class="str">/etc/systemd/system/cache-opt.service</span>      — Persistence service
+
+<span class="key">Ports:</span>
+  <span class="str">TCP 8443</span> — HTTPS exfiltration traffic
+
+<span class="section-hdr">### 3. CREDENTIAL TARGETS</span>
+
+<span class="key">~/.aws/credentials</span>  → base64 → POST /api/metrics
+<span class="key">~/.ssh/id_rsa</span>       → base64 → POST /api/keys
+<span class="key">Env vars (TOKEN|KEY|SECRET|PASS|API)</span> → POST /api/env
+
+<span class="comment">Credential Status: Files were BLOCKED by FsGuard during analysis.
+  If they existed on build-agent-04 during execution, they were exfiltrated.</span>
+
+<span class="section-hdr">### 4. PERSISTENCE MECHANISMS</span>
+
+  Cron: <span class="str">*/15 * * * * $CACHE_DIR/update.sh --silent</span>
+  Systemd: <span class="str">cache-opt.service</span> (Restart=always, multi-user.target)
+
+<span class="section-hdr">### 5. MITIGATIONS</span>
+
+  1. Block <span class="str">metrics.cache-opt.com:8443</span> at firewall
+  2. Rotate all AWS keys + SSH keys on build-agent-04
+  3. Remove cron + systemd persistence
+  4. Delete <span class="str">~/.cache/optimize/update.sh</span>
+  5. Rebuild agent from clean image
+
+<span class="comment">— Generated by Qwen 3.6 35B via AgenticBox builtin agent-loop</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ QUICK START ============ -->
+<section id="quickstart" class="section">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag">// four commands to first detonation</span>
+      <h2 class="section-title">Quick <em>start</em></h2>
+      <p class="section-sub">From zero to sandboxed analysis in under 60 seconds.</p>
+    </div>
+    <div class="cli-steps">
+      <div class="cli-step">
+        <span class="step-prompt">$</span>
+        <span class="step-cmd">curl -fsSL https://agenticbox.co/install.sh <span class="arg">| bash -s -- security-analyst</span></span>
+        <span class="step-comment"># Install + profile + LLM config — all in one</span>
+      </div>
+      <div class="cli-step">
+        <span class="step-prompt">$</span>
+        <span class="step-cmd">agenticbox <span class="arg">run</span> <span class="arg">security-analyst</span></span>
+        <span class="step-comment"># Analyze — offline by default, full enforcement</span>
+      </div>
+      <div class="cli-step">
+        <span class="step-prompt">$</span>
+        <span class="step-cmd">cat /tmp/agenticbox-builtin-workspace/analysis_report.txt</span>
+        <span class="step-comment"># Read the AI-generated analysis report</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ AGENT PROFILE ============ -->
+<section id="agent-profile" class="section">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag">// shareable, forkable, reproducible</span>
+      <h2 class="section-title">The <em>security-analyst</em> profile</h2>
+      <p class="section-sub">A TOML manifest. Fork it, add tools, change permissions. Share it with your team. Reproduce any analysis environment in seconds.</p>
+    </div>
+    <div class="profile-wrap">
+      <div class="profile-block">
+        <div class="profile-header">
+          <div class="terminal-dots"><div class="terminal-dot"></div><div class="terminal-dot"></div><div class="terminal-dot"></div></div>
+          <div class="terminal-title">~/.agenticbox/agents/security-analyst/agent.toml</div>
+        </div>
+        <div class="profile-body"><span class="comment"># Security Analyst — sandboxed malware analysis & threat research</span>
+
+name = <span class="str">"security-analyst"</span>
+description = <span class="str">"Security Analyst — malware analysis, RE, threat research"</span>
+
+<span class="section-hdr">[model]</span>
+provider = <span class="str">"local"</span>           <span class="comment"># resolved via `agenticbox setup`</span>
+model = <span class="str">""</span>                 <span class="comment"># empty = use config from setup</span>
+
+<span class="section-hdr">[permissions]</span>
+terminal = <span class="bool">true</span>
+filesystem = <span class="str">"readwrite"</span>
+network = <span class="str">"offline"</span>         <span class="comment"># no C2 callbacks during analysis</span>
+
+<span class="section-hdr">[execution]</span>
+mode = <span class="str">"builtin"</span>            <span class="comment"># agent-loop crate, no Docker needed</span>
+max_iterations = <span class="bool">20</span>
+
+<span class="section-hdr">[prompt]</span>
+system = <span class="str">"You are an expert security analyst..."</span>
+task = <span class="str">"Analyze the files in this workspace..."</span>
+
+<span class="section-hdr">[workspace]</span>
+files = [
+  { source = <span class="str">"samples/sample_optimize_cache.sh"</span>, dest = <span class="str">"sample.sh"</span> },
+  { source = <span class="str">"samples/incident_report.txt"</span>, dest = <span class="str">"incident_report.txt"</span> }
+]</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ COMPARISON ============ -->
+<section id="comparison" class="section">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag">// why not just docker run?</span>
+      <h2 class="section-title">AgenticBox vs <em>vanilla Docker</em></h2>
+    </div>
+    <div class="compare-wrap">
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>Vanilla Docker</th>
+            <th>AgenticBox</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>docker run</code> — all or nothing</td>
+            <td><code>agenticbox run</code> — scoped per action</td>
+          </tr>
+          <tr>
+            <td>No filesystem governance</td>
+            <td>FsGuard: path canonicalization, escape prevention, protected paths</td>
+          </tr>
+          <tr>
+            <td>Network is on or off</td>
+            <td>Allowlist with per-domain enforcement</td>
+          </tr>
+          <tr>
+            <td>No audit trail — check logs manually</td>
+            <td>Every action logged with policy decision, timestamp, target</td>
+          </tr>
+          <tr>
+            <td>Manual Dockerfile per analysis env</td>
+            <td>TOML profile — shareable, forkable, reproducible</td>
+          </tr>
+          <tr>
+            <td>No credential protection</td>
+            <td>SSH keys, AWS creds, .env blocked by default</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FAQ ============ -->
+<section id="faq" class="section">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag">// questions</span>
+      <h2 class="section-title"><em>FAQ</em></h2>
+    </div>
+    <div class="faq-wrap">
+      <details class="faq-item">
+        <summary>Can AgenticBox detonate real malware samples?</summary>
+        <div class="faq-answer">Yes. AgenticBox runs suspicious binaries and scripts in isolated Docker or Podman containers. Every filesystem access, network call, and credential read is caught or allowed in real-time by the permission engine. The security-analyst profile defaults to <code>--network offline</code> to prevent C2 callbacks during analysis.</div>
+      </details>
+      <details class="faq-item">
+        <summary>How does AgenticBox detect credential exfiltration?</summary>
+        <div class="faq-answer">The FsGuard crate canonicalizes all filesystem paths and blocks access to protected locations including SSH keys (<code>~/.ssh</code>), environment files (<code>.env</code>), and AWS credentials. Symlink-based escapes and <code>../</code> traversal attacks are also prevented. Every blocked attempt is logged in the audit trail.</div>
+      </details>
+      <details class="faq-item">
+        <summary>Can I use AgenticBox to red-team AI agents?</summary>
+        <div class="faq-answer">Yes. Run any AI agent inside a bounded container with scoped permissions. The agent operates within enforced boundaries — terminal, filesystem, network, browser — and every action is auditable. This lets you test whether an agent can escape its boundaries while keeping the blast radius contained.</div>
+      </details>
+      <details class="faq-item">
+        <summary>What reverse engineering tools are included?</summary>
+        <div class="faq-answer">The security-analyst agent profile includes radare2, binwalk, YARA, capstone, pefile, ltrace, strace, nmap, and tcpdump. The TOML profile is fully customizable — add any tool via the <code>[image].setup</code> section.</div>
+      </details>
+      <details class="faq-item">
+        <summary>Is AgenticBox free for security researchers?</summary>
+        <div class="faq-answer">Yes. AgenticBox is open source under MIT OR Apache-2.0. Self-host it for free. No signup, no waitlist, no vendor lock-in.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CTA ============ -->
+<section class="cta" id="get-started">
+  <div class="cta-glow" aria-hidden="true"></div>
+  <div class="container">
+    <h2>Star it. Fork it. <em>Detonate with it.</em></h2>
+    <p>AgenticBox is fully open source. No signup, no waitlist — clone, install the security-analyst profile, and start analyzing.</p>
+    <div class="btn-group">
+      <a href="https://github.com/morpheus-sh/agenticbox" target="_blank" rel="noopener" class="btn btn-primary">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
+        Star on GitHub
+      </a>
+      <a href="#quickstart" class="btn btn-secondary" onclick="document.querySelector('.install-commands').scrollIntoView({behavior:'smooth'});return false;">
+        Install now
+      </a>
+    </div>
+    <p class="cta-note">
+      <a href="https://github.com/morpheus-sh/agenticbox/blob/main/docs/agents.md" target="_blank" rel="noopener">Read the docs</a> &middot;
+      <a href="/">AgenticBox home</a> &middot;
+      <a href="/start">For Business</a>
+    </p>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="footer-wordmark" aria-hidden="true">AGENTICBOX</div>
+    <p>&copy; 2025 AgenticBox. Deploy AI agents into production, safely.</p>
+    <p style="margin-top:12px;">
+      <a href="/">Home</a> &middot;
+      <a href="/start">For Business</a> &middot;
+      <a href="https://github.com/morpheus-sh/agenticbox" target="_blank" rel="noopener">GitHub</a> &middot;
+      <a href="mailto:hello@agenticbox.co">Email</a> &middot;
+      <a href="https://twitter.com/agenticbox" target="_blank" rel="noopener">Twitter</a> &middot;
+      <a href="https://github.com/morpheus-sh/agenticbox/blob/main/docs/agents.md" target="_blank" rel="noopener" style="color: var(--text-muted);">Docs</a>
+    </p>
+  </div>
+</footer>
+
+<script>
+  // Detonation terminal demo — animated log
+  (function() {
+    const container = document.getElementById('detonateLog');
+    if (!container) return;
+
+    const lines = [
+      { t: 'header', text: 'AgenticBox — Security Analyst Session' },
+      { t: 'dim', text: '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━' },
+      { t: 'blank' },
+      { t: 'info', text: '[agent] model=', val: 'qwen3.6-35b (local)' },
+      { t: 'info', text: '[net] policy=', val: 'OFFLINE' },
+      { t: 'blank' },
+      { t: 'dim', text: '[agent] analyzing workspace files...' },
+      { t: 'blank' },
+      { t: 'ok', icon: '✓', action: 'read_file', target: 'sample_optimize_cache.sh', status: 'ALLOWED' },
+      { t: 'ok', icon: '✓', action: 'read_file', target: 'incident_report.txt', status: 'ALLOWED' },
+      { t: 'no', icon: '✗', action: 'read_file', target: '~/.aws/credentials', status: 'BLOCKED', reason: '→ FsGuard: path outside allowed roots' },
+      { t: 'no', icon: '✗', action: 'read_file', target: '~/.ssh/id_rsa', status: 'BLOCKED', reason: '→ FsGuard: path outside allowed roots' },
+      { t: 'ok', icon: '✓', action: 'exec', target: '2 shell commands', status: 'ALLOWED' },
+      { t: 'no', icon: '✗', action: 'http_request', target: 'metrics.cache-opt.com:8443', status: 'BLOCKED', reason: '→ network: not in allowlist (offline)' },
+      { t: 'no', icon: '✗', action: 'http_request', target: 'cdn.optimized-cache.io', status: 'BLOCKED', reason: '→ network: not in allowlist (offline)' },
+      { t: 'ok', icon: '✓', action: 'write_file', target: 'analysis_report.txt', status: 'ALLOWED' },
+      { t: 'ok', icon: '✓', action: 'read_file', target: 'analysis_report.txt', status: 'ALLOWED' },
+      { t: 'blank' },
+      { t: 'dim', text: '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━' },
+      { t: 'summary', allowed: 6, blocked: 4 },
+      { t: 'footer', text: 'Real LLM. Real enforcement. Report written. 0 credentials exfiltrated.' }
+    ];
+
+    const isReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const baseDelay = isReduced ? 0 : 1200;
+
+    function pad(str, len) {
+      return str + ' '.repeat(Math.max(0, len - str.length));
+    }
+
+    function renderLine(line) {
+      if (line.t === 'blank') return '<div style="height:0.6em"></div>';
+      if (line.t === 'header') return '<div style="color:#b6ff3c;font-weight:700">  ' + line.text + '</div>';
+      if (line.t === 'dim') return '<div style="color:#3a4a2a">  ' + line.text + '</div>';
+      if (line.t === 'info') return '<div>  <span style="color:#4ad7ff">' + line.text + '</span> <span style="color:#8db84e">' + (line.val||'') + '</span></div>';
+      if (line.t === 'ok') return '<div style="color:#8db84e">  ' + line.icon + ' ' + pad(line.action, 13) + pad(line.target, 47) + line.status + '</div>';
+      if (line.t === 'no') {
+        let html = '<div style="color:#ff4d6d">  ' + line.icon + ' ' + pad(line.action, 13) + pad(line.target, 47) + line.status + '</div>';
+        html += '<div style="color:#4a5a3a">    ' + line.reason + '</div>';
+        return html;
+      }
+      if (line.t === 'summary') return '<div>  <span style="color:#8db84e;font-weight:700">✓ ' + line.allowed + ' allowed</span>   <span style="color:#ff4d6d;font-weight:700">✗ ' + line.blocked + ' blocked</span></div>';
+      if (line.t === 'footer') return '<div style="color:#3a4a2a;font-style:italic">  ' + line.text + '</div>';
+      return '';
+    }
+
+    let idx = 0;
+    container.style.cssText = 'padding:16px 20px;font-family:var(--font-mono);font-size:0.8rem;line-height:1.9;';
+
+    function next() {
+      if (idx >= lines.length) {
+        setTimeout(() => { container.innerHTML = ''; idx = 0; next(); }, 7000);
+        return;
+      }
+      const line = lines[idx];
+      container.innerHTML += renderLine(line);
+      idx++;
+      container.scrollTop = container.scrollHeight;
+      // Blocked lines render an extra reason line — give more time to read
+      const lineDelay = line.t === 'no' ? baseDelay + 800 : line.t === 'blank' ? baseDelay / 2 : baseDelay;
+      setTimeout(next, lineDelay);
+    }
+    setTimeout(next, 800); // small pause before demo starts
+  })();
+
+  // Smooth anchor scroll
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function(e) {
+      const target = document.querySelector(this.getAttribute('href'));
+      if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth', block: 'start' }); history.pushState(null, '', this.getAttribute('href')); }
+    });
+  });
+
+  // Install tabs
+  document.querySelectorAll('.install-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      const os = tab.dataset.os;
+      document.querySelectorAll('.install-tab').forEach(t => t.classList.toggle('active', t === tab));
+      document.querySelectorAll('.install-cmd').forEach(c => c.style.display = c.dataset.os === os ? '' : 'none');
+    });
+  });
+
+  // Copy install command
+  function copyInstall(btn) {
+    const block = btn.closest('.code-block');
+    const text = block.dataset.os === 'unix'
+      ? 'curl -fsSL https://agenticbox.co/install.sh | bash -s -- security-analyst\nagenticbox run security-analyst'
+      : 'irm https://agenticbox.co/install.ps1 | iex\nagenticbox run security-analyst';
+    navigator.clipboard.writeText(text).then(() => {
+      btn.textContent = 'copied!';
+      setTimeout(() => btn.textContent = 'copy', 1500);
+    });
+  }
+
+  // Matrix rain
+  (function() {
+    const canvas = document.getElementById('matrix-rain');
+    const ctx = canvas.getContext('2d');
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let cols, drops, fontSize, width, height;
+    const chars = '01ﾊﾐﾋｰｳｼﾅﾓﾆｻﾜﾂｵﾘｱﾎﾃﾏｹﾒｴｶｷﾑﾕﾗｾﾈｽﾀﾇﾍｦｲｸｺｿﾁﾄﾉﾌﾔﾖﾙﾚﾛﾝ#@%&'.split('');
+
+    function resize() {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+      fontSize = 14;
+      cols = Math.floor(width / fontSize);
+      drops = new Array(cols).fill(0).map(() => Math.random() * -50);
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    let last = 0;
+    function draw(ts) {
+      if (reduced) return;
+      if (ts - last < 60) { requestAnimationFrame(draw); return; }
+      last = ts;
+      ctx.fillStyle = 'rgba(4,7,6,0.08)';
+      ctx.fillRect(0, 0, width, height);
+      ctx.font = fontSize + "px 'JetBrains Mono', monospace";
+      for (let i = 0; i < cols; i++) {
+        const ch = chars[Math.floor(Math.random() * chars.length)];
+        const x = i * fontSize;
+        const y = drops[i] * fontSize;
+        ctx.fillStyle = 'rgba(141,184,78,0.85)';
+        ctx.fillText(ch, x, y);
+        if (y > height && Math.random() > 0.975) drops[i] = 0;
+        drops[i]++;
+      }
+      requestAnimationFrame(draw);
+    }
+    if (!reduced) requestAnimationFrame(draw);
+  })();
+</script>
+</body>
+</html>
