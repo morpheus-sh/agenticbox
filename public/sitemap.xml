@@ -16,12 +16,12 @@
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://agenticbox.co/blog/</loc>
+    <loc>https://agenticbox.co/blog</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://agenticbox.co/blog/agents-are-smart-enough-deployment-isnt/</loc>
+    <loc>https://agenticbox.co/blog/agents-are-smart-enough-deployment-isnt</loc>
     <lastmod>2026-06-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
