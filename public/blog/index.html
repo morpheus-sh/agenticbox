@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Blog — AgenticBox</title>
+  <meta name="description" content="The AgenticBox blog — thoughts on AI agent deployment, governance, and production safety." />
+  <link rel="canonical" href="https://agenticbox.co/blog/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Blog — AgenticBox" />
+  <meta property="og:description" content="Thoughts on AI agent deployment, governance, and production safety." />
+  <meta property="og:url" content="https://agenticbox.co/blog/" />
+  <meta property="og:site_name" content="AgenticBox" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="@agenticbox" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #040706;
+      --bg-elevated: #0a0f0d;
+      --fg: #e8f0ed;
+      --fg-muted: #7a8a85;
+      --accent: #00ff9f;
+      --accent-dim: #00cc7f;
+      --border: #1a2520;
+      --font-mono: 'JetBrains Mono', monospace;
+      --font-sans: 'Space Grotesk', sans-serif;
+      --font-serif: 'Instrument Serif', serif;
+    }
+    body {
+      background: var(--bg);
+      color: var(--fg);
+      font-family: var(--font-sans);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+    .container { max-width: 760px; margin: 0 auto; padding: 0 24px; }
+    header {
+      padding: 32px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    header a {
+      color: var(--accent);
+      text-decoration: none;
+      font-family: var(--font-mono);
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+    header a:hover { color: var(--fg); }
+    .nav { display: flex; align-items: center; gap: 24px; }
+    .brand { font-family: var(--font-mono); font-weight: 700; font-size: 1.1rem; color: var(--fg); }
+    .brand span { color: var(--accent); }
+    main { padding: 64px 0; }
+    h1 {
+      font-size: 2rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+      letter-spacing: -0.02em;
+    }
+    .subtitle {
+      color: var(--fg-muted);
+      font-size: 1rem;
+      margin-bottom: 48px;
+    }
+    .post-list { list-style: none; }
+    .post-item {
+      padding: 28px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .post-item:last-child { border-bottom: none; }
+    .post-date {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: var(--fg-muted);
+      margin-bottom: 8px;
+    }
+    .post-title {
+      font-size: 1.35rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    .post-title a {
+      color: var(--fg);
+      text-decoration: none;
+    }
+    .post-title a:hover { color: var(--accent); }
+    .post-excerpt {
+      color: var(--fg-muted);
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+    footer {
+      padding: 32px 0;
+      border-top: 1px solid var(--border);
+      color: var(--fg-muted);
+      font-size: 0.85rem;
+      font-family: var(--font-mono);
+    }
+    footer a { color: var(--accent); text-decoration: none; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="nav">
+        <a href="/" class="brand"><span>█</span> AgenticBox</a>
+        <a href="/blog/">Blog</a>
+        <a href="https://github.com/morpheus-sh/agenticbox">GitHub</a>
+      </div>
+    </header>
+    <main>
+      <h1>Blog</h1>
+      <p class="subtitle">Thoughts on AI agent deployment, governance, and production safety.</p>
+      <ul class="post-list">
+        <li class="post-item">
+          <div class="post-date">June 23, 2026</div>
+          <h2 class="post-title"><a href="/blog/agents-are-smart-enough-deployment-isnt/">Agents Are Smart Enough. Deployment Isn't.</a></h2>
+          <p class="post-excerpt">Why we built AgenticBox — the governance layer between "agent built" and "agent deployed in production." Every company wants agents that do real work. The agents are smart enough. The problem is deployment.</p>
+        </li>
+      </ul>
+    </main>
+    <footer>
+      <a href="/">agenticbox.co</a> — Deploy agents into production, safely.
+    </footer>
+  </div>
+</body>
+</html>
