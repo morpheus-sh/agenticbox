@@ -323,7 +323,7 @@ export PATH="/c/Program Files (x86)/Microsoft Visual Studio/2022/BuildTools/VC/T
 
 - **GitHub** — [github.com/morpheus-sh/agenticbox](https://github.com/morpheus-sh/agenticbox)
 - **Website** — [agenticbox.co](https://agenticbox.co)
-- **Twitter** — [@agenticbox](https://twitter.com/agenticbox)
+- **Discord** — [Join the community](https://discord.gg/nNb7PgdhW)
 
 ---
 

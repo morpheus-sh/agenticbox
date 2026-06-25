@@ -106,18 +106,6 @@ This is the thesis in miniature: **the agent can do real work — safely.**
 
 ---
 
-## Open edge, closed core
-
-AgenticBox is open-source at the edge and closed-source at the core.
-
-**Open**: CLI, agent specs, templates, SDKs. This is what developers evaluate, adopt, and build on. Transparency builds trust.
-
-**Closed**: Orchestration engine, governance enforcement, execution runtime. This is the proprietary infrastructure that creates the moat and enables scale.
-
-The boundary is simple: if it helps you trust and adopt AgenticBox, it's open. If it's the engine that makes it run, we keep it.
-
----
-
 ## What's next
 
 The security analyst is the first vertical — a distribution wedge into the security community. It validates the core thesis: bounded execution + scoped permissions + full audit.
@@ -126,7 +114,7 @@ The roadmap:
 
 1. **More vertical templates** — customer support (scoped access to customer data, bounded actions like "refund yes / delete no"), sales ops, IT ops, finance ops.
 2. **Two paths to the same engine** — full CLI control for developers (today), template-driven deployment for non-devs (tomorrow).
-3. **Agent identity** — agents get their own credentials, accounts, and digital identity. This is the moat that compounds silently.
+3. **Agent identity** — agents get their own credentials, accounts, and digital identity. Fully provisioned and revocable.
 
 Each vertical validates the infrastructure. Each vertical expands the market.
 
@@ -147,7 +135,7 @@ Watch the agent analyze a malicious script. Watch every permission decision happ
 Then imagine your support agent. Your ops agent. Your finance agent. All doing real work — safely.
 
 **Star us on GitHub:** [github.com/morpheus-sh/agenticbox](https://github.com/morpheus-sh/agenticbox)
-**Follow:** [@agenticbox](https://twitter.com/agenticbox)
+**Discord:** [Join the community](https://discord.gg/nNb7PgdhW)
 
 ---
 
