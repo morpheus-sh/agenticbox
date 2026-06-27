@@ -1,9 +1,11 @@
-use std::path::{Path, PathBuf};
+use std::path::{Component, Path, PathBuf};
 use thiserror::Error;
 use tracing::warn;
 
 #[derive(Debug, Clone)]
 pub struct FsGuard {
+    /// Allowed roots, lexically normalized (and canonicalized if they exist
+    /// on disk) at construction time so every `resolve()` compares like forms.
     pub allowed_roots: Vec<PathBuf>,
 }
 
@@ -17,26 +19,111 @@ pub enum FsGuardError {
 
 impl FsGuard {
     pub fn new(allowed_roots: Vec<PathBuf>) -> Self {
+        let allowed_roots = allowed_roots
+            .into_iter()
+            .map(|r| best_effort_canonical(&normalize(&r)))
+            .collect();
         Self { allowed_roots }
     }
 
+    /// Resolve `path` to a canonical form and verify it stays within an
+    /// allowed root.
+    ///
+    /// Two defences are layered:
+    ///   1. **Lexical normalization** resolves `.` and `..` *without touching
+    ///      the disk*, closing the prefix-matching traversal hole
+    ///      (`/workspace/../etc/passwd`) for paths that don't exist yet.
+    ///   2. **Canonicalization** of the deepest existing ancestor resolves
+    ///      symlinks, so a symlink that points outside a root is rejected.
     pub fn resolve(&self, path: &str) -> Result<PathBuf, FsGuardError> {
-        let path = Path::new(path);
-        if path.is_absolute() {
-            for root in &self.allowed_roots {
-                if path.starts_with(root) {
-                    return Ok(path.to_path_buf());
+        let raw = Path::new(path);
+        let candidate = if raw.is_absolute() {
+            raw.to_path_buf()
+        } else {
+            // Relative paths resolve against the first allowed root.
+            match self.allowed_roots.first() {
+                Some(root) => root.join(raw),
+                None => {
+                    warn!("Filesystem access denied (no allowed roots): {}", path);
+                    return Err(FsGuardError::Escaped(path.to_string()));
                 }
             }
-        } else {
-            if let Some(root) = self.allowed_roots.first() {
-                let resolved = root.join(path);
-                return Ok(resolved.canonicalize().unwrap_or(resolved));
+        };
+
+        let resolved = best_effort_canonical(&normalize(&candidate));
+
+        for root in &self.allowed_roots {
+            if resolved.starts_with(root) {
+                return Ok(resolved);
             }
         }
-        warn!("Filesystem access denied for path: {}", path.display());
-        Err(FsGuardError::Escaped(path.display().to_string()))
+        warn!("Filesystem access denied for path: {}", resolved.display());
+        Err(FsGuardError::Escaped(resolved.display().to_string()))
     }
+}
+
+/// Lexically resolve `.` and `..` components without touching the filesystem.
+/// Only `Normal` components are popped by `..` — prefixes and root dirs are
+/// never removed, so `..` at the root simply stays at the root.
+fn normalize(path: &Path) -> PathBuf {
+    let mut result = PathBuf::new();
+    for component in path.components() {
+        match component {
+            Component::ParentDir => {
+                if matches!(result.components().next_back(), Some(Component::Normal(_))) {
+                    result.pop();
+                }
+            }
+            Component::CurDir => {} // skip "."
+            other => result.push(other.as_os_str()),
+        }
+    }
+    result
+}
+
+/// Return the most-canonical form of `path` available. If the full path
+/// exists, canonicalize it entirely (resolves symlinks). Otherwise
+/// canonicalize the deepest *existing* ancestor and re-append the tail. If
+/// nothing exists, fall back to the (already normalized) input.
+///
+/// On Windows, `canonicalize` returns `\\?\`-prefixed verbatim paths. We
+/// strip that prefix so canonical and lexical forms compare consistently —
+/// otherwise a root canonicalized through its parent (`\\?\C:\workspace`)
+/// would never `starts_with` a non-existent candidate (`C:\workspace\...`).
+fn best_effort_canonical(path: &Path) -> PathBuf {
+    if path.is_absolute() {
+        if let Ok(c) = path.canonicalize() {
+            return strip_verbatim(c);
+        }
+        if let Some(parent) = path.parent() {
+            if let Ok(canon_parent) = parent.canonicalize() {
+                if let Some(name) = path.file_name() {
+                    return strip_verbatim(canon_parent).join(name);
+                }
+            }
+        }
+    }
+    path.to_path_buf()
+}
+
+/// Strip the Windows verbatim (`\\?\`) prefix so canonicalized paths compare
+/// equal to their lexical counterparts. No-op off Windows.
+#[cfg(windows)]
+fn strip_verbatim(path: PathBuf) -> PathBuf {
+    if let Some(s) = path.as_os_str().to_str() {
+        if let Some(rest) = s.strip_prefix(r"\\?\UNC\") {
+            return PathBuf::from(format!(r"\\{rest}"));
+        }
+        if let Some(rest) = s.strip_prefix(r"\\?\") {
+            return PathBuf::from(rest);
+        }
+    }
+    path
+}
+
+#[cfg(not(windows))]
+fn strip_verbatim(path: PathBuf) -> PathBuf {
+    path
 }
 
 #[cfg(test)]
@@ -154,22 +241,38 @@ mod tests {
 
     #[test]
     fn block_path_traversal_attempt() {
+        // FIXED: lexical normalization resolves `..` before the prefix check,
+        // so `/workspace/../etc/passwd` no longer matches the `/workspace`
+        // root and is correctly rejected.
         let g = guard();
         let ws = workspace();
-        // workspace/../etc/passwd starts with workspace syntactically
         let traversal = format!("{}/../etc/passwd", ws.display());
         let result = g.resolve(&traversal);
-        // Known limitation: prefix matching allows traversal
-        assert!(
-            result.is_ok(),
-            "path traversal is a known limitation of prefix matching"
-        );
+        assert!(result.is_err(), "path traversal must be blocked");
+    }
+
+    #[test]
+    fn block_multi_level_traversal() {
+        let g = guard();
+        let ws = workspace();
+        // three `..` escape two levels (a, b) plus the workspace root itself
+        let traversal = format!("{}/a/b/../../../etc/passwd", ws.display());
+        assert!(g.resolve(&traversal).is_err());
+    }
+
+    #[test]
+    fn block_dotdot_at_root_stays_in_root_check() {
+        // `..` past the root cannot escape it (no parent of root to match),
+        // so `/workspace/../workspace/file` normalizes back under the root.
+        let g = guard();
+        let ws = workspace();
+        let back = format!("{}/../workspace/file.rs", ws.display());
+        assert!(g.resolve(&back).is_ok());
     }
 
     #[test]
     fn block_system_path() {
         let g = guard();
-        // Use a path that is genuinely absolute on the current platform
         let ws = workspace();
         let sys_path = ws.with_file_name("procsys"); // sibling of workspace, outside roots
         assert!(g.resolve(sys_path.to_str().unwrap()).is_err());
@@ -185,6 +288,13 @@ mod tests {
         let resolved = result.unwrap();
         let ws = workspace();
         assert!(resolved.starts_with(&ws));
+    }
+
+    #[test]
+    fn block_relative_traversal() {
+        let g = guard();
+        // relative `..` escapes the first root
+        assert!(g.resolve("../../etc/passwd").is_err());
     }
 
     // ── Edge cases ─────────────────────────────────────────
@@ -214,5 +324,19 @@ mod tests {
         assert!(g.resolve(data.join("b").to_str().unwrap()).is_ok());
         assert!(g.resolve(app.join("c").to_str().unwrap()).is_ok());
         assert!(g.resolve(outside_root()).is_err());
+    }
+
+    // ── normalize() unit checks ────────────────────────────
+
+    #[test]
+    fn normalize_resolves_dotdot() {
+        let n = normalize(&PathBuf::from("/workspace/../etc/passwd"));
+        assert_eq!(n, PathBuf::from("/etc/passwd"));
+    }
+
+    #[test]
+    fn normalize_resolves_curdir() {
+        let n = normalize(&PathBuf::from("/workspace/./src/./main.rs"));
+        assert_eq!(n, PathBuf::from("/workspace/src/main.rs"));
     }
 }

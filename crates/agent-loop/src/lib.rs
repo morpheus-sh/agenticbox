@@ -19,6 +19,10 @@ pub struct AgentLoopConfig {
     pub max_iterations: usize,
     pub system_prompt: String,
     pub user_task: String,
+    /// The agent's role (e.g. `"security-analyst"`). Used as the deterministic
+    /// privilege ceiling in `PolicyEngine` — it can only narrow the session's
+    /// granted permissions, never expand them.
+    pub role: String,
 }
 
 impl Default for AgentLoopConfig {
@@ -31,6 +35,7 @@ impl Default for AgentLoopConfig {
             max_iterations: 15,
             system_prompt: String::new(),
             user_task: String::new(),
+            role: "builtin".into(),
         }
     }
 }
@@ -281,7 +286,7 @@ fn execute_http_request(url: &str, _method: &str, guard: &NetworkGuard) -> (bool
     }
 }
 
-fn execute_exec(command: &str, engine: &PolicyEngine) -> (bool, String, String) {
+fn execute_exec(command: &str, engine: &PolicyEngine, role: &str) -> (bool, String, String) {
     let perms = PermissionSet {
         terminal: true,
         filesystem: FsPermission::ReadWrite,
@@ -289,6 +294,7 @@ fn execute_exec(command: &str, engine: &PolicyEngine) -> (bool, String, String) 
         network: NetworkPolicy::Allowlist(vec![]),
     };
     let req = PolicyRequest {
+        role: role.into(),
         action: "terminal:exec".into(),
         resource: command.into(),
         permissions: perms,
@@ -459,7 +465,7 @@ pub async fn run_agent_loop(config: AgentLoopConfig) -> Result<AgentLoopResult> 
                 }
                 "exec" => {
                     let command = args.get("command").and_then(|v| v.as_str()).unwrap_or("");
-                    execute_exec(command, &policy_engine)
+                    execute_exec(command, &policy_engine, &config.role)
                 }
                 _ => (false, format!("unknown tool: {tool_name}"), String::new()),
             };

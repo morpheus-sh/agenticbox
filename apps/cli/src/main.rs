@@ -2371,6 +2371,7 @@ Do NOT skip deployment. The fix is useless if it's not deployed. Read the deploy
         max_iterations: 10,
         system_prompt,
         user_task: user_task.to_string(),
+        role: "security-analyst".into(),
     };
 
     let rt = tokio::runtime::Runtime::new()?;
@@ -2496,6 +2497,7 @@ fn run_builtin_agent(manifest: &AgentManifest, mut config: Config) -> Result<()>
         max_iterations: manifest.execution.max_iterations,
         system_prompt: manifest.prompt.system.clone(),
         user_task: manifest.prompt.task.clone(),
+        role: manifest.name.clone(),
     };
 
     // Run the agent loop

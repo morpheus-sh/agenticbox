@@ -1,4 +1,5 @@
 use serde::{Deserialize, Serialize};
+use shared_types::host;
 use shared_types::NetworkPolicy;
 use tracing::info;
 
@@ -12,12 +13,20 @@ impl NetworkGuard {
         Self { policy }
     }
 
+    /// Check whether `destination` is permitted by the policy.
+    ///
+    /// Matching uses the shared `host` helpers (host extraction + exact /
+    /// subdomain match) rather than a raw substring `contains()`, which was
+    /// vulnerable to lookalike and path-spoof bypasses
+    /// (`evil.com/github.com`, `evilgithub.com`).
     pub fn check(&self, destination: &str) -> Result<(), NetworkError> {
         info!("Checking network policy for {}", destination);
         match &self.policy {
             NetworkPolicy::Full => Ok(()),
+            NetworkPolicy::Offline => Err(NetworkError::Blocked("Offline mode".into())),
             NetworkPolicy::LocalhostOnly => {
-                if destination.contains("localhost") || destination.contains("127.0.0.1") {
+                let h = host::extract_host(destination);
+                if host::is_localhost(h) {
                     Ok(())
                 } else {
                     Err(NetworkError::Blocked(format!(
@@ -27,7 +36,8 @@ impl NetworkGuard {
                 }
             }
             NetworkPolicy::Allowlist(domains) => {
-                if domains.iter().any(|d| destination.contains(d)) {
+                let h = host::extract_host(destination);
+                if domains.iter().any(|d| host::host_matches_domain(h, d)) {
                     Ok(())
                 } else {
                     Err(NetworkError::Blocked(format!(
@@ -36,7 +46,6 @@ impl NetworkGuard {
                     )))
                 }
             }
-            NetworkPolicy::Offline => Err(NetworkError::Blocked("Offline mode".into())),
         }
     }
 }
@@ -84,8 +93,48 @@ mod tests {
     #[test]
     fn allowlist_subdomain_matching() {
         let g = NetworkGuard::new(NetworkPolicy::Allowlist(vec!["github.com".into()]));
-        // The impl uses `contains`, so api.github.com contains "github.com"
+        // api.github.com is a subdomain of github.com → allowed
         assert!(g.check("https://api.github.com/user").is_ok());
+    }
+
+    // ── Substring-spoof regressions (the bug this fix closes) ──
+
+    #[test]
+    fn allowlist_blocks_path_spoof() {
+        // `evil.com/github.com` — host is evil.com, path contains the allowed
+        // domain. Old substring impl allowed this; host extraction blocks it.
+        let g = NetworkGuard::new(NetworkPolicy::Allowlist(vec!["github.com".into()]));
+        assert!(g.check("evil.com/github.com").is_err());
+        assert!(g.check("https://evil.com/github.com").is_err());
+    }
+
+    #[test]
+    fn allowlist_blocks_lookalike_domain() {
+        // `evilgithub.com` shares a substring with `github.com` but is not a
+        // subdomain — must be blocked.
+        let g = NetworkGuard::new(NetworkPolicy::Allowlist(vec!["github.com".into()]));
+        assert!(g.check("https://evilgithub.com").is_err());
+    }
+
+    #[test]
+    fn allowlist_blocks_port_spoof() {
+        let g = NetworkGuard::new(NetworkPolicy::Allowlist(vec!["github.com".into()]));
+        assert!(g.check("evil.com:github.com").is_err());
+    }
+
+    #[test]
+    fn allowlist_exact_match_allowed() {
+        let g = NetworkGuard::new(NetworkPolicy::Allowlist(vec!["github.com".into()]));
+        assert!(g.check("https://github.com").is_ok());
+    }
+
+    #[test]
+    fn allowlist_strips_userinfo() {
+        let g = NetworkGuard::new(NetworkPolicy::Allowlist(vec!["api.example.com".into()]));
+        assert!(g.check("https://user:pass@api.example.com/x").is_ok());
+        assert!(g
+            .check("https://user:pass@evil.com/api.example.com")
+            .is_err());
     }
 
     // ── Full policy ────────────────────────────────────────
@@ -113,6 +162,13 @@ mod tests {
         assert!(g.check("https://api.openai.com").is_err());
     }
 
+    #[test]
+    fn localhost_blocks_lookalike() {
+        // old substring impl let `evil-localhost.attacker.com` through
+        let g = NetworkGuard::new(NetworkPolicy::LocalhostOnly);
+        assert!(g.check("https://evil-localhost.attacker.com").is_err());
+    }
+
     // ── Offline policy ─────────────────────────────────────
 
     #[test]
@@ -136,7 +192,6 @@ mod tests {
 
     #[test]
     fn default_policy_is_offline() {
-        // NetworkPolicy::default() is Offline
         let g = NetworkGuard::new(NetworkPolicy::default());
         assert!(g.check("https://anything.com").is_err());
     }

@@ -57,7 +57,7 @@ pub struct PermissionSet {
     pub network: NetworkPolicy,
 }
 
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+#[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub enum FsPermission {
     #[default]
@@ -66,7 +66,7 @@ pub enum FsPermission {
     ReadWrite,
 }
 
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+#[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub enum NetworkPolicy {
     #[default]
@@ -98,9 +98,119 @@ pub struct ChatMessage {
     pub tool_results: Option<Vec<ToolResult>>,
 }
 
+// ── Network host matching (dependency-free, single source of truth) ───────
+// Consumed by both `network-control` and `policy-engine`. The previous
+// substring bug (`destination.contains(domain)`) existed because the same
+// flawed logic was duplicated across two crates — this centralises it so it
+// can only be fixed and tested in one place.
+
+pub mod host {
+    /// Extract the host from a URL-like string, handling `scheme://`,
+    /// userinfo (`user:pass@`), ports, and bracketed IPv6 literals (`[::1]`).
+    /// Pure string logic — no `url` crate dependency.
+    pub fn extract_host(destination: &str) -> &str {
+        // 1. strip scheme
+        let after_scheme = match destination.find("://") {
+            Some(i) => &destination[i + 3..],
+            None => destination,
+        };
+        // 2. authority ends at the first path/query/fragment separator
+        let authority_end = after_scheme
+            .find(['/', '?', '#'])
+            .unwrap_or(after_scheme.len());
+        let authority = &after_scheme[..authority_end];
+        // 3. drop userinfo (everything before the last '@')
+        let host_port = authority.rsplit('@').next().unwrap_or(authority);
+        // 4. keep bracketed IPv6 literal intact, else strip the port
+        if let Some(rest) = host_port.strip_prefix('[') {
+            if let Some(end) = rest.find(']') {
+                return &host_port[..end + 1]; // e.g. "[::1]"
+            }
+        }
+        match host_port.rfind(':') {
+            Some(i) => &host_port[..i],
+            None => host_port,
+        }
+    }
+
+    /// True if `host` equals `allowed` or is a subdomain of `allowed`.
+    /// Uses a `.suffix` match so lookalikes and path-spoofs are rejected:
+    ///   - `evilgithub.com` does NOT match `github.com`
+    ///   - `evil.com/github.com` does NOT match `github.com`
+    ///   - `api.github.com` DOES match `github.com` (legit subdomain)
+    pub fn host_matches_domain(host: &str, allowed: &str) -> bool {
+        let host = host.to_ascii_lowercase();
+        let allowed = allowed.to_ascii_lowercase();
+        host == allowed || host.ends_with(&format!(".{allowed}"))
+    }
+
+    /// True if `host` is a loopback address.
+    pub fn is_localhost(host: &str) -> bool {
+        let h = host
+            .trim_matches(|c| c == '[' || c == ']')
+            .to_ascii_lowercase();
+        h == "localhost" || h == "127.0.0.1" || h == "::1"
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    // ── host::extract_host / matching ──────────────────────
+
+    #[test]
+    fn host_extract_strips_scheme_port_path() {
+        assert_eq!(
+            host::extract_host("https://api.openai.com/v1/models"),
+            "api.openai.com"
+        );
+        assert_eq!(host::extract_host("http://localhost:3000"), "localhost");
+        assert_eq!(
+            host::extract_host("https://github.com/repos/x"),
+            "github.com"
+        );
+        assert_eq!(host::extract_host("127.0.0.1:8080"), "127.0.0.1");
+    }
+
+    #[test]
+    fn host_extract_strips_userinfo() {
+        assert_eq!(
+            host::extract_host("https://user:pass@api.example.com/x"),
+            "api.example.com"
+        );
+    }
+
+    #[test]
+    fn host_extract_no_scheme_bare_authority() {
+        // path-spoof attempt: evil host with allowed domain in the path
+        assert_eq!(host::extract_host("evil.com/github.com"), "evil.com");
+        assert_eq!(host::extract_host("evil.com:443/github.com"), "evil.com");
+    }
+
+    #[test]
+    fn host_match_exact_and_subdomain_only() {
+        assert!(host::host_matches_domain("github.com", "github.com"));
+        assert!(host::host_matches_domain("api.github.com", "github.com"));
+        // lookalikes / spoofs must NOT match
+        assert!(!host::host_matches_domain("evilgithub.com", "github.com"));
+        assert!(!host::host_matches_domain("evil.com", "github.com"));
+        assert!(!host::host_matches_domain("notgithub.com", "github.com"));
+    }
+
+    #[test]
+    fn host_match_case_insensitive() {
+        assert!(host::host_matches_domain("API.GitHub.com", "github.com"));
+    }
+
+    #[test]
+    fn host_is_localhost() {
+        assert!(host::is_localhost("localhost"));
+        assert!(host::is_localhost("127.0.0.1"));
+        assert!(host::is_localhost("[::1]"));
+        assert!(!host::is_localhost("api.openai.com"));
+        assert!(!host::is_localhost("evil-localhost.attacker.com"));
+    }
 
     // ── ModelConfig ────────────────────────────────────────
 
