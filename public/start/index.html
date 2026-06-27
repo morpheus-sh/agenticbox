@@ -39,12 +39,7 @@
     "description": "Deploy AI agents into production business operations safely. Vertical templates for customer support, sales ops, IT ops, and finance ops. Enterprise governance, audit trails, and compliance.",
     "url": "https://agenticbox.co/start",
     "applicationCategory": "BusinessApplication",
-    "operatingSystem": "Cross-platform",
-    "offers": [
-      { "@type": "Offer", "price": "49", "priceCurrency": "USD", "description": "Starter — managed cloud beta" },
-      { "@type": "Offer", "price": "199", "priceCurrency": "USD", "description": "Pro — teams, production governance" },
-      { "@type": "Offer", "price": "999", "priceCurrency": "USD", "description": "Enterprise — custom SLAs, RBAC, on-prem" }
-    ]
+    "operatingSystem": "Cross-platform"
   }
   </script>
   <style>
@@ -194,29 +189,6 @@
     .perm-row .val.yes { background: var(--olive-bg); color: var(--olive-dark); }
     .perm-row .val.no { background: var(--coral-bg); color: var(--coral); }
 
-    /* PRICING TABLE */
-    .pricing-table-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-sm); }
-    .pricing-table { width: 100%; border-collapse: collapse; }
-    .pricing-table th { padding: 20px 24px; text-align: left; border-bottom: 2px solid var(--border); background: var(--surface-2); }
-    .pricing-table th .plan-name { font-size: 0.82rem; font-weight: 700; color: var(--text); }
-    .pricing-table th .plan-price { font-size: 1.8rem; font-weight: 800; color: var(--text); margin-top: 4px; letter-spacing: -0.02em; }
-    .pricing-table th .plan-price .currency { font-size: 1rem; font-weight: 600; color: var(--text-muted); vertical-align: top; }
-    .pricing-table th .plan-price .period { font-size: 0.85rem; font-weight: 500; color: var(--text-muted); }
-    .pricing-table th .plan-desc { font-size: 0.72rem; color: var(--text-muted); margin-top: 2px; }
-    .pricing-table th.featured { background: var(--olive-bg); }
-    .pricing-table th.featured .plan-name { color: var(--olive-dark); }
-    .pricing-table td { padding: 14px 24px; border-bottom: 1px solid var(--border); font-size: 0.85rem; color: var(--text-dim); }
-    .pricing-table td:first-child { font-weight: 600; color: var(--text); }
-    .pricing-table tr:last-child td { border-bottom: none; }
-    .pricing-table .check { color: var(--olive); font-weight: 700; }
-    .pricing-table .dash { color: var(--text-muted); }
-    .pricing-table .cta-row td { padding: 20px 24px; background: var(--surface-2); }
-    .pricing-table .cta-row a { display: inline-block; font-size: 0.82rem; font-weight: 600; padding: 10px 20px; border-radius: var(--radius); text-decoration: none; transition: all var(--transition); }
-    .pricing-table .cta-row a { background: var(--surface); color: var(--text); border: 1px solid var(--border-bright); }
-    .pricing-table .cta-row a:hover { border-color: var(--olive); color: var(--olive-dark); }
-    .pricing-table .cta-row .featured-cta { background: var(--text); color: var(--bg); border-color: var(--text); }
-    .pricing-table .cta-row .featured-cta:hover { background: var(--olive-dark); border-color: var(--olive-dark); }
-
     /* COMPARISON */
     .compare-wrap { max-width: 680px; margin: 0 auto; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-sm); }
     .compare-table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
@@ -262,15 +234,12 @@
       .bento { grid-template-columns: 1fr; }
       .bento-large, .bento-wide { grid-column: span 1; }
       .tab-panel.active { grid-template-columns: 1fr; }
-      .pricing-table { font-size: 0.78rem; }
-      .pricing-table th, .pricing-table td { padding: 12px 14px; }
     }
     @media (max-width: 600px) {
       .container { padding: 0 18px; }
       .hero { padding: 60px 0 40px; }
       .section { padding: 56px 0; }
       nav a:not(.primary) { display: none; }
-      .pricing-table th .plan-price { font-size: 1.3rem; }
     }
   </style>
 </head>
@@ -289,7 +258,6 @@
     <nav>
       <a href="#how-it-works">How it works</a>
       <a href="#use-cases">Use cases</a>
-      <a href="#pricing">Pricing</a>
       <a href="/use-cases/security">Security</a>
       <a href="/" class="primary">For Developers</a>
     </nav>
@@ -523,58 +491,6 @@
         <div class="perm-row"><span class="label">Initiate transfers</span><span class="val no">Blocked</span></div>
         <div class="perm-row"><span class="label">Access bank credentials</span><span class="val no">Blocked</span></div>
       </div>
-    </div>
-  </div>
-</section>
-
-<section id="pricing" class="section">
-  <div class="container">
-    <div class="section-header center reveal">
-      <span class="section-tag">Pricing</span>
-      <h2 class="section-title">Start small, scale as you <em>trust it</em></h2>
-      <p class="section-sub" style="margin-left:auto;margin-right:auto;">No hidden fees. No per-agent markup. Pay for managed governance, not compute.</p>
-    </div>
-    <div class="pricing-table-wrap reveal">
-      <table class="pricing-table">
-        <thead>
-          <tr>
-            <th></th>
-            <th>
-              <div class="plan-name">Starter</div>
-              <div class="plan-price"><span class="currency">$</span>49<span class="period">/mo</span></div>
-              <div class="plan-desc">Managed cloud beta</div>
-            </th>
-            <th class="featured">
-              <div class="plan-name">Pro</div>
-              <div class="plan-price"><span class="currency">$</span>199<span class="period">/mo</span></div>
-              <div class="plan-desc">Teams &amp; production</div>
-            </th>
-            <th>
-              <div class="plan-name">Enterprise</div>
-              <div class="plan-price"><span class="currency">$</span>999<span class="period">/mo</span></div>
-              <div class="plan-desc">Custom SLAs, on-prem</div>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr><td>Production agents</td><td>1</td><td>10</td><td>Unlimited</td></tr>
-          <tr><td>Vertical templates</td><td>1</td><td class="check">All</td><td class="check">All + custom</td></tr>
-          <tr><td>Scoped permissions</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td></tr>
-          <tr><td>Audit trail</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td></tr>
-          <tr><td>RBAC</td><td class="dash">—</td><td class="check">✓</td><td class="check">Advanced</td></tr>
-          <tr><td>Custom integrations</td><td class="dash">—</td><td class="check">✓</td><td class="check">✓</td></tr>
-          <tr><td>On-premise deployment</td><td class="dash">—</td><td class="dash">—</td><td class="check">✓</td></tr>
-          <tr><td>SSO</td><td class="dash">—</td><td class="dash">—</td><td class="check">✓</td></tr>
-          <tr><td>Custom SLAs</td><td class="dash">—</td><td class="dash">—</td><td class="check">✓</td></tr>
-          <tr><td>Support</td><td>Community</td><td>Priority</td><td>Dedicated</td></tr>
-          <tr class="cta-row">
-            <td></td>
-            <td><a href="mailto:hello@agenticbox.co?subject=Starter%20plan">Get Started</a></td>
-            <td><a href="mailto:hello@agenticbox.co?subject=Pro%20plan" class="featured-cta">Get Started</a></td>
-            <td><a href="mailto:hello@agenticbox.co?subject=Enterprise%20plan">Contact Sales</a></td>
-          </tr>
-        </tbody>
-      </table>
     </div>
   </div>
 </section>
