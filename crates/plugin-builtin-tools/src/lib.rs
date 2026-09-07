@@ -5,7 +5,6 @@
 //! identical to the pre-plugin agent-loop implementations — this is an
 //! extraction, not a rewrite.
 
-use anyhow::Result;
 use harness_core::{HarnessContext, ToolCall, ToolOutcome, ToolPlugin};
 use policy_engine::PolicyEngine;
 use shared_types::{FsPermission, NetworkPolicy, PermissionSet};
@@ -15,51 +14,16 @@ use shared_types::{FsPermission, NetworkPolicy, PermissionSet};
 /// `read_file` / `write_file`, guarded by `FsGuard` against the workspace root.
 pub struct FsPlugin;
 
-pub fn schema(name: &str, description: &str, properties: serde_json::Value) -> serde_json::Value {
-    serde_json::json!({
-        "type": "function",
-        "function": {
-            "name": name,
-            "description": description,
-            "parameters": {
-                "type": "object",
-                "properties": properties,
-            }
-        }
-    })
-}
-
 impl ToolPlugin for FsPlugin {
     fn tool_names(&self) -> Vec<String> {
         vec!["read_file".into(), "write_file".into()]
     }
 
-    fn schemas(&self) -> Vec<serde_json::Value> {
-        vec![
-            schema(
-                "read_file",
-                "Read the contents of a file. The path must be within the allowed workspace directory.",
-                serde_json::json!({"path": {"type": "string", "description": "Absolute or relative path to the file"}}),
-            ),
-            schema(
-                "write_file",
-                "Write content to a file. The path must be within the allowed workspace directory.",
-                serde_json::json!({
-                    "path": {"type": "string", "description": "Path to write to"},
-                    "content": {"type": "string", "description": "Content to write"}
-                }),
-            ),
-        ]
-    }
-
-    fn handle(&self, call: ToolCall<'_>, ctx: &HarnessContext) -> Result<ToolOutcome> {
+    fn handle(&self, call: ToolCall<'_>, ctx: &HarnessContext) -> anyhow::Result<ToolOutcome> {
         let guard = fs_guard::FsGuard::new(vec![ctx.workspace.clone()]);
         match call.name {
             "read_file" => {
                 let path = call.args.get("path").and_then(|v| v.as_str()).unwrap_or("");
-                // Note: FsGuard::resolve enforces the workspace root; the
-                // actual read error is surfaced through `Escaped`-style
-                // mapping below (resolve errors keep their own variants).
                 match guard.resolve(path) {
                     Ok(resolved) => match std::fs::read_to_string(&resolved) {
                         Ok(content) => Ok(ToolOutcome::allowed("within allowed roots", content)),
@@ -103,18 +67,7 @@ impl ToolPlugin for NetworkPlugin {
         vec!["http_request".into()]
     }
 
-    fn schemas(&self) -> Vec<serde_json::Value> {
-        vec![schema(
-            "http_request",
-            "Make an HTTP request to a URL. Only allowlisted domains are permitted.",
-            serde_json::json!({
-                "url": {"type": "string", "description": "Full URL to request"},
-                "method": {"type": "string", "description": "HTTP method (GET, POST, etc.)"}
-            }),
-        )]
-    }
-
-    fn handle(&self, call: ToolCall<'_>, ctx: &HarnessContext) -> Result<ToolOutcome> {
+    fn handle(&self, call: ToolCall<'_>, ctx: &HarnessContext) -> anyhow::Result<ToolOutcome> {
         let url = call.args.get("url").and_then(|v| v.as_str()).unwrap_or("");
         let _method = call
             .args
@@ -136,7 +89,12 @@ impl ToolPlugin for NetworkPlugin {
 
 // ─── Exec tool ────────────────────────────────────────────────
 
-/// `exec`, gated by the `PolicyEngine` terminal permission.
+/// `exec`, gated by the `PolicyEngine` terminal permission, executed via the
+/// system shell (cmd on Windows, sh elsewhere) — matching the pre-plugin
+/// `execute_exec` behavior, pipes and `&&` included.
+///
+/// ponytail: guards are rebuilt per call; fine while PolicyEngine is a unit
+/// struct, but hoist into the plugin if it gains construction-time config.
 pub struct ExecPlugin;
 
 impl ExecPlugin {
@@ -161,25 +119,34 @@ impl ToolPlugin for ExecPlugin {
         vec!["exec".into()]
     }
 
-    fn schemas(&self) -> Vec<serde_json::Value> {
-        vec![schema(
-            "exec",
-            "Execute a shell command in the sandbox.",
-            serde_json::json!({"command": {"type": "string", "description": "Command to execute"}}),
-        )]
-    }
-
-    fn handle(&self, call: ToolCall<'_>, _ctx: &HarnessContext) -> Result<ToolOutcome> {
+    fn handle(&self, call: ToolCall<'_>, _ctx: &HarnessContext) -> anyhow::Result<ToolOutcome> {
         let command = call
             .args
             .get("command")
             .and_then(|v| v.as_str())
             .unwrap_or("");
         match self.evaluate(command) {
-            policy_engine::PolicyDecision::Allow => Ok(ToolOutcome::allowed(
-                "terminal exec permitted",
-                format!("executed: {command}"),
-            )),
+            policy_engine::PolicyDecision::Allow => {
+                // Use shell to handle pipes, paths, && — Windows uses cmd, Unix uses sh
+                #[cfg(windows)]
+                let (shell, flag) = ("cmd.exe", "/C");
+                #[cfg(not(windows))]
+                let (shell, flag) = ("sh", "-c");
+
+                let output = std::process::Command::new(shell)
+                    .arg(flag)
+                    .arg(command)
+                    .output();
+                match output {
+                    Ok(out) => {
+                        let stdout = String::from_utf8_lossy(&out.stdout).to_string();
+                        let stderr = String::from_utf8_lossy(&out.stderr).to_string();
+                        let combined = if stdout.is_empty() { stderr } else { stdout };
+                        Ok(ToolOutcome::allowed("terminal access granted", combined))
+                    }
+                    Err(e) => Ok(ToolOutcome::blocked(format!("exec error: {e}"))),
+                }
+            }
             policy_engine::PolicyDecision::Deny(reason) => {
                 Ok(ToolOutcome::blocked(format!("terminal: {reason}")))
             }
@@ -202,7 +169,6 @@ mod tests {
         HarnessContext {
             workspace: dir,
             network_allowlist: vec!["api.github.com".into()],
-            config: Default::default(),
         }
     }
 
@@ -213,21 +179,17 @@ mod tests {
         h.register_tool(std::sync::Arc::new(FsPlugin));
 
         let args = serde_json::json!({"path": "hello.txt", "content": "world"});
-        let out = h
-            .dispatch(ToolCall {
-                name: "write_file",
-                args: &args,
-            })
-            .unwrap();
+        let out = h.dispatch(ToolCall {
+            name: "write_file",
+            args: &args,
+        });
         assert!(out.allowed, "write blocked: {}", out.reason);
 
         let args = serde_json::json!({"path": "hello.txt"});
-        let out = h
-            .dispatch(ToolCall {
-                name: "read_file",
-                args: &args,
-            })
-            .unwrap();
+        let out = h.dispatch(ToolCall {
+            name: "read_file",
+            args: &args,
+        });
         assert!(out.allowed);
         assert_eq!(out.output, "world");
     }
@@ -237,14 +199,20 @@ mod tests {
         let c = ctx();
         let mut h = Harness::new(c);
         h.register_tool(std::sync::Arc::new(FsPlugin));
-        let args = serde_json::json!({"path": "C:/Windows/win.ini"});
-        let out = h
-            .dispatch(ToolCall {
-                name: "read_file",
-                args: &args,
-            })
-            .unwrap();
+        // `..` escape: outside the workspace on every platform, and the block
+        // must come from the guard (reason mentions the filesystem), not from
+        // a file-not-found error.
+        let args = serde_json::json!({"path": "../agenticbox-escape-probe.txt"});
+        let out = h.dispatch(ToolCall {
+            name: "read_file",
+            args: &args,
+        });
         assert!(!out.allowed);
+        assert!(
+            out.reason.contains("filesystem"),
+            "block must come from the guard, got: {}",
+            out.reason
+        );
     }
 
     #[test]
@@ -259,7 +227,6 @@ mod tests {
                 name: "http_request",
                 args: &ok
             })
-            .unwrap()
             .allowed
         );
 
@@ -269,41 +236,30 @@ mod tests {
                 name: "http_request",
                 args: &bad
             })
-            .unwrap()
             .allowed
         );
     }
 
     #[test]
-    fn exec_permitted_by_policy() {
+    fn exec_runs_and_returns_output() {
         let c = ctx();
         let mut h = Harness::new(c);
         h.register_tool(std::sync::Arc::new(ExecPlugin));
-        let args = serde_json::json!({"command": "echo hi"});
-        let out = h
-            .dispatch(ToolCall {
-                name: "exec",
-                args: &args,
-            })
-            .unwrap();
+        // Platform-portable: echo is a shell builtin everywhere.
+        #[cfg(windows)]
+        let (cmd, expect) = ("echo ponytail", "ponytail");
+        #[cfg(not(windows))]
+        let (cmd, expect) = ("echo ponytail", "ponytail");
+        let args = serde_json::json!({"command": cmd});
+        let out = h.dispatch(ToolCall {
+            name: "exec",
+            args: &args,
+        });
         assert!(out.allowed, "exec blocked: {}", out.reason);
-    }
-
-    #[test]
-    fn all_builtin_schemas_registered() {
-        let c = ctx();
-        let mut h = Harness::new(c);
-        h.register_tool(std::sync::Arc::new(FsPlugin));
-        h.register_tool(std::sync::Arc::new(NetworkPlugin));
-        h.register_tool(std::sync::Arc::new(ExecPlugin));
-        let names: Vec<String> = h
-            .tool_schemas()
-            .iter()
-            .filter_map(|s| s.get("function")?.get("name")?.as_str().map(String::from))
-            .collect();
-        assert_eq!(
-            names,
-            vec!["exec", "http_request", "read_file", "write_file"] // BTreeMap: alphabetical
+        assert!(
+            out.output.contains(expect),
+            "exec must return real shell output, got: {:?}",
+            out.output
         );
     }
 }

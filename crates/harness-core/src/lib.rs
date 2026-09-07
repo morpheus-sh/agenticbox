@@ -1,16 +1,13 @@
 //! AgenticBox microkernel.
 //!
-//! The harness is a small core (`Harness`) that owns a `PluginRegistry`.
-//! Everything else — filesystem access, network access, exec, audit — is a
-//! plugin implementing the [`Plugin`] trait. The core knows nothing about
-//! any specific capability; it routes, sequences, and reports.
+//! The harness is a small core (`Harness`) that owns a plugin registry.
+//! Everything else — filesystem access, network access, exec — is a
+//! plugin implementing the [`ToolPlugin`] trait. The core knows nothing
+//! about any specific capability; it routes and reports.
 //!
-//! Plugin kinds:
-//! - [`ToolPlugin`]: handles an agent tool call (`read_file`, `exec`, ...).
-//! - [`HookPlugin`]: observes lifecycle events (session start/end, decision made).
-//!
-//! Registration order matters: tools are matched by name (first wins), hooks
-//! run in registration order.
+//! Tool names are matched first-registration-wins; unknown tools fail
+//! closed in the core, so plugins can never be bypassed by a
+//! hallucinated tool name.
 
 use anyhow::Result;
 use std::collections::BTreeMap;
@@ -51,40 +48,17 @@ pub struct ToolCall<'a> {
     pub args: &'a serde_json::Value,
 }
 
-/// Lifecycle events hooks can observe.
-#[derive(Debug, Clone)]
-pub enum HarnessEvent<'a> {
-    SessionStart {
-        agent: &'a str,
-    },
-    SessionEnd {
-        agent: &'a str,
-        allowed: u32,
-        blocked: u32,
-    },
-    DecisionMade {
-        tool: &'a str,
-        allowed: bool,
-        reason: &'a str,
-    },
-}
-
 /// A plugin that handles one or more agent tools.
 pub trait ToolPlugin: Send + Sync {
-    /// Tool names this plugin handles (used for schema generation and routing).
+    /// Tool names this plugin handles (used for routing).
     fn tool_names(&self) -> Vec<String>;
 
-    /// OpenAI-style JSON schema for each tool this plugin provides.
-    fn schemas(&self) -> Vec<serde_json::Value>;
-
     /// Handle a tool call. `ctx` gives read access to shared harness config.
+    ///
+    /// Implementations report failure through [`ToolOutcome::blocked`]; the
+    /// `Result` exists so a malfunctioning plugin (I/O error building its
+    /// response, poisoned lock) fails closed instead of panicking.
     fn handle(&self, call: ToolCall<'_>, ctx: &HarnessContext) -> Result<ToolOutcome>;
-}
-
-/// A plugin that observes lifecycle events (audit, metrics, ...).
-pub trait HookPlugin: Send + Sync {
-    fn name(&self) -> &str;
-    fn on_event(&self, event: HarnessEvent<'_>);
 }
 
 /// Read-only context handed to tool plugins.
@@ -94,19 +68,15 @@ pub struct HarnessContext {
     pub workspace: std::path::PathBuf,
     /// Network allowlist (domains).
     pub network_allowlist: Vec<String>,
-    /// Arbitrary string config from the manifest/profile.
-    pub config: BTreeMap<String, String>,
 }
 
 type Tool = Arc<dyn ToolPlugin>;
-type Hook = Arc<dyn HookPlugin>;
 
-/// The microkernel. Small on purpose: it routes tool calls to plugins and
-/// broadcasts events to hooks. All capability logic lives in plugins.
+/// The microkernel. Small on purpose: it routes tool calls to plugins.
+/// All capability logic lives in plugins.
 #[derive(Default)]
 pub struct Harness {
     tools: BTreeMap<String, Tool>,
-    hooks: Vec<Hook>,
     ctx: HarnessContext,
 }
 
@@ -114,14 +84,8 @@ impl Harness {
     pub fn new(ctx: HarnessContext) -> Self {
         Self {
             tools: BTreeMap::new(),
-            hooks: Vec::new(),
             ctx,
         }
-    }
-
-    /// Shared read-only context (also handed to plugins).
-    pub fn context(&self) -> &HarnessContext {
-        &self.ctx
     }
 
     /// Register a tool plugin. First registration of a name wins.
@@ -131,59 +95,18 @@ impl Harness {
         }
     }
 
-    /// Register a hook plugin (runs in registration order).
-    pub fn register_hook(&mut self, plugin: Arc<dyn HookPlugin>) {
-        self.hooks.push(plugin);
-    }
-
-    /// OpenAI-style tool schema list, aggregated from all tool plugins.
-    pub fn tool_schemas(&self) -> Vec<serde_json::Value> {
-        let mut out = Vec::new();
-        let mut seen = std::collections::BTreeSet::new();
-        for plugin in self.tools.values() {
-            for schema in plugin.schemas() {
-                // dedupe by function name
-                let name = schema
-                    .get("function")
-                    .and_then(|f| f.get("name"))
-                    .and_then(|n| n.as_str())
-                    .unwrap_or("")
-                    .to_string();
-                if seen.insert(name) {
-                    out.push(schema);
-                }
-            }
-        }
-        out
-    }
-
-    /// Route one tool call. Emits `DecisionMade` afterwards.
+    /// Route one tool call.
     ///
-    /// Unknown tools are blocked by the core (fail-closed), so plugins can
-    /// never be bypassed by a hallucinated tool name.
-    pub fn dispatch(&self, call: ToolCall<'_>) -> Result<ToolOutcome> {
-        let outcome = match self.tools.get(call.name) {
-            Some(plugin) => plugin.handle(call.clone(), &self.ctx)?,
+    /// Unknown tools are blocked by the core (fail-closed); a plugin
+    /// returning `Err` is also converted to a blocked outcome rather
+    /// than aborting the agent session.
+    pub fn dispatch(&self, call: ToolCall<'_>) -> ToolOutcome {
+        match self.tools.get(call.name) {
+            Some(plugin) => plugin
+                .handle(call.clone(), &self.ctx)
+                .unwrap_or_else(|e| ToolOutcome::blocked(format!("plugin error: {e}"))),
             None => ToolOutcome::blocked(format!("unknown tool: {}", call.name)),
-        };
-        self.emit(HarnessEvent::DecisionMade {
-            tool: call.name,
-            allowed: outcome.allowed,
-            reason: &outcome.reason,
-        });
-        Ok(outcome)
-    }
-
-    /// Broadcast an event to all hooks.
-    pub fn emit(&self, event: HarnessEvent<'_>) {
-        for hook in &self.hooks {
-            hook.on_event(event.clone());
         }
-    }
-
-    /// Number of distinct registered tools.
-    pub fn tool_count(&self) -> usize {
-        self.tools.len()
     }
 }
 
@@ -200,41 +123,9 @@ mod tests {
         fn tool_names(&self) -> Vec<String> {
             vec!["echo".into()]
         }
-        fn schemas(&self) -> Vec<serde_json::Value> {
-            vec![serde_json::json!({
-                "type": "function",
-                "function": {
-                    "name": "echo",
-                    "description": "Echo the input",
-                    "parameters": {"type": "object", "properties": {"text": {"type": "string"}}}
-                }
-            })]
-        }
         fn handle(&self, _call: ToolCall<'_>, _ctx: &HarnessContext) -> Result<ToolOutcome> {
             self.calls.fetch_add(1, Ordering::SeqCst);
             Ok(ToolOutcome::allowed("echoed", "ok"))
-        }
-    }
-
-    struct EventLog(std::sync::Mutex<Vec<String>>);
-
-    impl HookPlugin for EventLog {
-        fn name(&self) -> &str {
-            "event-log"
-        }
-        fn on_event(&self, event: HarnessEvent<'_>) {
-            let mut log = self.0.lock().unwrap();
-            match event {
-                HarnessEvent::DecisionMade { tool, allowed, .. } => {
-                    log.push(format!("decision:{tool}:{allowed}"));
-                }
-                HarnessEvent::SessionStart { agent, .. } => {
-                    log.push(format!("start:{agent}"));
-                }
-                HarnessEvent::SessionEnd { agent, .. } => {
-                    log.push(format!("end:{agent}"));
-                }
-            }
         }
     }
 
@@ -245,71 +136,23 @@ mod tests {
             calls: AtomicU32::new(0),
         }));
         let args = serde_json::json!({"text": "hi"});
-        let out = h
-            .dispatch(ToolCall {
-                name: "echo",
-                args: &args,
-            })
-            .unwrap();
+        let out = h.dispatch(ToolCall {
+            name: "echo",
+            args: &args,
+        });
         assert!(out.allowed);
-        assert_eq!(h.tool_count(), 1);
+        assert_eq!(h.tools.len(), 1);
     }
 
     #[test]
     fn unknown_tool_fails_closed() {
         let h = Harness::new(HarnessContext::default());
         let args = serde_json::json!({});
-        let out = h
-            .dispatch(ToolCall {
-                name: "nope",
-                args: &args,
-            })
-            .unwrap();
+        let out = h.dispatch(ToolCall {
+            name: "nope",
+            args: &args,
+        });
         assert!(!out.allowed);
         assert!(out.reason.contains("unknown tool"));
-    }
-
-    #[test]
-    fn hooks_see_decisions_and_lifecycle() {
-        let log = Arc::new(EventLog(std::sync::Mutex::new(Vec::new())));
-        let mut h = Harness::new(HarnessContext::default());
-        h.register_tool(Arc::new(EchoPlugin {
-            calls: AtomicU32::new(0),
-        }));
-        h.register_hook(log.clone());
-
-        h.emit(HarnessEvent::SessionStart {
-            agent: "test-agent",
-        });
-        let args = serde_json::json!({});
-        h.dispatch(ToolCall {
-            name: "echo",
-            args: &args,
-        })
-        .unwrap();
-        h.emit(HarnessEvent::SessionEnd {
-            agent: "test-agent",
-            allowed: 1,
-            blocked: 0,
-        });
-
-        let got = log.0.lock().unwrap().clone();
-        assert_eq!(
-            got,
-            vec!["start:test-agent", "decision:echo:true", "end:test-agent"]
-        );
-    }
-
-    #[test]
-    fn schemas_aggregate_and_dedupe() {
-        let mut h = Harness::new(HarnessContext::default());
-        h.register_tool(Arc::new(EchoPlugin {
-            calls: AtomicU32::new(0),
-        }));
-        h.register_tool(Arc::new(EchoPlugin {
-            calls: AtomicU32::new(0),
-        }));
-        let schemas = h.tool_schemas();
-        assert_eq!(schemas.len(), 1, "duplicate plugin schemas must dedupe");
     }
 }

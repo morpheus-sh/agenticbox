@@ -36,7 +36,7 @@ jobs:
         run: cargo fmt --all -- --check
 
       - name: Clippy (default members — daemon + crates, skip Tauri desktop)
-        run: cargo clippy -p daemon -p agenticbox-cli -p audit-log -p fs-guard -p model-router -p network-control -p policy-engine -p sandbox-core -p session-manager -p shared-types -p tool-protocol -p agent-loop -- -D warnings
+        run: cargo clippy -p daemon -p agenticbox-cli -p audit-log -p fs-guard -p model-router -p network-control -p policy-engine -p sandbox-core -p session-manager -p shared-types -p tool-protocol -p agent-loop -p harness-core -p plugin-builtin-tools -- -D warnings
 
       - name: Build (default members)
         run: cargo build --verbose

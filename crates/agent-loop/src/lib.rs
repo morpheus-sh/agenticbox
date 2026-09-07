@@ -279,15 +279,16 @@ pub async fn run_agent_loop(config: AgentLoopConfig) -> Result<AgentLoopResult> 
     // Microkernel: register builtin tool plugins. All capability logic
     // (fs containment, network allowlist, exec policy) lives in the plugins;
     // the loop itself only routes and records.
-    let mut harness = Harness::new(HarnessContext {
-        workspace: config.workspace.clone(),
-        network_allowlist: config.network_allowlist.clone(),
-        config: Default::default(),
-    });
-    harness.register_tool(std::sync::Arc::new(plugin_builtin_tools::FsPlugin));
-    harness.register_tool(std::sync::Arc::new(plugin_builtin_tools::NetworkPlugin));
-    harness.register_tool(std::sync::Arc::new(plugin_builtin_tools::ExecPlugin));
-    let harness = harness; // freeze (interior mutability not needed)
+    let harness = {
+        let mut h = Harness::new(HarnessContext {
+            workspace: config.workspace.clone(),
+            network_allowlist: config.network_allowlist.clone(),
+        });
+        h.register_tool(std::sync::Arc::new(plugin_builtin_tools::FsPlugin));
+        h.register_tool(std::sync::Arc::new(plugin_builtin_tools::NetworkPlugin));
+        h.register_tool(std::sync::Arc::new(plugin_builtin_tools::ExecPlugin));
+        h
+    };
 
     let mut allowed: u32 = 0;
     let mut blocked: u32 = 0;
@@ -404,7 +405,7 @@ pub async fn run_agent_loop(config: AgentLoopConfig) -> Result<AgentLoopResult> 
                 let outcome = harness.dispatch(harness_core::ToolCall {
                     name: tool_name,
                     args: &args,
-                })?;
+                });
                 (outcome.allowed, outcome.reason, outcome.output)
             };
 
